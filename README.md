@@ -1,2 +1,2 @@
 # ferrischat.py
-A python wrapper for ferris.chat api
+An asynchronous python wrapper for ferris.chat api
