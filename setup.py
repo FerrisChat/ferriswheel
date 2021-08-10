@@ -2,7 +2,7 @@ from setuptools import setup
 import re
 
 with open('ferris/__init__.py', 'r') as f:
-    content = f.read()  # why you copy :c
+    content = f.read()
     try:
         version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', content, re.MULTILINE).group(1) # type: ignore
     except AttributeError:
