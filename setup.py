@@ -2,7 +2,7 @@ from setuptools import setup
 import re
 
 with open('ferris/__init__.py', 'r') as f:
-    content = f.read()
+    content = f.read()  # why you copy :c
     try:
         version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', content, re.MULTILINE).group(1) # type: ignore
     except AttributeError:
@@ -11,7 +11,7 @@ with open('ferris/__init__.py', 'r') as f:
     try:
         author = re.search(r'^__author__\s*=\s*[\'"]([^\'"]*)[\'"]', content, re.MULTILINE).group(1) # type: ignore
     except AttributeError:
-        author = 'Cryptex'
+        author = 'Cryptex & jay3332'
 
 # with open('requirements.txt', 'r') as f:
 #     requirements = f.readlines()
@@ -41,6 +41,7 @@ setup(
         "docs": [
             "sphinx>=4.1.1",
             "furo",
+            
         ],
         "performance": [
             "orjson>=1.3.0"
