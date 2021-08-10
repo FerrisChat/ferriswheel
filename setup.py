@@ -23,9 +23,9 @@ with open('README.md', encoding='utf-8') as f:
 setup(
     name="ferrispy",
     author=author,
-    url="https://github.com/Cryptex-github/ferrischat.py",
+    url="https://github.com/Cryptex-github/ferrispy",
     project_urls={
-        "Issue tracker": "https://github.com/Cryptex-github/ferrischat.py/new/main",
+        "Issue tracker": "https://github.com/Cryptex-github/ferrispy/new/main",
     },
     version=version,
     packages=[
