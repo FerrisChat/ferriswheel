@@ -13,7 +13,7 @@ class HTTPClient:
         self.__session: aiohttp.ClientSession = aiohttp.ClientSession(headers={"User-Agent": user_agent})
 
         self._global_ratelimited: asyncio.Event = asyncio.Event()
-        self._buckets_lock: Dict[str, asyncio.Lock] = {}
+        self._buckets_lock: Dict[str, asyncio.Event] = {}
     
     
     
