@@ -1,5 +1,6 @@
-from setuptools import setup
 import re
+
+from setuptools import setup
 
 with open('ferris/__init__.py', 'r') as f:
     content = f.read()

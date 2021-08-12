@@ -1,6 +1,5 @@
-from typing import Any
-
 import json
+from typing import Any
 
 __all__ = ('to_json', 'from_json')
 

@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-import aiohttp
 import asyncio
-
+from typing import Awaitable, Dict, Optional
 from urllib.parse import quote
-from typing import Dict, Optional, Awaitable
 
+import aiohttp
+
+from . import __version__
 from .types import Data, SupportsStr
 from .utils import from_json
-from . import __version__
 
 API_BASE_URL: str = 'https://api.ferris.chat/api/v0'
 

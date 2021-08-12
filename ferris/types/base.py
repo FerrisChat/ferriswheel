@@ -1,4 +1,4 @@
-from typing import Dict, Union, List, Any, Protocol
+from typing import Any, Dict, List, Protocol, Union
 
 __all__ = ('SupportsStr', 'Snowflake', 'Data', )
 
