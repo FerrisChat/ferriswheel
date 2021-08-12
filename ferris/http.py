@@ -4,6 +4,7 @@ from typing import Dict, Optinal
 import aiohttp
 
 from .types import DATA
+from .utils import from_json
 from . import __version__
 
 
@@ -15,7 +16,6 @@ class HTTPClient:
         user_agent: str = f"Ferrispy (https://github.com/Cryptex-github/ferrispy, {__version__})"
         self.__session: aiohttp.ClientSession = aiohttp.ClientSession(headers={"User-Agent": user_agent})
 
-        self._global_ratelimited: asyncio.Event = asyncio.Event()
         self._buckets_lock: Dict[str, asyncio.Event] = {}
     
     async def request(self, url: str, method: str, **kwargs) -> Optinal[DATA]:
@@ -29,9 +29,6 @@ class HTTPClient:
         if "data" in kwargs:
             headers["Content-Type"] = "application/json"
         
-        if not self._global_ratelimited.is_set():
-            await self._global_ratelimited.wait()
-        
         if not bucket.is_set():
             await bucket.wait()
         
@@ -39,6 +36,28 @@ class HTTPClient:
             async with self.__session.request(method, url, headers=headers, **kwargs) as response:
                 content = await response.text()
 
-                try:
-                    
+                if 400 > response.status >= 200:
+                    return from_json(content)
+                
+                if response.status == 429:
+                    data = from_json(content)
+                    sleep = data.get("retry_after", 0)
+                    bucket.clear()
+                    await asyncio.sleep(sleep)
+                    bucket.set()
+                    continue
+                
+                if response.status == 404:
+                    raise
+                
+                if response.status == 401:
+                    raise
 
+                if response.status == 403:
+                    raise
+
+                if 500 <= response.status < 600:
+                    if tries == 1:
+                        raise
+
+                    continue
