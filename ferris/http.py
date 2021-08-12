@@ -18,7 +18,7 @@ class APIRouter:
         self.__http_client: HTTPClient = http 
     
     @property
-    def url(self) -> str:
+    def url(self, /) -> str:
         return API_BASE_URL + self.__current_route
     
     def _make_new(self, route: str, /) -> APIRouter:
@@ -33,33 +33,33 @@ class APIRouter:
     def request(self, method, /, **kwargs) -> Awaitable[Optional[Data]]:
         return self.__http_client.request(method, self.url, **kwargs)
     
-    def get(self, **kwargs) -> Awaitable[Optional[Data]]:
+    def get(self, **kwargs, /) -> Awaitable[Optional[Data]]:
         return self.request('GET', **kwargs)
     
-    def post(self, **kwargs) -> Awaitable[Optional[Data]]:
+    def post(self, **kwargs, /) -> Awaitable[Optional[Data]]:
         return self.request('POST', **kwargs)
     
-    def put(self, **kwargs) -> Awaitable[Optional[Data]]:
+    def put(self, **kwargs, /) -> Awaitable[Optional[Data]]:
         return self.request('PUT', **kwargs)
     
-    def delete(self, **kwargs) -> Awaitable[Optional[Data]]:
+    def delete(self, **kwargs, /) -> Awaitable[Optional[Data]]:
         return self.request('DELETE', **kwargs)
     
-    def patch(self, **kwargs) -> Awaitable[Optional[Data]]:
+    def patch(self, **kwargs, /) -> Awaitable[Optional[Data]]:
         return self.request('PATCH', **kwargs)
 
 
 class HTTPClient:
     MAX_TRIES = 3
 
-    def __init__(self, token: str):
+    def __init__(self, token: str, /):
         self.__token: str = token
         user_agent: str = f"Ferrispy (https://github.com/Cryptex-github/ferrispy, {__version__})"
         self.__session: aiohttp.ClientSession = aiohttp.ClientSession(headers={"User-Agent": user_agent})
 
         self._buckets_lock: Dict[str, asyncio.Event] = {}
     
-    async def request(self, url: str, method: str, **kwargs) -> Optional[Data]:
+    async def request(self, url: str, method: str, /, **kwargs) -> Optional[Data]:
         bucket_key = f"{method} {url}"
         bucket = self._buckets_lock.get(bucket_key)
         if bucket is None:
