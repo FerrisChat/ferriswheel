@@ -7,6 +7,21 @@ from .types import DATA
 from .utils import from_json
 from . import __version__
 
+API_BASE_URL: str = 'https://api.ferris.chat/api/v0'
+
+class APIRouter:
+    def __init__(self, http: HTTPClient, route, /) -> None:
+        self.__current_route: str = route
+        self.__http_client: HTTPClient = http 
+    
+    @property
+    def url(self) -> str:
+        return API_BASE_URL + self.__current_route
+    
+    def _make_new(self, route: str, /) -> APIRouter:
+        return self.__class__(self.__http_client, route)
+
+
 
 class HTTPClient:
     MAX_TRIES = 3
