@@ -7,6 +7,7 @@ from urllib.parse import quote
 import aiohttp
 
 from . import __version__
+from .errors import Unauthorized, NotFound, Forbidden, FerrisUnavailable
 from .types import Data, SupportsStr
 from .utils import from_json
 
@@ -90,17 +91,17 @@ class HTTPClient:
                     continue
                 
                 if response.status == 404:
-                    raise
+                    raise NotFound(response, content)
                 
                 if response.status == 401:
-                    raise
+                    raise Unauthorized(response, content)
 
                 if response.status == 403:
-                    raise
+                    raise Forbidden(response, content)
 
                 if 500 <= response.status < 600:
                     if tries == 1:
-                        raise
+                        raise FerrisUnavailable(response, content)
 
                     continue
         return None
