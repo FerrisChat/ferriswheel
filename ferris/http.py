@@ -1,7 +1,7 @@
-import asyncio
-from typing import Dict, Optinal
-
 import aiohttp
+import asyncio
+
+from typing import Dict, Optional
 
 from .types import DATA
 from .utils import from_json
@@ -33,7 +33,7 @@ class HTTPClient:
 
         self._buckets_lock: Dict[str, asyncio.Event] = {}
     
-    async def request(self, url: str, method: str, **kwargs) -> Optinal[DATA]:
+    async def request(self, url: str, method: str, **kwargs) -> Optional[Data]:
         bucket_key = f"{method} {url}"
         bucket = self._buckets_lock.get(bucket_key)
         if bucket is None:
