@@ -4,13 +4,19 @@ import aiohttp
 import asyncio
 
 from urllib.parse import quote
-from typing import Dict, Optional, Awaitable
+from typing import Dict, Optional, Awaitable, Protocol
 
 from .types import Data
 from .utils import from_json
 from . import __version__
 
 API_BASE_URL: str = 'https://api.ferris.chat/api/v0'
+
+
+class SupportsStr(Protocol):
+    def __str__(self) -> str:
+        ...
+
 
 class APIRouter:
     def __init__(self, http: HTTPClient, route: str = '', /) -> None:
@@ -27,7 +33,7 @@ class APIRouter:
     def __getattr__(self, route: str, /) -> APIRouter:
         return self._make_new(f"{self.__current_route}/{route}")
     
-    def __call__(self, route: str, /) -> APIRouter:
+    def __call__(self, route: SupportsStr, /) -> APIRouter:
         return self._make_new(f"{self.__current_route}/{quote(str(route))}")
     
     def request(self, method, /, **kwargs) -> Awaitable[Optional[Data]]:
