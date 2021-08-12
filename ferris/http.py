@@ -4,18 +4,13 @@ import aiohttp
 import asyncio
 
 from urllib.parse import quote
-from typing import Dict, Optional, Awaitable, Protocol
+from typing import Dict, Optional, Awaitable
 
-from .types import Data
+from .types import Data, SupportsStr
 from .utils import from_json
 from . import __version__
 
 API_BASE_URL: str = 'https://api.ferris.chat/api/v0'
-
-
-class SupportsStr(Protocol):
-    def __str__(self) -> str:
-        ...
 
 
 class APIRouter:
@@ -39,19 +34,19 @@ class APIRouter:
     def request(self, method, /, **kwargs) -> Awaitable[Optional[Data]]:
         return self.__http_client.request(method, self.url, **kwargs)
     
-    def get(self, **kwargs, /) -> Awaitable[Optional[Data]]:
+    def get(self, /, **kwargs) -> Awaitable[Optional[Data]]:
         return self.request('GET', **kwargs)
     
-    def post(self, **kwargs, /) -> Awaitable[Optional[Data]]:
+    def post(self, /, **kwargs) -> Awaitable[Optional[Data]]:
         return self.request('POST', **kwargs)
     
-    def put(self, **kwargs, /) -> Awaitable[Optional[Data]]:
+    def put(self, /, **kwargs) -> Awaitable[Optional[Data]]:
         return self.request('PUT', **kwargs)
     
-    def delete(self, **kwargs, /) -> Awaitable[Optional[Data]]:
+    def delete(self, /, **kwargs) -> Awaitable[Optional[Data]]:
         return self.request('DELETE', **kwargs)
     
-    def patch(self, **kwargs, /) -> Awaitable[Optional[Data]]:
+    def patch(self, /, **kwargs) -> Awaitable[Optional[Data]]:
         return self.request('PATCH', **kwargs)
 
 
@@ -108,4 +103,4 @@ class HTTPClient:
                         raise
 
                     continue
-        return
+        return None
