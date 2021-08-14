@@ -4,8 +4,12 @@ from .base import BaseObject
 from .guild import Guild
 from .types import Data
 
+__all__ = ('User',)
+
 
 class User(BaseObject):
+    __slots__ = ('_name', '_guilds', '_id')
+
     def __init__(self, data: Data) -> None:
         self._process_data(data)
 

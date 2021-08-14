@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any
 
-__all__ = ('to_json', 'from_json')
+__all__ = ('to_json', 'from_json', 'get_snowflake_creation_date')
 
 try:
     import orjson

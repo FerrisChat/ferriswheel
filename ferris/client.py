@@ -2,6 +2,8 @@ import asyncio
 
 from .http import APIRouter, HTTPClient
 
+__all__ = ('Client',)
+
 
 class Client:
     """Represents a client connection to FerrisChat.
@@ -10,6 +12,8 @@ class Client:
     ----------
     ...
     """
+
+    __slots__ = ('loop', 'api')
 
     def __init__(self, /) -> None:
         self.loop = asyncio.get_event_loop()

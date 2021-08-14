@@ -8,9 +8,13 @@ from .utils import get_snowflake_creation_date
 
 E = TypeVar('E', bound='BaseObject')
 
+__all__ = ('SnowflakeObject', 'BaseObject', 'Object')
+
 
 class SnowflakeObject(ABC):
     """An abstract base class representing objects that have a snowflake ID."""
+    
+    __slots__ = ('__id',)
 
     def __init__(self) -> None:
         self.__id: int = None
@@ -26,6 +30,8 @@ class SnowflakeObject(ABC):
 
 class BaseObject(SnowflakeObject, ABC):
     """The base class that all FerrisChat-related objects will inherit from."""
+
+    __slots__ = ()
 
     @property
     def created_at(self) -> datetime:
@@ -63,6 +69,8 @@ class Object(SnowflakeObject):
     id: int
         The snowflake ID of this object.
     """
+
+    __slots__ = ()
 
     def __init__(self, id: int) -> None:
         super().__init__()

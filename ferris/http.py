@@ -13,8 +13,13 @@ from .utils import from_json
 
 API_BASE_URL: str = 'https://api.ferris.chat/api/v0'
 
+__all__ = ('APIRouter', 'HTTPClient')
+
 
 class APIRouter:
+
+    __slots__ = ('__current_route', '__http_client')
+
     def __init__(self, http: HTTPClient, route: str = '', /) -> None:
         self.__current_route: str = route
         self.__http_client: HTTPClient = http
@@ -54,6 +59,8 @@ class APIRouter:
 class HTTPClient:
     MAX_TRIES = 3
     USER_AGENT = f"FerrisWheel (https://github.com/Cryptex-github/ferriswheel, {__version__})"
+
+    __slots__ = ('__token', '__session', '_buckets_lock')
     
     def __init__(self, token: str, /) -> None:
         self.__token: str = token

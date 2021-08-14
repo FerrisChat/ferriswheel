@@ -5,8 +5,14 @@ from .channel import Channel
 from .member import Member
 from .types import Data
 
+__all__ = ('Guild',)
+
 
 class Guild(BaseObject):
+
+    __slots__ = ('_owner_id', '_name', '_channels', '_members')
+
+
     def __init__(self, data: Data) -> None:
         self._process_data(data)
 

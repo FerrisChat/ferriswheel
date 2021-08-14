@@ -3,8 +3,13 @@ from typing import cast
 from .base import BaseObject
 from .types import Data
 
+__all__ = ('Channel',)
+
 
 class Channel(BaseObject):
+
+    __slots__ = ('_name',)
+
     def __init__(self, data: Data) -> None:
         self._process_data(data)
 
