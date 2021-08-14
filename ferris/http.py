@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import asyncio
+import aiohttp
+
 from typing import Awaitable, Dict, Optional
 from urllib.parse import quote
-
-import aiohttp
 
 from . import __version__
 from .errors import FerrisUnavailable, Forbidden, NotFound, Unauthorized
@@ -53,15 +53,11 @@ class APIRouter:
 
 class HTTPClient:
     MAX_TRIES = 3
-
-    def __init__(self, token: str, /):
+    USER_AGENT = f"FerrisWheel (https://github.com/Cryptex-github/ferriswheel, {__version__})"
+    
+    def __init__(self, token: str, /) -> None:
         self.__token: str = token
-        user_agent: str = (
-            f"Ferrispy (https://github.com/Cryptex-github/ferrispy, {__version__})"
-        )
-        self.__session: aiohttp.ClientSession = aiohttp.ClientSession(
-            headers={"User-Agent": user_agent}
-        )
+        self.__session: aiohttp.ClientSession = aiohttp.ClientSession(headers={"User-Agent": self.USER_AGENT})
 
         self._buckets_lock: Dict[str, asyncio.Event] = {}
 
@@ -110,4 +106,3 @@ class HTTPClient:
                         raise FerrisUnavailable(response, content)
 
                     continue
-        return None

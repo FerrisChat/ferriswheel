@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Protocol, Union
 
-__all__ = ('SupportsStr', 'Snowflake', 'Data', )
+__all__ = ('SupportsStr', 'Snowflake', 'Data')
 
 
 class SupportsStr(Protocol):

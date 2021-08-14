@@ -22,11 +22,11 @@ with open('README.md', encoding='utf-8') as f:
     readme = f.read()
 
 setup(
-    name="ferrispy",
+    name="ferriswheel",
     author=author,
-    url="https://github.com/Cryptex-github/ferrispy",
+    url="https://github.com/Cryptex-github/ferriswheel",
     project_urls={
-        "Issue tracker": "https://github.com/Cryptex-github/ferrispy/new/main",
+        "Issue tracker": "https://github.com/Cryptex-github/ferriswheel/issues/new",
     },
     version=version,
     packages=[

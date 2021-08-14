@@ -1,3 +1,4 @@
+from .base import SnowflakeObject, Object
 from .client import Client
 
 __author__ = 'Cryptex & jay3332'
