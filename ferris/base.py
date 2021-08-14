@@ -1,8 +1,12 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
+from typing import Any, overload, Literal, TypeVar
 
-from .types import Snowflake, Data
+from .types import Data, Snowflake
 from .utils import get_snowflake_creation_date
+
+
+E = TypeVar('E', bound='BaseObject')
 
 
 class SnowflakeObject(ABC):
@@ -31,6 +35,23 @@ class BaseObject(SnowflakeObject, ABC):
     @abstractmethod
     def _process_data(self, data: Data) -> None:
         raise NotImplementedError
+    
+    def __hash__(self) -> int:
+        return hash(self.id)
+    
+    @overload
+    def __eq__(self: E, other: E) -> bool:
+        ...
+
+    @overload
+    def __eq__(self, other: Any) -> Literal[False]:
+        ... 
+
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, self.__class__) and other.id == self.id
+    
+    def __ne__(self, other: Any) -> bool:
+        return not self.__eq__(other)
 
 
 class Object(SnowflakeObject):

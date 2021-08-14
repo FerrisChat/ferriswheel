@@ -5,23 +5,27 @@ __all__ = ('to_json', 'from_json')
 
 try:
     import orjson
+
     HAS_ORJSON = True
 except ImportError:
     import json
+
     HAS_ORJSON = False
 
 FERRIS_EPOCH = 1640995200000
 
 
 if HAS_ORJSON:
+
     def to_json(obj: Any) -> str:
         return orjson.dumps(obj).decode('utf-8')
-    
+
     from_json = orjson.loads
 else:
+
     def to_json(obj: Any) -> str:
         return json.dumps(obj, ensure_ascii=True)
-    
+
     from_json = json.loads
 
 
