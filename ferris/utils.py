@@ -1,22 +1,30 @@
-import json
+from datetime import datetime
 from typing import Any
 
 __all__ = ('to_json', 'from_json')
 
 try:
     import orjson
-    HAVE_ORJSON = True
+    HAS_ORJSON = True
 except ImportError:
-    HAVE_ORJSON = False
+    import json
+    HAS_ORJSON = False
+
+FERRIS_EPOCH = 1640995200000
 
 
-if HAVE_ORJSON:
-    def to_json(self, obj: Any) -> str:
+if HAS_ORJSON:
+    def to_json(obj: Any) -> str:
         return orjson.dumps(obj).decode('utf-8')
     
     from_json = orjson.loads
 else:
-    def to_json(self, obj: Any) -> str:
+    def to_json(obj: Any) -> str:
         return json.dumps(obj, ensure_ascii=True)
     
     from_json = json.loads
+
+
+def get_snowflake_creation_date(snowflake: int) -> datetime:
+    seconds = (snowflake >> 64 + FERRIS_EPOCH) / 1000
+    return datetime.utcfromtimestamp(seconds)
