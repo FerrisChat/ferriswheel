@@ -10,8 +10,7 @@ __all__ = (
 
 
 class FerrisException(Exception):
-    def __init__(self, content: str):
-        self.content = content
+    pass
 
 
 class HTTPException(FerrisException):
