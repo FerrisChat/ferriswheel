@@ -7,7 +7,7 @@ from typing import Awaitable, Dict, Optional
 from urllib.parse import quote
 
 from . import __version__
-from .errors import FerrisUnavailable, Forbidden, NotFound, Unauthorized
+from .errors import FerrisUnavailable, HTTPException, Forbidden, NotFound, Unauthorized
 from .types import Data, SupportsStr
 from .utils import from_json
 
@@ -113,3 +113,5 @@ class HTTPClient:
                         raise FerrisUnavailable(response, content)
 
                     continue
+                
+                raise HTTPException(response, content)
