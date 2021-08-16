@@ -14,7 +14,8 @@ class FerrisException(Exception):
 
 
 class HTTPException(FerrisException):
-    def __init__(self, resp: ClientResponse, content: str):
+    def __init__(self, resp: ClientResponse, content: str = None):
+        content = content or resp.reason
         self.status_code = resp.status
         self.resp = resp
         super().__init__(content)
