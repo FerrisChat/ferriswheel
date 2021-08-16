@@ -13,7 +13,7 @@ __all__ = ('SnowflakeObject', 'BaseObject', 'Object')
 
 class SnowflakeObject(ABC):
     """An abstract base class representing objects that have a snowflake ID."""
-    
+
     __slots__ = ('__id',)
 
     def __init__(self) -> None:
@@ -41,21 +41,21 @@ class BaseObject(SnowflakeObject, ABC):
     @abstractmethod
     def _process_data(self, data: Data) -> None:
         raise NotImplementedError
-    
+
     def __hash__(self) -> int:
         return hash(self.id)
-    
+
     @overload
     def __eq__(self: E, other: E) -> bool:
         ...
 
     @overload
     def __eq__(self, other: Any) -> Literal[False]:
-        ... 
+        ...
 
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, self.__class__) and other.id == self.id
-    
+
     def __ne__(self, other: Any) -> bool:
         return not self.__eq__(other)
 

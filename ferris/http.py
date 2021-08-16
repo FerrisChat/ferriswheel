@@ -58,13 +58,17 @@ class APIRouter:
 
 class HTTPClient:
     MAX_TRIES = 3
-    USER_AGENT = f"FerrisWheel (https://github.com/Cryptex-github/ferriswheel, {__version__})"
+    USER_AGENT = (
+        f"FerrisWheel (https://github.com/Cryptex-github/ferriswheel, {__version__})"
+    )
 
     __slots__ = ('__token', '__session', '_buckets_lock')
-    
+
     def __init__(self, token: str, /) -> None:
         self.__token: str = token
-        self.__session: aiohttp.ClientSession = aiohttp.ClientSession(headers={"User-Agent": self.USER_AGENT})
+        self.__session: aiohttp.ClientSession = aiohttp.ClientSession(
+            headers={"User-Agent": self.USER_AGENT}
+        )
 
         self._buckets_lock: Dict[str, asyncio.Event] = {}
 
@@ -113,5 +117,5 @@ class HTTPClient:
                         raise FerrisUnavailable(response, content)
 
                     continue
-                
+
                 raise HTTPException(response, content)

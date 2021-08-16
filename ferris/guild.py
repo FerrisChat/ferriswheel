@@ -1,4 +1,4 @@
-from typing import List, cast, Any
+from typing import Dict, List, cast
 
 from .base import BaseObject
 from .channel import Channel
@@ -12,7 +12,6 @@ class Guild(BaseObject):
 
     __slots__ = ('_owner_id', '_name', '_channels', '_members')
 
-
     def __init__(self, data: Data) -> None:
         self._process_data(data)
 
@@ -22,32 +21,36 @@ class Guild(BaseObject):
         self._owner_id: int = cast(int, data.get('owner_id'))
         self._name: str = cast(str, data.get('name'))
 
-        self._channels: List[Channel] = [
-            Channel(c) for c in cast(dict, data.get('channels', {}))
-        ]
+        self._channels: Dict[int, Channel] = {}
 
-        self._members: List[Member] = [
-            Member(m) for m in cast(dict, data.get('members', {}))
-        ]
-    
+        for c in data.get('channels', []):
+            channel = Channel(c)
+            self._channels[channel.id] = channel
+
+        self._members: Dict[int, Member] = {}
+
+        for m in data.get('members', []):
+            member = Member(m)
+            self._members[member.id] = member
+
     @property
     def owner_id(self) -> int:
         return self._owner_id
-    
+
     @property
     def name(self) -> str:
         return self._name
-    
+
     @property
     def channels(self) -> List[Channel]:
-        return self._channels
-    
+        return list(self._channels.values())
+
     @property
     def members(self) -> List[Member]:
-        return self._members
-    
+        return list(self._members.values())
+
     def __repr__(self) -> str:
         return f'<Guild id={self.id} name={self.name!r}> owner_id={self.owner_id}'
-    
+
     def __str__(self) -> str:
         return self.name

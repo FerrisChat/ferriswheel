@@ -17,7 +17,7 @@ class Channel(BaseObject):
         self._store_snowflake(cast(int, data.get('id')))
 
         self._name: str = cast(str, data.get('name'))
-    
+
     @property
     def name(self) -> str:
         return self._name

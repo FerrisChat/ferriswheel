@@ -5,12 +5,12 @@ from setuptools import setup
 with open('ferris/__init__.py', 'r') as f:
     content = f.read()
     try:
-        version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', content, re.MULTILINE).group(1) # type: ignore
+        version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', content, re.MULTILINE).group(1)  # type: ignore
     except AttributeError:
         raise RuntimeError('Unable to find version string')
-    
+
     try:
-        author = re.search(r'^__author__\s*=\s*[\'"]([^\'"]*)[\'"]', content, re.MULTILINE).group(1) # type: ignore
+        author = re.search(r'^__author__\s*=\s*[\'"]([^\'"]*)[\'"]', content, re.MULTILINE).group(1)  # type: ignore
     except AttributeError:
         author = 'Cryptex & jay3332'
 
@@ -42,11 +42,8 @@ setup(
         "docs": [
             "sphinx>=4.1.1",
             "furo",
-            
         ],
-        "performance": [
-            "orjson>=1.3.0"
-        ]
+        "performance": ["orjson>=1.3.0"],
     },
     python_requires=">=3.8.0",
     classifiers=[
@@ -61,6 +58,6 @@ setup(
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities',
-        'Typing :: Typed'
-    ]
+        'Typing :: Typed',
+    ],
 )
