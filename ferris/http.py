@@ -1,13 +1,20 @@
 from __future__ import annotations
 
 import asyncio
-import aiohttp
-
 from typing import Awaitable, Dict, Optional
 from urllib.parse import quote
 
+import aiohttp
+
 from . import __version__
-from .errors import FerrisUnavailable, HTTPException, Forbidden, NotFound, Unauthorized
+from .errors import (
+    BadRequest,
+    FerrisUnavailable,
+    Forbidden,
+    HTTPException,
+    NotFound,
+    Unauthorized,
+)
 from .types import Data, SupportsStr
 from .utils import from_json
 
@@ -103,6 +110,16 @@ class HTTPClient:
                     bucket.set()
                     continue
 
+                if response.status == 400:
+                    data = from_json(content)
+                    reason = data.get('reason')
+                    location = data.get('location', {})
+                    line = location.get('line')
+                    character = location.get('character')
+                    raise BadRequest(
+                        response, f"{reason}\nLine: {line} Character: {character}"
+                    )
+
                 if response.status == 404:
                     raise NotFound(response, content)
 
@@ -114,7 +131,13 @@ class HTTPClient:
 
                 if 500 <= response.status < 600:
                     if tries == 1:
-                        raise FerrisUnavailable(response, content)
+                        try:
+                            data = from_json(content)
+                            reason = data.get('reason')
+                        except:
+                            reason = content
+
+                        raise FerrisUnavailable(response, reason)
 
                     continue
 

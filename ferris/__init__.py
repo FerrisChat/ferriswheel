@@ -8,6 +8,7 @@ from .http import *
 from .message import *
 from .user import *
 from .utils import *
+from .enums import *
 
 __author__ = 'Cryptex & jay3332'
 __version__ = '0.0a1.dev0'

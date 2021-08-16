@@ -16,14 +16,14 @@ class SnowflakeObject(ABC):
 
     __slots__ = ('__id',)
 
-    def __init__(self) -> None:
+    def __init__(self, /) -> None:
         self.__id: int = None
 
     def _store_snowflake(self, id: Snowflake, /) -> None:
         self.__id = id
 
     @property
-    def id(self) -> int:
+    def id(self, /) -> int:
         """int: The snowflake ID of this object."""
         return self.__id
 
@@ -34,29 +34,29 @@ class BaseObject(SnowflakeObject, ABC):
     __slots__ = ()
 
     @property
-    def created_at(self) -> datetime:
+    def created_at(self, /) -> datetime:
         """:class:`datetime.datetime`: The creation timestamp of this object."""
         return get_snowflake_creation_date(self.id)
 
     @abstractmethod
-    def _process_data(self, data: Data) -> None:
+    def _process_data(self, data: Data, /) -> None:
         raise NotImplementedError
 
-    def __hash__(self) -> int:
+    def __hash__(self, /) -> int:
         return hash(self.id)
 
     @overload
-    def __eq__(self: E, other: E) -> bool:
+    def __eq__(self: E, other: E, /) -> bool:
         ...
 
     @overload
-    def __eq__(self, other: Any) -> Literal[False]:
+    def __eq__(self, other: Any, /) -> Literal[False]:
         ...
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: Any, /) -> bool:
         return isinstance(other, self.__class__) and other.id == self.id
 
-    def __ne__(self, other: Any) -> bool:
+    def __ne__(self, other: Any, /) -> bool:
         return not self.__eq__(other)
 
 
@@ -72,6 +72,6 @@ class Object(SnowflakeObject):
 
     __slots__ = ()
 
-    def __init__(self, id: int) -> None:
+    def __init__(self, id: int, /) -> None:
         super().__init__()
         self._store_snowflake(id)

@@ -3,6 +3,7 @@ from aiohttp import ClientResponse
 __all__ = (
     'FerrisException',
     'HTTPException',
+    'BadRequest',
     'Unauthorized',
     'NotFound',
     'FerrisUnavailable',
@@ -19,6 +20,10 @@ class HTTPException(FerrisException):
         self.status_code = resp.status
         self.resp = resp
         super().__init__(content)
+
+
+class BadRequest(HTTPException):
+    pass
 
 
 class Unauthorized(HTTPException):
