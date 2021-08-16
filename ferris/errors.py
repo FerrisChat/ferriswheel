@@ -1,11 +1,11 @@
 from aiohttp import ClientResponse
 
 __all__ = (
-    'FerrisException',
-    'HTTPException',
-    'Unauthorized',
-    'NotFound',
-    'FerrisUnavailable',
+    "FerrisException",
+    "HTTPException",
+    "Unauthorized",
+    "NotFound",
+    "FerrisUnavailable",
 )
 
 
