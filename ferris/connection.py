@@ -15,6 +15,8 @@ class Connection:
 
         self._max_messages_count: int = options.get("max_messages_count", 1000)
 
+        self._clear_store()
+
     def _store_token(self, token: str, /) -> None:
         self.__token = token
 
