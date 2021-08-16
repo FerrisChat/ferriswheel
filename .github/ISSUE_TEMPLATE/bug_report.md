@@ -23,6 +23,12 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
+**Library version**
+<!-- You can get this by doing `python3.x -c "import ferris; print(ferris.__version__)"`  -->
+
+**Python version**
+<!-- You can get this by doing `python3.x -V`  -->
+
 **Desktop (please complete the following information):**
  - OS: [e.g. iOS]
  - Browser [e.g. chrome, safari]
