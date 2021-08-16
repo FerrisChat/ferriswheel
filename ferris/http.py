@@ -74,12 +74,12 @@ class HTTPClient:
     def __init__(self, token: str, /) -> None:
         self.__token: str = token
         self.__session: aiohttp.ClientSession = aiohttp.ClientSession(
-            headers={"User-Agent": self.USER_AGENT}
-        )
+            headers={"User-Agent": self.USER_AGENT})
 
         self._buckets_lock: Dict[str, asyncio.Event] = {}
 
-    async def request(self, url: str, method: str, /, **kwargs) -> Optional[Data]:
+    async def request(self, url: str, method: str, /,
+                      **kwargs) -> Optional[Data]:
         bucket_key = f"{method} {url}"
         bucket = self._buckets_lock.get(bucket_key)
         if bucket is None:
@@ -94,9 +94,10 @@ class HTTPClient:
             await bucket.wait()
 
         for tries in range(self.MAX_TRIES):
-            async with self.__session.request(
-                method, url, headers=headers, **kwargs
-            ) as response:
+            async with self.__session.request(method,
+                                              url,
+                                              headers=headers,
+                                              **kwargs) as response:
                 content = await response.text()
 
                 if 400 > response.status >= 200:
