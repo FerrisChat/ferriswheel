@@ -1,15 +1,21 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Awaitable, Dict, Optional
+from typing import Awaitable
+from typing import Dict
+from typing import Optional
 from urllib.parse import quote
 
 import aiohttp
 
 from . import __version__
-from .errors import (FerrisUnavailable, Forbidden, HTTPException, NotFound,
-                     Unauthorized)
-from .types import Data, SupportsStr
+from .errors import FerrisUnavailable
+from .errors import Forbidden
+from .errors import HTTPException
+from .errors import NotFound
+from .errors import Unauthorized
+from .types import Data
+from .types import SupportsStr
 from .utils import from_json
 
 API_BASE_URL: str = "https://api.ferris.chat/api/v0"
