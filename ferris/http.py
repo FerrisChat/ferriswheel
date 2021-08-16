@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import asyncio
-import aiohttp
-
 from typing import Awaitable, Dict, Optional
 from urllib.parse import quote
 
+import aiohttp
+
 from . import __version__
-from .errors import FerrisUnavailable, HTTPException, Forbidden, NotFound, Unauthorized
+from .errors import (FerrisUnavailable, Forbidden, HTTPException, NotFound,
+                     Unauthorized)
 from .types import Data, SupportsStr
 from .utils import from_json
 
