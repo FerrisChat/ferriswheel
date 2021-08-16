@@ -14,32 +14,23 @@ class FerrisException(Exception):
 
 
 class HTTPException(FerrisException):
-    pass
+    def __init__(self, resp: ClientResponse, content: str):
+        self.status_code = resp.status
+        self.resp = resp
+        super().__init__(content)
 
 
 class Unauthorized(HTTPException):
-    def __init__(self, resp: ClientResponse, content: str):
-        self.status_code = resp.status_code
-        self.resp = resp
-        super().__init__(content)
+    pass
 
 
 class Forbidden(HTTPException):
-    def __init__(self, resp: ClientResponse, content: str):
-        self.status_code = resp.status_code
-        self.resp = resp
-        super().__init__(content)
+    pass
 
 
 class NotFound(HTTPException):
-    def __init__(self, resp: ClientResponse, content: str):
-        self.status_code = resp.status_code
-        self.resp = resp
-        super().__init__(content)
+    pass
 
 
 class FerrisUnavailable(HTTPException):
-    def __init__(self, resp: ClientResponse, content: str):
-        self.status_code = resp.status_code
-        self.resp = resp
-        super().__init__(content)
+    pass
