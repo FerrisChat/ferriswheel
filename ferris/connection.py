@@ -30,7 +30,7 @@ class Connection:
 
         self._messages: deque = deque(maxlen=self._max_messages_count)
 
-    def _store_message(self, message, /) -> None:
+    def _store_message(self, message: Message, /) -> None:
         self._messages.append(message)
 
     def _store_user(self, user: User, /) -> None:
