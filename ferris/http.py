@@ -74,7 +74,7 @@ class HTTPClient:
     def __init__(self, token: str, /) -> None:
         self.__token: str = token
         self.__session: aiohttp.ClientSession = aiohttp.ClientSession(
-            headers={"User-Agent": self.USER_AGENT}
+            headers={"User-Agent": self.USER_AGENT, "Authorization": self.__token}
         )
 
         self._buckets_lock: Dict[str, asyncio.Event] = {}
