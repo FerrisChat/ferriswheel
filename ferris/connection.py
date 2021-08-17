@@ -3,14 +3,15 @@ from collections import deque
 from typing import Dict
 
 from .guild import Guild
-from .http import HTTPClient
+from .http import APIRouter, HTTPClient
 from .message import Message
 from .user import User
 
 
 class Connection:
     def __init__(self, loop: AbstractEventLoop, /, **options) -> None:
-        self.api: HTTPClient = None
+        self.api: APIRouter = None
+        self._http: HTTPClient = None
         self.__token: str = None
 
         self._max_messages_count: int = options.get("max_messages_count", 1000)
@@ -21,7 +22,8 @@ class Connection:
         self.__token = token
 
     def _initialize_http(self, token: str, /) -> None:
-        self.api = HTTPClient(token)
+        self._http = HTTPClient(token)
+        self.api = APIRouter(self._http)
         self._store_token(token)
 
     def _clear_store(self, /) -> None:
