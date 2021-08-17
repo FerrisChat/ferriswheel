@@ -6,13 +6,13 @@ __all__ = ('to_json', 'from_json', 'get_snowflake_creation_date')
 try:
     import orjson
 
-    HAS_ORJSON = True
+    HAS_ORJSON: bool = True
 except ImportError:
     import json
 
-    HAS_ORJSON = False
+    HAS_ORJSON: bool = False
 
-FERRIS_EPOCH = 1640995200000
+FERRIS_EPOCH: int = 1_577_836_800_000
 
 
 if HAS_ORJSON:
