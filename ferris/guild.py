@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
 from .base import BaseObject
-from .channel import Channel
-from .member import Member
 
 if TYPE_CHECKING:
+    from .channel import Channel
+    from .member import Member
     from .connection import Connection
     from .types import Data
 
@@ -26,6 +26,9 @@ class Guild(BaseObject):
         self._process_data(data)
 
     def _process_data(self, data: Data, /) -> None:
+        from .channel import Channel
+        from .member import Member
+
         self._store_snowflake(cast(int, data.get('id')))
 
         self._owner_id: int = cast(int, data.get('owner_id'))
