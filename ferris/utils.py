@@ -30,5 +30,18 @@ else:
 
 
 def get_snowflake_creation_date(snowflake: int) -> datetime:
+    """
+    Returns the creation date of a snowflake.
+
+    Parameters
+    ----------
+    snowflake: int
+        The snowflake to get the creation date of.
+
+    Returns
+    -------
+    datetime
+        The creation date of the snowflake.
+    """
     seconds = (snowflake >> 64 + FERRIS_EPOCH) / 1000
     return datetime.utcfromtimestamp(seconds)

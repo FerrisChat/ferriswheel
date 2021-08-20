@@ -9,6 +9,10 @@ __all__ = ('User',)
 
 
 class User(BaseObject):
+    """
+    Represents a FerrisChat user.
+    """
+
     __slots__ = ('_connection', '_name', '_guilds', '_id')
 
     def __init__(self, connection: Connection, data: Data, /) -> None:
@@ -28,13 +32,30 @@ class User(BaseObject):
 
         # self._flags = data.get('flags')
         # UserFlag after ferrischat implemented it
+    
+    async def fetch_guilds(self) -> List[Guild]:
+        """|coro|
+
+        Fetches all the guilds the user is in.
+
+        Returns
+        -------
+        List[:class:`~.Guild`]
+            A list of the guilds the user is in.
+        
+        .. warning::
+            This method does nothing as ferrischat haven't implemented it yet.
+        """
+        ...
 
     @property
     def name(self, /) -> str:
+        """str: The user's username."""
         return self._name
 
     @property
     def guilds(self, /) -> List[Guild]:
+        """List[:class:`~.Guild`]: A list of the guilds the user is in."""
         return list(self._guilds.values())
 
     def __expr__(self, /) -> str:

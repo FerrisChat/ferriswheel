@@ -10,6 +10,9 @@ __all__ = ('Member',)
 
 
 class Member(BaseObject):
+    """
+    Represents a member of a FerrisChat guild.
+    """
 
     __slots__ = ('_connection', '_user', '_guild', '_guild_id')
 
@@ -25,17 +28,42 @@ class Member(BaseObject):
 
         self._guild_id: int = cast(int, data.get('guild_id'))
         self._guild: Guild = Guild(self._connection, cast(dict, data.get('guild', {})))
+    
+    async def edit(self) -> None:
+        """
+        |coro|
+
+        Edits the member.
+
+        .. warning::
+            This method does nothing as ferrischat haven't implemented it yet.
+        """
+        ...
+    
+    async def delete(self) -> None:
+        """
+        |coro|
+
+        Deletes the member from the guild.
+
+        .. warning::
+            This method does nothing as ferrischat haven't implemented it yet.
+        """
+        ...
 
     @property
     def user(self, /) -> User:
+        """:class:`~.User`: The user that belongs to the member."""
         return self._user
 
     @property
     def guild(self, /) -> Guild:
+        """:class:`~.Guild`: The guild that the member belongs to."""
         return self._guild
 
     @property
     def guild_id(self, /) -> int:
+        """int: The guild id that the member belongs to."""
         return self._guild_id
 
     def __repr__(self, /) -> str:

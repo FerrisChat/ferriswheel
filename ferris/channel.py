@@ -1,6 +1,7 @@
 from typing import cast
 
 from .base import BaseObject
+from .message import Message
 from .connection import Connection
 from .types import Data
 
@@ -19,6 +20,50 @@ class Channel(BaseObject):
         self._store_snowflake(cast(int, data.get('id')))
 
         self._name: str = cast(str, data.get('name'))
+    
+    async def fetch_message(self, message_id: int) -> Message:
+        """
+        |coro|
+
+        Fetches a message from the channel.
+
+        .. warning::
+            This method do nothing as ferrischat haven't implemented it yet.
+        """
+        ...
+
+    async def send(self) -> None:
+        """
+        |coro|
+
+        Sends a message to the channel.
+
+        .. warning::
+            This method do nothing as ferrischat haven't implemented it yet.
+        """
+        ...
+    
+    async def edit(self) -> None:
+        """
+        |coro|
+
+        Edits the channel.
+
+        .. warning::
+            This method do nothing as ferrischat haven't implemented it yet.
+        """
+        ...
+    
+    async def delete(self) -> None:
+        """
+        |coro|
+
+        Deletes the channel.
+
+        .. warning::
+            This method do nothing as ferrischat haven't implemented it yet.
+        """
+        ...
 
     @property
     def name(self, /) -> str:

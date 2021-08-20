@@ -79,6 +79,49 @@ class HTTPClient:
         )
 
         self._buckets_lock: Dict[str, asyncio.Event] = {}
+    
+    @classmethod
+    async def from_email_and_password(cls, email: str, password: str, id: int) -> HTTPClient:
+        for tries in range(cls.MAX_TRIES):
+            async with aiohttp.ClientSession() as session:
+                async with session.post(f"{API_BASE_URL}/auth/{id}", headers={"Email": email, "Password": password}) as response:
+                    content = await response.text()
+
+                    if 400 > response.status >= 200:
+                        return cls(content)
+
+                    if response.status == 400:
+                        data = from_json(content)
+                        reason = data.get('reason')
+                        location = data.get('location', {})
+                        line = location.get('line')
+                        character = location.get('character')
+                        raise BadRequest(
+                            response, f"{reason}\nLine: {line} Character: {character}"
+                        )
+
+                    if response.status == 404:
+                        raise NotFound(response, content)
+
+                    if response.status == 401:
+                        raise Unauthorized(response, content)
+
+                    if response.status == 403:
+                        raise Forbidden(response, content)
+
+                    if 500 <= response.status < 600:
+                        if tries == 1:
+                            try:
+                                data = from_json(content)
+                                reason = data.get('reason')
+                            except:
+                                reason = content
+
+                            raise FerrisUnavailable(response, reason)
+
+                        continue
+
+                    raise HTTPException(response, content)
 
     async def request(self, url: str, method: str, /, **kwargs) -> Optional[Data]:
         bucket_key = f"{method} {url}"

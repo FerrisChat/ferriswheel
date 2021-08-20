@@ -23,11 +23,35 @@ class Message(BaseObject):
 
         self._content: str = cast(str, data.get('content'))
         self._channel_id: int = cast(int, data.get('channel_id'))
+    
+    async def edit(self) -> None:
+        """
+        |coro|
+
+        Edit this message.
+
+        .. warning::
+            This method do nothing as ferrischat haven't implemented it yet.
+        """
+        ...
+    
+    async def delete(self) -> None:
+        """
+        |coro|
+
+        Delete this message.
+
+        .. warning::
+            This method do nothing as ferrischat haven't implemented it yet.
+        """
+        ...
 
     @property
     def content(self, /) -> str:
+        """str: The message's content"""
         return self._content
 
     @property
     def channel_id(self, /) -> int:
+        """int: The channel's id"""
         return self._channel_id

@@ -41,7 +41,7 @@ setup(
     extras_require={
         "docs": [
             "sphinx>=4.1.1",
-            "furo",
+            "sphinx-material",
         ],
         "performance": ["orjson>=1.3.0"],
     },
