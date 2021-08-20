@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Awaitable, Dict, Optional
+from typing import Awaitable, ClassVar, Dict, Optional
 from urllib.parse import quote
 
 import aiohttp
@@ -64,9 +64,10 @@ class APIRouter:
 
 
 class HTTPClient:
-    MAX_TRIES = 3
-    USER_AGENT = (
-        f"FerrisWheel (https://github.com/Cryptex-github/ferriswheel, {__version__})"
+    MAX_TRIES: ClassVar[int] = 3
+    USER_AGENT: ClassVar[str] = (
+        f"FerrisWheel (https://github.com/Cryptex-github/ferriswheel, "
+        f"{__version__})"
     )
 
     __slots__ = ('__token', '__session', '_buckets_lock')
