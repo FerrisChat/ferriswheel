@@ -25,7 +25,7 @@ author = 'Cryptex'
 
 # The full version, including alpha/beta/rc tags
 release = '0.0.0'
-with open('ferris/__init__.py', 'r') as f:
+with open('../ferris/__init__.py', 'r') as f:
     content = f.read()
     try:
         release = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', content, re.MULTILINE).group(1)  # type: ignore
