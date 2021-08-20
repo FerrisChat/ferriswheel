@@ -15,7 +15,7 @@ Base
     :members:
     :inherited-members:
 
-.. autocalss:: ferris.Object
+.. autoclass:: ferris.Object
     :members:
     :inherited-members:
 
