@@ -111,7 +111,10 @@ class Client:
     def run(self, *args, **kwargs):
         """
         A helper function Equivalent to
+
         .. code-block: python3
+
             asyncio.run(self.start, *args, **kwargs)
+
         """
         asyncio.run(self.start(), *args, **kwargs)

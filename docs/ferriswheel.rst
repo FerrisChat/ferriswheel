@@ -8,8 +8,16 @@ Client
 
 Base
 ----
-.. autoclass:: ferris.Base
+.. autoclass:: ferris.SnowflakeObject
     :members:
+
+.. autoclass:: ferris.BaseObject
+    :members:
+    :inherited-members:
+
+.. autocalss:: ferris.Object
+    :members:
+    :inherited-members:
 
 Channnel
 --------
