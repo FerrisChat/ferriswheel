@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast
 
 from .base import BaseObject
-from .guild import Guild
 from .user import User
 
 if TYPE_CHECKING:
+    from .guild import Guild
     from .connection import Connection
     from .types import Data
 
@@ -31,6 +31,7 @@ class Member(BaseObject):
         self._connection._store_user(self._user)
 
         self._guild_id: int = cast(int, data.get('guild_id'))
+        from .guild import Guild
         self._guild: Guild = Guild(self._connection, cast(dict, data.get('guild', {})))
 
     async def edit(self) -> None:
