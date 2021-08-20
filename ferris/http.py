@@ -79,12 +79,17 @@ class HTTPClient:
         )
 
         self._buckets_lock: Dict[str, asyncio.Event] = {}
-    
+
     @classmethod
-    async def from_email_and_password(cls, email: str, password: str, id: int) -> HTTPClient:
+    async def from_email_and_password(
+        cls, email: str, password: str, id: int
+    ) -> HTTPClient:
         for tries in range(cls.MAX_TRIES):
             async with aiohttp.ClientSession() as session:
-                async with session.post(f"{API_BASE_URL}/auth/{id}", headers={"Email": email, "Password": password}) as response:
+                async with session.post(
+                    f"{API_BASE_URL}/auth/{id}",
+                    headers={"Email": email, "Password": password},
+                ) as response:
                     content = await response.text()
 
                     if 400 > response.status >= 200:

@@ -32,7 +32,7 @@ class User(BaseObject):
 
         # self._flags = data.get('flags')
         # UserFlag after ferrischat implemented it
-    
+
     async def fetch_guilds(self) -> List[Guild]:
         """|coro|
 
@@ -42,7 +42,7 @@ class User(BaseObject):
         -------
         List[:class:`~.Guild`]
             A list of the guilds the user is in.
-        
+
         .. warning::
             This method does nothing as ferrischat haven't implemented it yet.
         """

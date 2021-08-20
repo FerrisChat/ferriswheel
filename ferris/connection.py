@@ -8,6 +8,9 @@ from .message import Message
 from .user import User
 
 
+__all__ = ('Connection',)
+
+
 class Connection:
     def __init__(self, loop: AbstractEventLoop, /, **options) -> None:
         self.api: APIRouter = None
@@ -25,8 +28,10 @@ class Connection:
         self._http = HTTPClient(token)
         self.api = APIRouter(self._http)
         self._store_token(token)
-    
-    async def _initialize_http_with_email(self, email: str, password: str, id: int, /) -> None:
+
+    async def _initialize_http_with_email(
+        self, email: str, password: str, id: int, /
+    ) -> None:
         self._http = await HTTPClient.from_email_and_password(email, password, id)
         self.api = APIRouter(self._http)
         self._store_token(await self._http.__token)

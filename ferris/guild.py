@@ -37,7 +37,7 @@ class Guild(BaseObject):
         for m in data.get('members', []):
             member = Member(self._connection, m)
             self._members[member.id] = member
-    
+
     async def fetch_member(self, id: int) -> Member:
         """
         |coro|
@@ -59,15 +59,17 @@ class Guild(BaseObject):
         ----------
         name: str
             The name of the channel.
-        
+
         Returns
         -------
         :class:`~.Channel`
 
         """
-        c = await self._connection.api.guilds(self.id).channels.post(json={'name': name})
+        c = await self._connection.api.guilds(self.id).channels.post(
+            json={'name': name}
+        )
         return Channel(self._connection, c)
-    
+
     async def fetch_channel(self, id: int) -> Channel:
         """
         |coro|
@@ -78,14 +80,14 @@ class Guild(BaseObject):
         ----------
         id: int
             The channel ID.
-        
+
         Returns
         -------
         :class:`~.Channel`
         """
         c = await self._connection.api.guilds(self.id).channels(id).get()
         return Channel(self._connection, c)
-    
+
     async def edit(self) -> None:
         """|coro|
 
@@ -95,7 +97,7 @@ class Guild(BaseObject):
             This method does nothing as ferrischat haven't implemented it yet.
         """
         ...
-    
+
     async def delete(self) -> None:
         """|coro|
 
@@ -105,7 +107,7 @@ class Guild(BaseObject):
             This method does nothing as ferrischat haven't implemented it yet.
         """
         ...
-    
+
     def get_channel(self, id: int) -> Optional[Channel]:
         """
         Returns the channel with the given ID.
@@ -114,13 +116,13 @@ class Guild(BaseObject):
         ----------
         id: int
             The channel ID.
-        
+
         Returns
         -------
         :class:`~.Channel`
         """
         return self._channels.get(id)
-    
+
     def get_member(self, id: int) -> Optional[Member]:
         """
         Returns the member with the given ID.
@@ -129,7 +131,7 @@ class Guild(BaseObject):
         ----------
         id: int
             The member ID.
-        
+
         Returns
         -------
         :class:`~.Member`

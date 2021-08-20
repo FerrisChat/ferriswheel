@@ -15,9 +15,9 @@ class Client:
     ----------
     loop: Optional[:class:`asyncio.AbstractEventLoop`]
         The event loop to use for the client. If not passed, then the default event loop is used.
-    
+
     max_messages_count: Optional[int]
-        The maximum number of messages to store in the internal message buffer. 
+        The maximum number of messages to store in the internal message buffer.
         This Defaults to ``1000``.
     """
 
@@ -29,7 +29,7 @@ class Client:
 
     def _initialize_connection(self, token: str, /) -> None:
         self._connection._initialize_http(token)
-    
+
     async def create_guild(self, name: str) -> Guild:
         """
         |coro|
@@ -48,7 +48,7 @@ class Client:
         """
         g = await self._connection.api.guilds.post(json={'name': name})
         return Guild(self._connection, g)
-    
+
     async def fetch_guild(self, id: int) -> Guild:
         """
         |coro|
@@ -67,17 +67,18 @@ class Client:
         """
         g = await self._connection.api.guilds(id).get()
         return Guild(self._connection, g)
-    
+
     @overload
     async def start(self, token: str) -> None:
         ...
-    
+
     @overload
     async def start(self, email: str, passsword: str, id: int) -> None:
         ...
 
-
-    async def start(self, token: str = None, email: str = None, password: str = None, id: int = None) -> None:
+    async def start(
+        self, token: str = None, email: str = None, password: str = None, id: int = None
+    ) -> None:
         """
         |coro|
 

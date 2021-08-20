@@ -13,6 +13,7 @@
 import os
 import re
 import sys
+
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -78,8 +79,8 @@ exclude_patterns = []
 
 html_static_path = ["_static"]
 
-html_favicon = 'ferriswheel.svg'
-html_logo = 'ferriswheel.svg'
+html_favicon = '_static/ferriswheel.svg'
+html_logo = '_static/ferriswheel.svg'
 
 html_sidebars = {
     "**": ["logo-text.html", "globaltoc.html", "localtoc.html", "searchbox.html"]
@@ -92,16 +93,15 @@ html_theme_options = {
     'nav_title': 'FerrisWheel',
     'base_url': 'https://ferriswheel.readthedocs.io/en/latest/',
     'repo_url': 'https://github.com/Cryptex-github/ferriswheel',
-    'theme-color': '#F74C00',
+    'theme_color': '#F74C00',
     'color_primary': 'orange',
     'color_accent': 'deep-orange',
     'repo_name': 'FerrisWheel',
-    'touch_icon': 'ferriswheel.svg',
+    'touch_icon': '_static/ferriswheel.svg',
     'globaltoc_depth': 3,
     'globaltoc_collapse': False,
     'globaltoc_includehidden': False,
 }
-
 
 
 # Add any paths that contain custom static files (such as style sheets) here,

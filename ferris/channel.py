@@ -20,7 +20,7 @@ class Channel(BaseObject):
         self._store_snowflake(cast(int, data.get('id')))
 
         self._name: str = cast(str, data.get('name'))
-    
+
     async def fetch_message(self, message_id: int) -> Message:
         """
         |coro|
@@ -42,7 +42,7 @@ class Channel(BaseObject):
             This method do nothing as ferrischat haven't implemented it yet.
         """
         ...
-    
+
     async def edit(self) -> None:
         """
         |coro|
@@ -53,7 +53,7 @@ class Channel(BaseObject):
             This method do nothing as ferrischat haven't implemented it yet.
         """
         ...
-    
+
     async def delete(self) -> None:
         """
         |coro|

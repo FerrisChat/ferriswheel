@@ -23,7 +23,7 @@ class Message(BaseObject):
 
         self._content: str = cast(str, data.get('content'))
         self._channel_id: int = cast(int, data.get('channel_id'))
-    
+
     async def edit(self) -> None:
         """
         |coro|
@@ -34,7 +34,7 @@ class Message(BaseObject):
             This method do nothing as ferrischat haven't implemented it yet.
         """
         ...
-    
+
     async def delete(self) -> None:
         """
         |coro|

@@ -28,7 +28,7 @@ class Member(BaseObject):
 
         self._guild_id: int = cast(int, data.get('guild_id'))
         self._guild: Guild = Guild(self._connection, cast(dict, data.get('guild', {})))
-    
+
     async def edit(self) -> None:
         """
         |coro|
@@ -39,7 +39,7 @@ class Member(BaseObject):
             This method does nothing as ferrischat haven't implemented it yet.
         """
         ...
-    
+
     async def delete(self) -> None:
         """
         |coro|
