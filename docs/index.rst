@@ -15,5 +15,5 @@ A asynchronous wrapper python wrapper for ferris.chat api.
 
 Index and Search
 ================
-* :ref:`getindex`
+* :ref:`genindex`
 * :ref:`search`
