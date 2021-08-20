@@ -1,9 +1,13 @@
-from typing import Dict, List, cast
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Dict, List, cast
 
 from .base import BaseObject
-from .connection import Connection
 from .guild import Guild
-from .types import Data
+
+if TYPE_CHECKING:
+    from .connection import Connection
+    from .types import Data
 
 __all__ = ('User',)
 

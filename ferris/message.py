@@ -1,8 +1,13 @@
-from typing import cast
+from __future__ import annotations
 
-from .types import Data
+from typing import TYPE_CHECKING, cast
+
 from .base import BaseObject
-from .connection import Connection
+
+
+if TYPE_CHECKING:
+    from .connection import Connection
+    from .types import Data
 
 __all__ = ('Message',)
 

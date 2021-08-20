@@ -1,8 +1,13 @@
+from __future__ import annotations
+
 import asyncio
-from typing import overload
+from typing import overload, TYPE_CHECKING
 
 from .connection import Connection
-from .guild import Guild
+
+
+if TYPE_CHECKING:
+    from .guild import Guild
 
 
 __all__ = ('Client',)

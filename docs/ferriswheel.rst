@@ -61,13 +61,11 @@ Enumerations
 
 Exception Hierarchy
 -------------------
-.. exception_hierarchy::
-
-    - :exc:`Exception`
-        - :exc:`FerrisException`
-            - :exc:`HTTPException`
-                - :exc:`BadRequest`
-                - :exc:`Unauthorized`
-                - :exc:`Forbidden`
-                - :exc:`NotFound`
-                - :exc:`FerrisUnavailable`
+- :exc:`Exception`
+    - :exc:`ferris.FerrisException`
+        - :exc:`ferris.HTTPException`
+            - :exc:`ferris.BadRequest`
+            - :exc:`ferris.Unauthorized`
+            - :exc:`ferris.Forbidden`
+            - :exc:`ferris.NotFound`
+            - :exc:`ferris.FerrisUnavailable`

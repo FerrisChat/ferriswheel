@@ -1,10 +1,15 @@
-from typing import Dict, List, Optional, cast
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
 from .base import BaseObject
 from .channel import Channel
-from .connection import Connection
 from .member import Member
-from .types import Data
+
+if TYPE_CHECKING:
+    from .connection import Connection
+    from .types import Data
+
 
 __all__ = ('Guild',)
 

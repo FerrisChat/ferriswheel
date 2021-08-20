@@ -1,11 +1,15 @@
+from __future__ import annotations
+
 from asyncio import AbstractEventLoop
 from collections import deque
-from typing import Dict
+from typing import TYPE_CHECKING, Dict
 
-from .guild import Guild
 from .http import APIRouter, HTTPClient
-from .message import Message
-from .user import User
+
+if TYPE_CHECKING:
+    from .guild import Guild
+    from .message import Message
+    from .user import User
 
 
 __all__ = ('Connection',)
