@@ -13,9 +13,17 @@ Join our support server if you have any question:
     :target: https://discord.gg/X4Tyq88MMS
     :alt: FerrisWheel's Discord server
 
-A asynchronous wrapper python wrapper for ferris.chat api.
+A asynchronous wrapper python wrapper for https://ferris.chat api.
+
+Introduction
+------------
+Is this the first time you are using FerrisWheel?
+This is the right place for you to start.
+
+:doc:`introduction`
 
 **FerrisWheel**
+
 
 .. toctree::
     :maxdepth: 3
