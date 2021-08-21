@@ -10,6 +10,7 @@ FerrisWheel
 Join our support server if you have any question:
 
 .. image:: https://discord.com/api/guilds/874727885640970240/widget.png?style=banner3
+    :target: https://discord.gg/X4Tyq88MMS
     :alt: FerrisWheel's Discord server
 
 A asynchronous wrapper python wrapper for ferris.chat api.

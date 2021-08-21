@@ -112,7 +112,7 @@ class Client:
         """
         A helper function Equivalent to
 
-        .. code-block: python3
+        .. code-block:: python3
 
             asyncio.run(self.start, *args, **kwargs)
         
