@@ -1,65 +1,79 @@
+.. currentmodule:: ferris
+
 FerrisWheel API Reference
 =========================
 
 Client
 ------
 
-.. autoclass:: ferris.Client
+.. attributetable:: Client
+
+.. autoclass:: Client
     :members:
 
 Base
 ----
 
-.. autoclass:: ferris.SnowflakeObject
+.. autoclass:: SnowflakeObject
     :members:
 
-.. autoclass:: ferris.BaseObject
+.. autoclass:: BaseObject
     :members:
     :inherited-members:
 
-.. autoclass:: ferris.Object
+.. autoclass:: Object
     :members:
     :inherited-members:
 
 Channnel
 --------
 
-.. autoclass:: ferris.Channel
+.. attributetable:: Channel
+
+.. autoclass:: Channel
     :members:
     :inherited-members:
 
 Guild
 -----
 
-.. autoclass:: ferris.Guild
+.. attributetable:: Guild
+
+.. autoclass:: Guild
     :members:
     :inherited-members:
 
 Member
 ------
 
-.. autoclass:: ferris.Member
+.. attributetable:: Member
+
+.. autoclass:: Member
     :members:
     :inherited-members:
 
 Message
 -------
 
-.. autoclass:: ferris.Message
+.. attributetable:: Message
+
+.. autoclass:: Message
     :members:
     :inherited-members:
 
 User
 ----
 
-.. autoclass:: ferris.User
+.. attributetable:: User
+
+.. autoclass:: User
     :members:
     :inherited-members:
 
 Utility Functions
 -----------------
 
-.. autofunction:: ferris.get_snowflake_creation_date
+.. autofunction:: get_snowflake_creation_date
 
 Enumerations
 ------------
@@ -83,7 +97,7 @@ Enumerations
 Exceptions
 ----------
 
-.. automodule:: ferris.errors
+.. automodule:: errors
     :members:
 
 
@@ -92,10 +106,10 @@ Exception Hierarchy
 -------------------
 
 - :exc:`Exception`
-    - :exc:`ferris.FerrisException`
-        - :exc:`ferris.HTTPException`
-            - :exc:`ferris.BadRequest`
-            - :exc:`ferris.Unauthorized`
-            - :exc:`ferris.Forbidden`
-            - :exc:`ferris.NotFound`
-            - :exc:`ferris.FerrisUnavailable`
+    - :exc:`FerrisException`
+        - :exc:`HTTPException`
+            - :exc:`BadRequest`
+            - :exc:`Unauthorized`
+            - :exc:`Forbidden`
+            - :exc:`NotFound`
+            - :exc:`FerrisUnavailable`
