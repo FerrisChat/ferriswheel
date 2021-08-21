@@ -136,7 +136,7 @@ def build_lookup_table(env):
         'data', 'exception', 'module', 'class',
     }
 
-    for (fullname, _, objtype, docname, _, _) in domain.get_objects():
+    for (fullname, _, objtype, docname, _, _) in domain.get_objects(): # pylint: disable=unused-variable
         if objtype in ignored:
             continue
 
