@@ -83,6 +83,7 @@ exclude_patterns = []
 #
 
 html_static_path = ["_static"]
+templates_path = ['_templates']
 
 html_favicon = '_static/ferriswheel.svg'
 html_logo = '_static/ferriswheel.svg'
