@@ -42,6 +42,8 @@ setup(
         "docs": [
             "sphinx>=4.1.1",
             "sphinx-material",
+            'sphinx-copybutton',
+            'readthedocs-sphinx-search',
         ],
         "performance": ["orjson>=1.3.0"],
     },
