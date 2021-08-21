@@ -15,9 +15,9 @@ Making a bot is pretty pog and cool, but there are some prerequisites for it. To
 FerrisWheel uses some technology that can easily trap beginners up.
 Included but not limited to:
 
-* Asyncio
-* Concurrency
-* Etc
+* asyncio
+* concurrency
+* etc
 
 As a result of this, it is recommended that you at least have a basic understanding of the following:
 
