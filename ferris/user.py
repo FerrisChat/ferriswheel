@@ -22,6 +22,7 @@ class User(BaseObject):
     def __init__(self, connection: Connection, data: Data, /) -> None:
         self._connection: Connection = connection
         self._process_data(data)
+        super().__init__()
 
     def _process_data(self, data: Data, /) -> None:
         self._store_snowflake(cast(int, data.get('id')))
@@ -40,26 +41,26 @@ class User(BaseObject):
     async def fetch_guilds(self) -> List[Guild]:
         """|coro|
 
-        Fetches all the guilds the user is in.
+        Fetches all the guilds this user is in.
 
         Returns
         -------
         List[:class:`~.Guild`]
-            A list of the guilds the user is in.
+            A list of the guilds this user is in.
 
         .. warning::
-            This method does nothing as ferrischat haven't implemented it yet.
+            This method will do nothing as FerrisChat has not implemented this feature yet.
         """
         ...
 
     @property
     def name(self, /) -> str:
-        """str: The user's username."""
+        """str: The username of this user."""
         return self._name
 
     @property
     def guilds(self, /) -> List[Guild]:
-        """List[:class:`~.Guild`]: A list of the guilds the user is in."""
+        """List[:class:`~.Guild`]: A list of the guilds this user is in."""
         return list(self._guilds.values())
 
     def __expr__(self, /) -> str:

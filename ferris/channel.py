@@ -20,6 +20,7 @@ class Channel(BaseObject):
     def __init__(self, connection: Connection, data: Data, /) -> None:
         self._connection: Connection = connection
         self._process_data(data)
+        super().__init__()
 
     def _process_data(self, data: Data, /) -> None:
         self._store_snowflake(cast(int, data.get('id')))
@@ -30,10 +31,10 @@ class Channel(BaseObject):
         """
         |coro|
 
-        Fetches a message from the channel.
+        Fetches a message from this channel.
 
         .. warning::
-            This method do nothing as ferrischat haven't implemented it yet.
+            This method will do nothing as FerrisChat has not implemented this feature yet.
         """
         ...
 
@@ -41,10 +42,10 @@ class Channel(BaseObject):
         """
         |coro|
 
-        Sends a message to the channel.
+        Sends a message to this channel.
 
         .. warning::
-            This method do nothing as ferrischat haven't implemented it yet.
+            This method will do nothing as FerrisChat has not implemented this feature yet.
         """
         ...
 
@@ -52,10 +53,10 @@ class Channel(BaseObject):
         """
         |coro|
 
-        Edits the channel.
+        Edits this channel.
 
         .. warning::
-            This method do nothing as ferrischat haven't implemented it yet.
+            This method will do nothing as FerrisChat has not implemented this feature yet.
         """
         ...
 
@@ -63,13 +64,14 @@ class Channel(BaseObject):
         """
         |coro|
 
-        Deletes the channel.
+        Deletes this channel.
 
         .. warning::
-            This method do nothing as ferrischat haven't implemented it yet.
+            This method will do nothing as FerrisChat has not implemented this feature yet.
         """
         ...
 
     @property
     def name(self, /) -> str:
+        """str: The name of this channel."""
         return self._name

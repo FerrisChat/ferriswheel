@@ -15,15 +15,14 @@ __all__ = ('Guild',)
 
 
 class Guild(BaseObject):
-    """
-    Represents a FerrisChat guild.
-    """
+    """Represents a FerrisChat guild."""
 
     __slots__ = ('_connection', '_owner_id', '_name', '_channels', '_members')
 
     def __init__(self, connection: Connection, data: Data, /) -> None:
         self._connection: Connection = connection
         self._process_data(data)
+        super().__init__()
 
     def _process_data(self, data: Data, /) -> None:
         from .channel import Channel
@@ -47,21 +46,19 @@ class Guild(BaseObject):
             self._members[member.id] = member
 
     async def fetch_member(self, id: int) -> Member:
-        """
-        |coro|
+        """|coro|
 
-        Fetch a member from the guild.
+        Fetches a member from this guild.
 
         .. warning::
-            This method does nothing as ferrischat haven't implemented it yet.
+            This method will do nothing as FerrisChat has not implemented this feature yet.
         """
         ...
 
     async def create_channel(self, name: str) -> Channel:
-        """
-        |coro|
+        """|coro|
 
-        Creates a channel in the guild.
+        Creates a [text] channel in this guild.
 
         Parameters
         ----------
@@ -71,7 +68,6 @@ class Guild(BaseObject):
         Returns
         -------
         :class:`~.Channel`
-
         """
         c = await self._connection.api.guilds(self.id).channels.post(
             json={'name': name}
@@ -79,15 +75,14 @@ class Guild(BaseObject):
         return Channel(self._connection, c)
 
     async def fetch_channel(self, id: int) -> Channel:
-        """
-        |coro|
+        """|coro|
 
-        Fetch a channel from the guild.
+        Fetches a channel from this guild.
 
         Parameters
         ----------
         id: int
-            The channel ID.
+            The ID of the channel to fetch.
 
         Returns
         -------
@@ -99,26 +94,26 @@ class Guild(BaseObject):
     async def edit(self) -> None:
         """|coro|
 
-        Edits the guild.
+        Edits this guild.
 
         .. warning::
-            This method does nothing as ferrischat haven't implemented it yet.
+            This method will do nothing as FerrisChat has not implemented this feature yet.
         """
         ...
 
     async def delete(self) -> None:
         """|coro|
 
-        Deletes the guild.
+        Deletes this guild.
 
         .. warning::
-            This method does nothing as ferrischat haven't implemented it yet.
+            This method will do nothing as FerrisChat has not implemented this feature yet.
         """
         ...
 
     def get_channel(self, id: int) -> Optional[Channel]:
-        """
-        Returns the channel with the given ID.
+        """Tries to retrieve a :class:`.~Channel` object
+        given it's ID from the internal cache.
 
         Parameters
         ----------
@@ -128,12 +123,15 @@ class Guild(BaseObject):
         Returns
         -------
         :class:`~.Channel`
+            The channel found, if any.
+        None
+            The channel was not found in the internal cache.
         """
         return self._channels.get(id)
 
     def get_member(self, id: int) -> Optional[Member]:
-        """
-        Returns the member with the given ID.
+        """Tries to retrieve a :class:`.~Member` object
+        given it's ID from the internal cache.
 
         Parameters
         ----------
@@ -143,27 +141,30 @@ class Guild(BaseObject):
         Returns
         -------
         :class:`~.Member`
+            The member foumd, if any.
+        None
+            The member was not found in the internal cache.
         """
         return self._members.get(id)
 
     @property
     def owner_id(self, /) -> int:
-        """int: The guild owner's ID."""
+        """int: The ID of the owner of this guild."""
         return self._owner_id
 
     @property
     def name(self, /) -> str:
-        """str: The guild's name."""
+        """str: The name of this guild."""
         return self._name
 
     @property
     def channels(self, /) -> List[Channel]:
-        """List[:class:`~.Channel`]: A list of channels in the guild."""
+        """List[:class:`~.Channel`]: A list of all [cached] channels in this guild."""
         return list(self._channels.values())
 
     @property
     def members(self, /) -> List[Member]:
-        """List[:class:`~.Member`]: A list of members in the guild."""
+        """List[:class:`~.Member`]: A list of all [cached] members in this guild."""
         return list(self._members.values())
 
     def __repr__(self, /) -> str:

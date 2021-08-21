@@ -19,7 +19,7 @@ class Client:
 
     max_messages_count: Optional[int]
         The maximum number of messages to store in the internal message buffer.
-        This Defaults to ``1000``.
+        Defaults to ``1000``.
     """
 
     __slots__ = ('loop', 'api', '_connection')
@@ -32,8 +32,7 @@ class Client:
         self._connection._initialize_http(token)
 
     async def create_guild(self, name: str) -> Guild:
-        """
-        |coro|
+        """|coro|
 
         Creates a new guild.
 
@@ -51,8 +50,7 @@ class Client:
         return Guild(self._connection, g)
 
     async def fetch_guild(self, id: int) -> Guild:
-        """
-        |coro|
+        """|coro|
 
         Fetches a guild by ID.
 
@@ -64,7 +62,12 @@ class Client:
         Returns
         -------
         :class:`Guild`
-            The guild.
+            The guild fetched.
+
+        Raises
+        ------
+        :exc:`NotFound`
+            A guild with the given ID was not found.
         """
         g = await self._connection.api.guilds(id).get()
         return Guild(self._connection, g)
@@ -80,11 +83,12 @@ class Client:
     async def start(
         self, token: str = None, email: str = None, password: str = None, id: int = None
     ) -> None:
-        """
-        |coro|
+        """|coro|
 
-        Connects to FerrisChat. You must pass in either token or email and password and id.
-        Id is only needed when using email and password to login.
+        Establishes a websocket connection with FerrisChat's gateway.
+        A form of authentication (email and password, or a token) must be provided.
+
+        The `id` kwarg is only needed when an email and password is used to login.
 
         Parameters
         ----------
@@ -99,18 +103,20 @@ class Client:
         """
         if email is not None and password is not None and token is not None:
             raise ValueError('Cannot pass both email and password and token')
+
         if token is not None and (email is not None or password is not None):
             raise ValueError('Cannot pass both token and email or password')
+
         if token is None and (email is None or password is None or id is None):
             raise ValueError('Must pass either token or email and password and id')
+
         if token is not None:
             self._initialize_connection(token)
         else:
             await self._connection._initialize_http_with_email(email, password, id)
 
     def run(self, *args, **kwargs):
-        """
-        A helper function Equivalent to
+        """A helper function equivalent to
 
         .. code-block:: python3
 
@@ -118,4 +124,4 @@ class Client:
         
         If you want finer control over the event loop, use :meth:`Client.start` instead.
         """
-        asyncio.run(self.start(), *args, **kwargs)
+        asyncio.run(self.start(*args, **kwargs))

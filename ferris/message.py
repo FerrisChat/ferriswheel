@@ -13,15 +13,14 @@ __all__ = ('Message',)
 
 
 class Message(BaseObject):
-    """
-    Represent a message from FerrisChat.
-    """
+    """Represents a message from FerrisChat."""
 
     __slots__ = ('_connection', '_content', '_channel_id')
 
     def __init__(self, connection: Connection, data: Data, /) -> None:
         self._connection: Connection = connection
         self._process_data(data)
+        super().__init__()
 
     def _process_data(self, data: Data, /) -> None:
         self._store_snowflake(cast(int, data.get('id')))
@@ -30,33 +29,31 @@ class Message(BaseObject):
         self._channel_id: int = cast(int, data.get('channel_id'))
 
     async def edit(self) -> None:
-        """
-        |coro|
+        """|coro|
 
-        Edit this message.
+        Edits this message.
 
         .. warning::
-            This method do nothing as ferrischat haven't implemented it yet.
+            This method will do nothing as FerrisChat has not implemented this feature yet.
         """
         ...
 
     async def delete(self) -> None:
-        """
-        |coro|
+        """|coro|
 
-        Delete this message.
+        Deletes this message.
 
         .. warning::
-            This method do nothing as ferrischat haven't implemented it yet.
+            This method will do nothing as FerrisChat has not implemented this feature yet.
         """
         ...
 
     @property
     def content(self, /) -> str:
-        """str: The message's content"""
+        """str: The content of this message."""
         return self._content
 
     @property
     def channel_id(self, /) -> int:
-        """int: The channel's id"""
+        """int: The ID of the channel this message was sent in."""
         return self._channel_id

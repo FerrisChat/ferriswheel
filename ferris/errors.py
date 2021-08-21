@@ -11,23 +11,22 @@ __all__ = (
 
 
 class FerrisException(Exception):
-    """
-    Base class for all ferris exceptions.
-    Theroically, you can use this exception to catch all ferris exceptions.
+    """Base class for all ferriswheel-originated exceptions.
+    Theoretically, you could use this exception to catch all ferris exceptions.
     """
     pass
 
 
 class HTTPException(FerrisException):
     """
-    Base class for all ferris HTTP exceptions.
+    Base class for all ferrisw HTTP exceptions.
 
     Attributes
     ----------
     status: int
         The status code of the response.
     resp: :class:`aiohttp.ClientResponse`
-        The response object.
+        The aiohttp response object.
     """
     def __init__(self, resp: ClientResponse, content: str = None):
         content = content or resp.reason
@@ -47,8 +46,7 @@ class Unauthorized(HTTPException):
 
 
 class Forbidden(HTTPException):
-    """
-    The request was a valid request, 
+    """The request was a valid request,
     but the server is refusing to respond to it, as you don't have enough permissions to do that.
     """
     pass
@@ -60,8 +58,7 @@ class NotFound(HTTPException):
 
 
 class FerrisUnavailable(HTTPException):
-    """
-    SSHHH! Ferris is sleeping, and can't answer the request right now. 
+    """SSHHH! Ferris is sleeping, and can't answer the request right now.
     Try again later.
     """
     pass
