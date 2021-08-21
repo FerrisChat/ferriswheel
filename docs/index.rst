@@ -1,7 +1,7 @@
 Welcome to FerrisWheel's documentation!
 =======================================
 
-.. image:: /_static/ferriswheel.png
+.. image:: /_static/ferriswheel.svg
     :alt: FerrisWheel's logo
     :width: 500
 
