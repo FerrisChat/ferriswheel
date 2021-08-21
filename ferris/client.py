@@ -115,6 +115,7 @@ class Client:
         .. code-block: python3
 
             asyncio.run(self.start, *args, **kwargs)
-
+        
+        If you want finer control over the event loop, use :meth:`Client.start` instead.
         """
         asyncio.run(self.start(), *args, **kwargs)
