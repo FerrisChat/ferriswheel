@@ -18,6 +18,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(os.path.abspath('extensions'))
 
 
 # -- Project information -----------------------------------------------------
@@ -48,7 +49,8 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
     'sphinx_copybutton',
-    'sphinx_search.extension'
+    'sphinx_search.extension',
+    'attributetable'
 ]
 
 napoleon_google_docstring = False
