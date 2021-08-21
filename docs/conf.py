@@ -99,55 +99,55 @@ html_sidebars = {
 html_theme = 'sphinx_material'
 
 html_title = 'FerrisWheel'
-# html_theme_options = {
-#     'nav_title': 'FerrisWheel',
-#     'base_url': 'https://ferriswheel.readthedocs.io/en/latest/',
-#     'repo_url': 'https://github.com/FerrisChat/ferriswheel',
-#     'theme_color': '#F74C00',
-#     'color_primary': 'orange',
-#     'color_accent': 'deep-orange',
-#     'repo_name': 'FerrisWheel',
-#     'touch_icon': '_static/ferriswheel.svg',
-#     'globaltoc_depth': 3,
-#     'globaltoc_collapse': False,
-#     'globaltoc_includehidden': False,
-# }
-
 html_theme_options = {
-    'site_url': 'https://ferriswheel.readthedocs.io/en/latest/',
+    'nav_title': 'FerrisWheel',
+    'base_url': 'https://ferriswheel.readthedocs.io/en/latest/',
     'repo_url': 'https://github.com/FerrisChat/ferriswheel',
     'theme_color': '#F74C00',
     'color_primary': 'orange',
     'color_accent': 'deep-orange',
     'repo_name': 'FerrisWheel',
-    'logo_svg': '_static/ferriswheel.svg',
-    'icon': '_static/ferriswheel.svg',
+    'touch_icon': '_static/ferriswheel.svg',
     'globaltoc_depth': 3,
     'globaltoc_collapse': False,
     'globaltoc_includehidden': False,
-    'palette': [
-        {
-            'media': '(prefers-color-scheme: dark)',
-            'scheme': 'slate',
-            'primary': 'orange',
-            'accent': 'deep orange',
-            'toggle': {
-                'icon': 'material/lightbulb',
-                'name': 'Switch to light mode'
-            }
-        },
-        {
-            'media': '(prefers-color-scheme: light)',
-            'scheme': 'default',
-            'primary': 'orange',
-            'accent': 'deep orange',
-            'toggle': {
-                'icon': 'material/lightbulb-outline',
-                'name': 'Switch to dark mode'
-                }
-        }
-    ]
 }
+
+# html_theme_options = {
+#     'site_url': 'https://ferriswheel.readthedocs.io/en/latest/',
+#     'repo_url': 'https://github.com/FerrisChat/ferriswheel',
+#     'theme_color': '#F74C00',
+#     'color_primary': 'orange',
+#     'color_accent': 'deep-orange',
+#     'repo_name': 'FerrisWheel',
+#     'logo_svg': '_static/ferriswheel.svg',
+#     'icon': '_static/ferriswheel.svg',
+#     'globaltoc_depth': 3,
+#     'globaltoc_collapse': False,
+#     'globaltoc_includehidden': False,
+#     'palette': [
+#         {
+#             'media': '(prefers-color-scheme: dark)',
+#             'scheme': 'slate',
+#             'primary': 'orange',
+#             'accent': 'deep orange',
+#             'toggle': {
+#                 'icon': 'material/lightbulb',
+#                 'name': 'Switch to light mode'
+#             }
+#         },
+#         {
+#             'media': '(prefers-color-scheme: light)',
+#             'scheme': 'default',
+#             'primary': 'orange',
+#             'accent': 'deep orange',
+#             'toggle': {
+#                 'icon': 'material/lightbulb-outline',
+#                 'name': 'Switch to dark mode'
+#                 }
+#         }
+#     ]
+# }
 
 
 # Add any paths that contain custom static files (such as style sheets) here,

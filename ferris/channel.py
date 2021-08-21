@@ -14,7 +14,9 @@ __all__ = ('Channel',)
 
 
 class Channel(BaseObject):
-
+    """
+    Represents a channel in FerrisChat.
+    """
     __slots__ = ('_connection', '_name')
 
     def __init__(self, connection: Connection, data: Data, /) -> None:

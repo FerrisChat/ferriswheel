@@ -97,7 +97,7 @@ Enumerations
 Exceptions
 ----------
 
-.. automodule:: errors
+.. automodule:: ferris.errors
     :members:
 
 
