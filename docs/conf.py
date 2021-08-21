@@ -49,8 +49,12 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
     'sphinx_copybutton',
+<<<<<<< HEAD
     'sphinx_search.extension',
     'attributetable',
+=======
+    'sphinx_search.extension'
+>>>>>>> parent of ea94b83 (Attributetable and other improvement for doc)
 ]
 
 napoleon_google_docstring = False

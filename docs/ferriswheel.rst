@@ -1,79 +1,65 @@
-.. currentmodule:: ferris
-
 FerrisWheel API Reference
 =========================
 
 Client
 ------
 
-.. attributetable:: Client
-
-.. autoclass:: Client
+.. autoclass:: ferris.Client
     :members:
 
 Base
 ----
 
-.. autoclass:: SnowflakeObject
+.. autoclass:: ferris.SnowflakeObject
     :members:
 
-.. autoclass:: BaseObject
+.. autoclass:: ferris.BaseObject
     :members:
     :inherited-members:
 
-.. autoclass:: Object
+.. autoclass:: ferris.Object
     :members:
     :inherited-members:
 
 Channnel
 --------
 
-.. attributetable:: Channel
-
-.. autoclass:: Channel
+.. autoclass:: ferris.Channel
     :members:
     :inherited-members:
 
 Guild
 -----
 
-.. attributetable:: Guild
-
-.. autoclass:: Guild
+.. autoclass:: ferris.Guild
     :members:
     :inherited-members:
 
 Member
 ------
 
-.. attributetable:: Member
-
-.. autoclass:: Member
+.. autoclass:: ferris.Member
     :members:
     :inherited-members:
 
 Message
 -------
 
-.. attributetable:: Message
-
-.. autoclass:: Message
+.. autoclass:: ferris.Message
     :members:
     :inherited-members:
 
 User
 ----
 
-.. attributetable:: User
-
-.. autoclass:: User
+.. autoclass:: ferris.User
     :members:
     :inherited-members:
 
 Utility Functions
 -----------------
 
-.. autofunction:: get_snowflake_creation_date
+.. autofunction:: ferris.get_snowflake_creation_date
 
 Enumerations
 ------------
@@ -97,7 +83,7 @@ Enumerations
 Exceptions
 ----------
 
-.. automodule:: errors
+.. automodule:: ferris.errors
     :members:
 
 
@@ -106,10 +92,10 @@ Exception Hierarchy
 -------------------
 
 - :exc:`Exception`
-    - :exc:`FerrisException`
-        - :exc:`HTTPException`
-            - :exc:`BadRequest`
-            - :exc:`Unauthorized`
-            - :exc:`Forbidden`
-            - :exc:`NotFound`
-            - :exc:`FerrisUnavailable`
+    - :exc:`ferris.FerrisException`
+        - :exc:`ferris.HTTPException`
+            - :exc:`ferris.BadRequest`
+            - :exc:`ferris.Unauthorized`
+            - :exc:`ferris.Forbidden`
+            - :exc:`ferris.NotFound`
+            - :exc:`ferris.FerrisUnavailable`
