@@ -201,22 +201,22 @@ def get_class_results(lookup, modulename, name, fullname):
             doc = value.__doc__ or ''
             if inspect.iscoroutinefunction(value) or doc.startswith('|coro|'):
                 key = _('Methods')
-                badge = attributetablebadge('async', 'async')
+                badge = attributetablebadge('async', 'async ')
                 badge['badge-type'] = _('coroutine')
             elif isinstance(value, classmethod):
                 key = _('Methods')
                 label = f'{name}.{attr}'
-                badge = attributetablebadge('cls', 'cls')
+                badge = attributetablebadge('cls', 'cls ')
                 badge['badge-type'] = _('classmethod')
             elif inspect.isfunction(value):
                 if doc.startswith(('A decorator', 'A shortcut decorator')):
                     # finicky but surprisingly consistent
-                    badge = attributetablebadge('@', '@')
+                    badge = attributetablebadge('@', '@ ')
                     badge['badge-type'] = _('decorator')
                     key = _('Methods')
                 else:
                     key = _('Methods')
-                    badge = attributetablebadge('def', 'def')
+                    badge = attributetablebadge('def', 'def ')
                     badge['badge-type'] = _('method')
 
         groups[key].append(TableElement(fullname=attrlookup, label=label, badge=badge))

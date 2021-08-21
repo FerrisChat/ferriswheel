@@ -41,7 +41,7 @@ setup(
     extras_require={
         "docs": [
             "sphinx>=4.1.1",
-            "sphinx-material @ git+https://github.com/jbms/sphinx-material",
+            "sphinx-material",
             'sphinx-copybutton',
             'readthedocs-sphinx-search',
         ],
