@@ -97,7 +97,7 @@ html_title = 'FerrisWheel'
 html_theme_options = {
     'nav_title': 'FerrisWheel',
     'base_url': 'https://ferriswheel.readthedocs.io/en/latest/',
-    'repo_url': 'https://github.com/Cryptex-github/ferriswheel',
+    'repo_url': 'https://github.com/FerrisChat/ferriswheel',
     'theme_color': '#F74C00',
     'color_primary': 'orange',
     'color_accent': 'deep-orange',

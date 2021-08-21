@@ -24,9 +24,9 @@ with open('README.md', encoding='utf-8') as f:
 setup(
     name="ferriswheel",
     author=author,
-    url="https://github.com/Cryptex-github/ferriswheel",
+    url="https://github.com/FerrisChat/ferriswheel",
     project_urls={
-        "Issue tracker": "https://github.com/Cryptex-github/ferriswheel/issues/new",
+        "Issue tracker": "https://github.com/FerrisChat/ferriswheel/issues/new",
     },
     version=version,
     packages=[
