@@ -51,7 +51,6 @@ extensions = [
     'sphinx_copybutton',
     'sphinx_search.extension',
     'attributetable',
-    'sphinx_material.sphinx_material'
 ]
 
 napoleon_google_docstring = False

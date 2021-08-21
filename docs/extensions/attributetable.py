@@ -2,6 +2,8 @@
 
 # pylint: disable=import-error
 
+# Credit goes to Rapptz's discord.py
+
 from sphinx.util.docutils import SphinxDirective
 from sphinx.locale import _
 from docutils import nodes
