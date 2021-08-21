@@ -20,7 +20,11 @@ Introduction
 Is this the first time you are using FerrisWheel?
 This is the right place for you to start.
 
-:doc:`introduction`
+.. toctree::
+    :maxdepth: 2
+    :caption: Introduction
+
+    introduction.rst
 
 **FerrisWheel**
 
