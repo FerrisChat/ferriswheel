@@ -10,7 +10,7 @@ An async-ready Python wrapper around [FerrisChat](https://ferris.chat)'s API.
 ## Installation Instructions
 Linux:
 
-```py
+```sh
 $ python3.9 -m pip install -U ferriswheel
 ```
 
