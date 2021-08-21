@@ -19,7 +19,7 @@ class FerrisException(Exception):
 
 class HTTPException(FerrisException):
     """
-    Base class for all ferrisw HTTP exceptions.
+    Base class for all ferris HTTP exceptions.
 
     Attributes
     ----------
