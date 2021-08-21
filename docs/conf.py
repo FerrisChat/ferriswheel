@@ -18,7 +18,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(os.path.abspath('extensions'))
+sys.path.append(os.path.abspath('extensions'))
 
 
 # -- Project information -----------------------------------------------------
@@ -50,7 +50,8 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx_copybutton',
     'sphinx_search.extension',
-    'attributetable'
+    'attributetable',
+    'sphinx_material.sphinx_material'
 ]
 
 napoleon_google_docstring = False
@@ -97,18 +98,53 @@ html_sidebars = {
 html_theme = 'sphinx_material'
 
 html_title = 'FerrisWheel'
+# html_theme_options = {
+#     'nav_title': 'FerrisWheel',
+#     'base_url': 'https://ferriswheel.readthedocs.io/en/latest/',
+#     'repo_url': 'https://github.com/FerrisChat/ferriswheel',
+#     'theme_color': '#F74C00',
+#     'color_primary': 'orange',
+#     'color_accent': 'deep-orange',
+#     'repo_name': 'FerrisWheel',
+#     'touch_icon': '_static/ferriswheel.svg',
+#     'globaltoc_depth': 3,
+#     'globaltoc_collapse': False,
+#     'globaltoc_includehidden': False,
+# }
+
 html_theme_options = {
-    'nav_title': 'FerrisWheel',
-    'base_url': 'https://ferriswheel.readthedocs.io/en/latest/',
+    'site_url': 'https://ferriswheel.readthedocs.io/en/latest/',
     'repo_url': 'https://github.com/FerrisChat/ferriswheel',
     'theme_color': '#F74C00',
     'color_primary': 'orange',
     'color_accent': 'deep-orange',
     'repo_name': 'FerrisWheel',
-    'touch_icon': '_static/ferriswheel.svg',
+    'logo_svg': '_static/ferriswheel.svg',
+    'icon': '_static/ferriswheel.svg',
     'globaltoc_depth': 3,
     'globaltoc_collapse': False,
     'globaltoc_includehidden': False,
+    'palette': [
+        {
+            'media': '(prefers-color-scheme: dark)',
+            'scheme': 'slate',
+            'primary': 'orange',
+            'accent': 'deep orange',
+            'toggle': {
+                'icon': 'material/lightbulb',
+                'name': 'Switch to light mode'
+        },
+        {
+            'media': '(prefers-color-scheme: light)',
+            'scheme': 'default',
+            'primary': 'orange',
+            'accent': 'deep orange',
+            'toggle': {
+                'icon': 'material/lightbulb-outline',
+                'name': 'Switch to dark mode'
+                }
+        }
+    ]
 }
 
 
