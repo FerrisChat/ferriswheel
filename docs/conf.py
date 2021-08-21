@@ -133,6 +133,7 @@ html_theme_options = {
             'toggle': {
                 'icon': 'material/lightbulb',
                 'name': 'Switch to light mode'
+            }
         },
         {
             'media': '(prefers-color-scheme: light)',
