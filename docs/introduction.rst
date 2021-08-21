@@ -64,7 +64,7 @@ To install FerrisWheel you can type the following command
 
 .. code-block:: bash
 
-    $ python3.x -m pip install ferriswheel
+    python3.x -m pip install ferriswheel
 
 or 
 
