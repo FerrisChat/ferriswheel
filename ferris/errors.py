@@ -5,6 +5,7 @@ __all__ = (
     'HTTPException',
     'BadRequest',
     'Unauthorized',
+    'Forbidden',
     'NotFound',
     'FerrisUnavailable',
 )
