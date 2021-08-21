@@ -62,8 +62,8 @@ Installing FerrisWheel
 To use FerrisWheel, you'll need to install python first. FerrisChat requires python 3.8 or higher.
 
 .. note::
-    To check if you already have python installed, run ``python3.x --version`` (Replace x with 8 or 9) (or python in some system) in your terminal.
-    or py -4 -V in Windows.
+    To check if you already have python installed, run ``python3.x -V`` (Replace x with 8 or 9) (or python in some system) in your terminal.
+    or ``py -3 -V`` in Windows.
 
 Is also highly advisable to use a `venv <https://docs.python.org/3/library/venv.html>`_ for your project.
 
