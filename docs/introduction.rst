@@ -63,6 +63,7 @@ If you are using a venv please refer to `venv <https://docs.python.org/3/library
 To install FerrisWheel you can type the following command
 
 .. code-block:: bash
+
     $ python3.x -m pip install ferriswheel
 
 or 
