@@ -2,40 +2,43 @@ Introduction
 ============
 Welcome to the world of Ferris
 
-If you are reading this, it probably means you want to learn how to use FerrisWheel to interact with the FerrisWheel API.
-If so, Awesome, you are at the right place. This guide will teach you things such as:
+If you are reading this, it probably means you want to learn how to use FerrisWheel to interact with the FerrisChat API.
+If so, awesome! You are at the right place. This guide will teach you things such as:
 
 * How to install FerrisWheel
 * How to get a bot up and running
-* How to use FerrisWheel to interact with the FerrisWheel API
+* How to use FerrisWheel to interact with the FerrisChat API
 
 Before you begin
 ~~~~~~~~~~~~~~~~
-Making a bot is pretty pog and cool, but there are some prerequisites for it. To create a bot with FerrisWheel. You should have fairly decent python knowledge.
+Making a bot is pretty pog and cool, but there are some prerequisites for it. To create a bot with FerrisWheel. You should have a fairly decent understanding of Python3..
 FerrisWheel uses some technology that can easily trap beginners up.
-Included by not limited to:
+Included but not limited to:
+
 * Asyncio
 * Concurrency
 * Etc
 
 As a result of this, it is recommended that you at least have a basic understanding of the following:
-* Data struchures
+
+* Data structures
 * How to read tracebacks
 * OOP (Difference between classes and instances)
-* How to solve simple exceptions such as NameError, SyntaxError, AttributeError
+* How to solve simple exceptions such as NameError, SyntaxError, and AttributeError
 
-It's also highly recommended to have basic knowledge of Concurrency and asyncio.
+It's also highly recommended to have basic knowledge of concurrency and asyncio.
 
-If you don't have a basic understanding of these concepts or get confused by them.
-Please feel free to start with an easier project to get started with before entering the Ferris world.
-Don't worry, Ferris will be here waitinf for you.
+If you don't have a basic understanding of these concepts or get confused by them, please feel free to start with an easier project to get started with before entering the Ferris world.
+Don't worry, Ferris will be here waiting for you.
 
-Here is a list of websites you can learn python at (From ``lp`` tag in Discord.py Server):
+Here is a list of websites you can learn python at (from ``lp`` tag in Discord.py server):
+
 * https://docs.python.org/3/tutorial/ (official tutorial)
 * http://python.swaroopch.com/ (useful book)
 * https://automatetheboringstuff.com/ (for complete beginners to programming)
 * http://greenteapress.com/wp/think-python-2e/ (another decent book)
-See also: 
+See also:
+
 * http://www.codeabbey.com/ (exercises for beginners)
 * https://realpython.com/ (good articles on specific topics)
 * https://learnxinyminutes.com/docs/python3/ (cheatsheet)
@@ -50,7 +53,8 @@ To use FerrisWheel, you'll need to install python first. FerrisChat requires pyt
     To check if you already have python installed, run ``python3.x --version`` (Replace x with 8 or 9) (or python in some system) in your terminal.
     or py -4 -V in Windows.
 
-Is also highly advisable to use a `venv <https://docs.python.org/3/library/venv.html>`_ for your project.
+It is also highly advisable to use a `venv <https://docs.python.org/3/library/venv.html>`_ for your project.
+
 .. note::
     For more info please visit https://docs.python.org/3/library/venv.html
 
@@ -64,9 +68,10 @@ To install FerrisWheel you can type the following command
 or 
 
 .. code-block:: ps
+
     py -3 -m pip install ferriswheel
 
-That is, you are now ready to use FerrisWheel.
+That's it, you are now ready to use FerrisWheel.
 
 Creating a bot application on `FerrisChat <https://ferris.chat>`_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
