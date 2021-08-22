@@ -15,7 +15,7 @@ __all__ = ('Message',)
 class Message(BaseObject):
     """Represents a message from FerrisChat."""
 
-    __slots__ = ('_connection', '_content', '_channel_id')
+    __slots__ = ('_connection', '_content', '_channel_id', '_author_id')
 
     def __init__(self, connection: Connection, data: Data, /) -> None:
         self._connection: Connection = connection
@@ -27,6 +27,9 @@ class Message(BaseObject):
 
         self._content: str = cast(str, data.get('content'))
         self._channel_id: int = cast(int, data.get('channel_id'))
+
+        self._author_id: int = cast(int, data.get('author_id'))
+
 
     async def edit(self) -> None:
         """|coro|
@@ -44,6 +47,11 @@ class Message(BaseObject):
         Deletes this message.
         """
         await self._connection.api.messages(self.id).delete()
+    
+    @property
+    def author_id(self, /) -> int:
+        """int: Returns the author ID of this message."""
+        return self._author_id
 
     @property
     def content(self, /) -> str:
