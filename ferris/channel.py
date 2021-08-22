@@ -17,6 +17,7 @@ class Channel(BaseObject):
     """
     Represents a channel in FerrisChat.
     """
+
     __slots__ = ('_connection', '_name')
 
     def __init__(self, connection: Connection, data: Data, /) -> None:
@@ -40,16 +41,26 @@ class Channel(BaseObject):
         """
         ...
 
-    async def send(self) -> None:
+    async def send(self, content: str) -> None:
         """
         |coro|
 
         Sends a message to this channel.
 
-        .. warning::
-            This method will do nothing as FerrisChat has not implemented this feature yet.
+        Parameters
+        ----------
+        content: str
+            The content of the message.
+
+        Returns
+        -------
+        Message
+            The message that was sent.
         """
-        ...
+        m = await self._connection.api.channels(self.id).messages.post(
+            json={'content': content}
+        )
+        return Message(self._connection, m)
 
     async def edit(self) -> None:
         """

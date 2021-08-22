@@ -31,6 +31,7 @@ class Member(BaseObject):
 
         self._guild_id: int = cast(int, data.get('guild_id'))
         from .guild import Guild
+
         self._guild: Guild = Guild(self._connection, cast(dict, data.get('guild', {})))
 
     async def edit(self) -> None:

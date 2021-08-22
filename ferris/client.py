@@ -49,7 +49,9 @@ class Client:
         g = await self._connection.api.guilds.post(json={'name': name})
         return Guild(self._connection, g)
 
-    async def fetch_guild(self, id: int) -> Guild:
+    async def fetch_guild(
+        self, id: int, fetch_members: bool = False, fetch_channels: bool = True
+    ) -> Guild:
         """|coro|
 
         Fetches a guild by ID.
@@ -58,6 +60,10 @@ class Client:
         ----------
         id: int
             The guild's ID.
+        fetch_members: Optional[bool], default False
+            Whether to fetch the guild's members. Defaults to ``False``.
+        fetch_channels: Optional[bool], default True
+            Whether to fetch the guild's channels. Defaults to ``True``.
 
         Returns
         -------
@@ -69,7 +75,9 @@ class Client:
         :exc:`NotFound`
             A guild with the given ID was not found.
         """
-        g = await self._connection.api.guilds(id).get()
+        g = await self._connection.api.guilds(id).get(
+            params={'members': fetch_members, 'channels': fetch_channels}
+        )
         return Guild(self._connection, g)
 
     @overload
@@ -121,7 +129,7 @@ class Client:
         .. code-block:: python3
 
             asyncio.run(self.start, *args, **kwargs)
-        
+
         If you want finer control over the event loop, use :meth:`Client.start` instead.
         """
         asyncio.run(self.start(*args, **kwargs))
