@@ -56,7 +56,9 @@ extensions = [
 napoleon_google_docstring = False
 napoleon_numpy_docstring = True
 napoleon_include_init_with_doc = False
-autodoc_member_order = "groupwise"
+autodoc_class_signature = 'seperated'
+autodoc_typehints = 'description'
+autodoc_member_order = 'groupwise'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = []
