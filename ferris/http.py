@@ -93,7 +93,8 @@ class HTTPClient:
                     content = await response.text()
 
                     if 400 > response.status >= 200:
-                        return cls(content)
+                        token = from_json(content)['token']
+                        return cls(token)
 
                     if response.status == 400:
                         data = from_json(content)
