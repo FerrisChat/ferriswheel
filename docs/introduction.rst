@@ -37,6 +37,7 @@ Here is a list of websites you can learn python at (from ``lp`` tag in Discord.p
 * http://python.swaroopch.com/ (useful book)
 * https://automatetheboringstuff.com/ (for complete beginners to programming)
 * http://greenteapress.com/wp/think-python-2e/ (another decent book)
+
 See also:
 
 * http://www.codeabbey.com/ (exercises for beginners)
@@ -68,7 +69,7 @@ To install FerrisWheel you can type the following command
 
 or 
 
-.. code-block:: ps
+.. code-block:: ps1
 
     py -3 -m pip install ferriswheel
 
