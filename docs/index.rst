@@ -36,5 +36,5 @@ This is the right place for you to start.
     ferriswheel.rst
 
 Index
-================
+=====
 * :ref:`genindex`
