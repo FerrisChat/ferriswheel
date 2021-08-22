@@ -18,7 +18,7 @@ from . import plugins, utils
 from .utils import *
 
 
-import urllib
+import urllib.request
 
 
 def create_user(username: str, password: str, email: str) -> User:
