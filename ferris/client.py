@@ -47,6 +47,13 @@ class Client(Dispatcher):
 
     def _initialize_connection(self, token: str, /) -> None:
         self._connection._initialize_http(token)
+    
+    async def on_login(self) -> None:
+        """|coro|
+
+        Called when the client has logged in.
+        """
+        pass
 
     async def create_guild(self, name: str) -> Guild:
         """|coro|
@@ -242,9 +249,7 @@ class Client(Dispatcher):
         else:
             await self._connection._initialize_http_with_email(email, password, id)
         
-        future = self.loop.create_future()
-
-        await future
+        await self.on_login()
 
     def run(self, *args, **kwargs):
         """A helper function equivalent to
