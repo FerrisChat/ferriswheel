@@ -241,6 +241,10 @@ class Client(Dispatcher):
             self._initialize_connection(token)
         else:
             await self._connection._initialize_http_with_email(email, password, id)
+        
+        future = self.loop.create_future()
+
+        await future
 
     def run(self, *args, **kwargs):
         """A helper function equivalent to
