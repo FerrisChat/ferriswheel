@@ -12,6 +12,27 @@ if TYPE_CHECKING:
 __all__ = ('User',)
 
 
+class PartialUser(BaseObject):
+    """
+    Represents a Partial FerrisChat User.
+    """
+
+    __slots__ = ('_name',)
+
+    def __init__(self, data: Data, /) -> None:
+        self._process_data(data)
+
+    def _process_data(self, data: Data) -> None:
+        self._store_snowflake(cast(int, data.get('id')))
+
+        self._name = data.get('name')
+
+    @property
+    def name(self) -> str:
+        """str: The user's name."""
+        return self._name
+
+
 class User(BaseObject):
     """
     Represents a FerrisChat user.
@@ -66,7 +87,7 @@ class User(BaseObject):
     def __del__(self, /) -> None:
         if not hasattr(self, '_connection'):
             return
-        
+
         self._connection.deref_user(self.id)
 
     def __expr__(self, /) -> str:

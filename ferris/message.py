@@ -30,7 +30,6 @@ class Message(BaseObject):
 
         self._author_id: int = cast(int, data.get('author_id'))
 
-
     async def edit(self) -> None:
         """|coro|
 
@@ -47,7 +46,7 @@ class Message(BaseObject):
         Deletes this message.
         """
         await self._connection.api.messages(self.id).delete()
-    
+
     @property
     def author_id(self, /) -> int:
         """int: Returns the author ID of this message."""

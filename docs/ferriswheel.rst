@@ -3,6 +3,12 @@
 FerrisWheel API Reference
 =========================
 
+
+Create User
+-----------
+
+.. autofunction:: ferris.create_user
+
 Client
 ------
 
@@ -74,6 +80,8 @@ Utility Functions
 -----------------
 
 .. autofunction:: get_snowflake_creation_date
+
+.. autofunction:: find
 
 Enumerations
 ------------

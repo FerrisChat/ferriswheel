@@ -48,10 +48,10 @@ class Connection:
         self._channels: Dict[int, Channel] = {}
 
         self._messages: deque = deque(maxlen=self._max_messages_count)
-    
+
     def deref_user(self, id: int, /) -> None:
         self._users.pop(id, None)
-    
+
     def deref_channel(self, id: int, /) -> None:
         self._channels.pop(id, None)
 

@@ -18,9 +18,11 @@ from .errors import (
 from .types import Data, SupportsStr
 from .utils import from_json
 
-API_BASE_URL: str = 'https://api.ferris.chat/api/v0'
 
-__all__ = ('APIRouter', 'HTTPClient')
+__all__ = ('APIRouter', 'HTTPClient', 'API_BASE_URL')
+
+
+API_BASE_URL: str = 'https://api.ferris.chat/api/v0'
 
 
 class APIRouter:

@@ -20,7 +20,7 @@ class Dispatcher:
     def dispatch(self, event: str, *args) -> None:
         if event not in self.event_handlers:
             return
-        
+
         for handler in self.event_handlers[event]:
             self.loop.create_task(handler(*args))
 

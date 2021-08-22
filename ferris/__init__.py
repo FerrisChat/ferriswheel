@@ -15,3 +15,41 @@ from .member import *
 from .message import *
 from .user import *
 from . import plugins, utils
+from .utils import *
+
+
+import urllib
+
+
+def create_user(username: str, password: str, email: str) -> User:
+    """
+    Creates a new user.
+
+    Parameters
+    ----------
+    username: str
+        The user's username.
+    password: str
+        The user's password.
+    email: str
+        The user's email.
+
+    Returns
+    -------
+    PartialUser
+        The created user.
+    """
+    resp = urllib.request.urlopen(
+        urllib.request.Request(
+            f'{API_BASE_URL}/users',
+            data=to_json(
+                {'email': email, 'password': password, 'username': username}
+            ).encode('utf-8'),
+            headers={'Content-Type': 'application/json'},
+            method='POST',
+        )
+    )
+    content = resp.read().decode('utf-8')
+    js = from_json(content)
+
+    return PartialUser(js)
