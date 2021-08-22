@@ -35,7 +35,6 @@ This is the right place for you to start.
 
     ferriswheel.rst
 
-Index and Search
+Index
 ================
 * :ref:`genindex`
-* :ref:`search`
