@@ -2,14 +2,16 @@ from __future__ import annotations
 
 from asyncio import AbstractEventLoop
 from collections import deque
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING, Dict, Optional
 
 from .http import APIRouter, HTTPClient
+from .utils import find
 
 if TYPE_CHECKING:
     from .guild import Guild
     from .message import Message
     from .user import User
+    from .channel import Channel
 
 
 __all__ = ('Connection',)
@@ -23,7 +25,7 @@ class Connection:
 
         self._max_messages_count: int = options.get("max_messages_count", 1000)
 
-        self._clear_store()
+        self.clear_store()
 
     def _store_token(self, token: str, /) -> None:
         self.__token = token
@@ -40,17 +42,33 @@ class Connection:
         self.api = APIRouter(self._http)
         self._store_token(await self._http.__token)
 
-    def _clear_store(self, /) -> None:
+    def clear_store(self, /) -> None:
         self._users: Dict[int, User] = {}
         self._guilds: Dict[int, Guild] = {}
+        self._channels: Dict[int, Channel] = {}
 
         self._messages: deque = deque(maxlen=self._max_messages_count)
 
-    def _store_message(self, message: Message, /) -> None:
+    def store_message(self, message: Message, /) -> None:
         self._messages.append(message)
 
-    def _store_user(self, user: User, /) -> None:
+    def store_user(self, user: User, /) -> None:
         self._users[user.id] = user
 
-    def _store_guild(self, guild: Guild, /) -> None:
+    def store_guild(self, guild: Guild, /) -> None:
         self._guilds[guild.id] = guild
+
+    def store_channel(self, channel: Channel, /) -> None:
+        self._channels[channel.id] = channel
+
+    def get_message(self, id: int, /) -> Optional[Message]:
+        return find(lambda m: m.id == id, self._messages)
+
+    def get_user(self, id: int, /) -> Optional[User]:
+        return self._users.get(id)
+
+    def get_guild(self, id: int, /) -> Optional[Guild]:
+        return self._guilds.get(id)
+
+    def get_channel(self, id: int, /) -> Optional[Channel]:
+        return self._channels.get(id)

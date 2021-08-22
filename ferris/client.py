@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING, overload, Optional
 
 from .connection import Connection
 from .guild import Guild
+from .user import User
+from .channel import Channel
+from .message import Message
 
 __all__ = ('Client',)
 
@@ -48,6 +51,108 @@ class Client:
         """
         g = await self._connection.api.guilds.post(json={'name': name})
         return Guild(self._connection, g)
+
+    def get_message(self, id: int) -> Optional[Message]:
+        """
+        Gets a message from the internal message buffer.
+
+        Parameters
+        ----------
+        id: int
+            The ID of the message to get.
+
+        Returns
+        -------
+        Optional[:class:`Message`]
+            The message with the given ID, or ``None`` if it does not exist.
+        """
+        return self._connection.get_message(id)
+
+    def get_channel(self, id: int) -> Optional[Channel]:
+        """
+        Gets a channel from the internal channel buffer.
+
+        Parameters
+        ----------
+        id: int
+            The ID of the channel to get.
+
+        Returns
+        -------
+        Optional[:class:`Channel`]
+            The channel with the given ID, or ``None`` if it does not exist.
+        """
+        return self._connection.get_channel(id)
+
+    def get_user(self, id: int) -> Optional[User]:
+        """
+        Gets a user from the internal user buffer.
+
+        Parameters
+        ----------
+        id: int
+            The ID of the user to get.
+
+        Returns
+        -------
+        Optional[:class:`User`]
+            The user with the given ID, or ``None`` if it does not exist.
+        """
+        return self._connection.get_user(id)
+
+    async def fetch_message(self, id: int) -> Message:
+        """|coro|
+
+        Fetches a message from the internal message buffer.
+
+        Parameters
+        ----------
+        id: int
+            The ID of the message to fetch.
+
+        Returns
+        -------
+        :class:`Message`
+            The message with the given ID.
+        """
+        m = await self._connection.api.messages(id).get()
+        return Message(self._connection, m)
+
+    async def fetch_channel(self, id: int) -> Channel:
+        """|coro|
+
+        Fetches a channel by ID.
+
+        Parameters
+        ----------
+        id: int
+            The ID of the channel to fetch.
+
+        Returns
+        -------
+        :class:`Channel`
+            The channel with the given ID.
+        """
+        c = await self._connection.api.channels(id).get()
+        return Channel(self._connection, c)
+
+    async def fetch_user(self, id: int) -> User:
+        """|coro|
+
+        Fetches a user by ID.
+
+        Parameters
+        ----------
+        id: int
+            The ID of the user to fetch.
+
+        Returns
+        -------
+        :class:`User`
+            The user with the given ID.
+        """
+        u = await self._connection.api.users(id).get()
+        return User(self._connection, u)
 
     async def fetch_guild(
         self, id: int, fetch_members: bool = False, fetch_channels: bool = True

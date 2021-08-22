@@ -42,11 +42,8 @@ class Message(BaseObject):
         """|coro|
 
         Deletes this message.
-
-        .. warning::
-            This method will do nothing as FerrisChat has not implemented this feature yet.
         """
-        ...
+        await self._connection.api.messages(self.id).delete()
 
     @property
     def content(self, /) -> str:

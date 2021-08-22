@@ -17,7 +17,7 @@ class Channel(BaseObject):
     Represents a channel in FerrisChat.
     """
 
-    __slots__ = ('_connection', '_name')
+    __slots__ = ('_connection', '_name', '_guild_id')
 
     def __init__(self, connection: Connection, data: Data, /) -> None:
         self._connection: Connection = connection
@@ -29,16 +29,25 @@ class Channel(BaseObject):
 
         self._name: str = cast(str, data.get('name'))
 
+        self._guild_id: int = cast(int, data.get('guild_id'))
+
     async def fetch_message(self, message_id: int) -> Message:
         """
         |coro|
 
         Fetches a message from this channel.
 
-        .. warning::
-            This method will do nothing as FerrisChat has not implemented this feature yet.
+        Parameters
+        ----------
+        message_id: int
+            The ID of the message to fetch.
+
+        Returns
+        -------
+        Message
         """
-        ...
+        m = await self._connection.api.messages(message_id).get()
+        return Message(self._connection, m)
 
     async def send(self, content: str) -> None:
         """
@@ -56,8 +65,10 @@ class Channel(BaseObject):
         Message
             The message that was sent.
         """
-        m = await self._connection.api.channels(self.id).messages.post(
-            json={'content': content}
+        m = (
+            await self._connection.api.guilds(self.guild_id)
+            .channels(self.id)
+            .messages.post(json={'content': content})
         )
         return Message(self._connection, m)
 
@@ -77,11 +88,13 @@ class Channel(BaseObject):
         |coro|
 
         Deletes this channel.
-
-        .. warning::
-            This method will do nothing as FerrisChat has not implemented this feature yet.
         """
-        ...
+        await self._connection.api.channels(self.id).delete()
+
+    @property
+    def guild_id(self) -> int:
+        """int: The ID of the guild this channel belongs to."""
+        return self._guild_id
 
     @property
     def name(self, /) -> str:

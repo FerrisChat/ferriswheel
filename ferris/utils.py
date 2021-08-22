@@ -1,7 +1,9 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, Callable, Iterable, Optional, TypeVar
 
-__all__ = ('to_json', 'from_json', 'get_snowflake_creation_date')
+__all__ = ('to_json', 'from_json', 'get_snowflake_creation_date', 'find')
+
+T = TypeVar('T', covariant=True)
 
 try:
     import orjson
@@ -44,3 +46,26 @@ def get_snowflake_creation_date(snowflake: int) -> datetime:
     """
     seconds = (snowflake >> 64 + FERRIS_EPOCH) / 1000
     return datetime.utcfromtimestamp(seconds)
+
+
+def find(predicate: Callable[[T], Any], iterable: Iterable[T]) -> Optional[T]:
+    """Finds the first element in the iterable that satisfies the predicate.
+
+    Parameters
+    ----------
+    predicate: Callable[[Any], Any]
+        The predicate to check each element against.
+    Iterable: Iterable[Any]
+        The iterable to search.
+
+    Returns
+    -------
+    Any
+        The first element in the iterable that satisfies the predicate.
+        Can be None if no element satisfies the predicate.
+
+    """
+    for element in iterable:
+        if predicate(element):
+            return element
+    return None
