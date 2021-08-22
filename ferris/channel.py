@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from typing import cast, TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from .base import BaseObject
-
+from .message import Message
 
 if TYPE_CHECKING:
-    from .message import Message
     from .connection import Connection
     from .types import Data
 
