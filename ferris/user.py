@@ -63,5 +63,11 @@ class User(BaseObject):
         """List[:class:`~.Guild`]: A list of the guilds this user is in."""
         return list(self._guilds.values())
 
+    def __del__(self, /) -> None:
+        if not hasattr(self, '_connection'):
+            return
+        
+        self._connection.deref_user(self.id)
+
     def __expr__(self, /) -> str:
         return f'<User id={self.id} name={self.name!r}>'

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, overload, Optional
+from typing import TYPE_CHECKING, overload, Optional, Dict, List, Awaitable
 
 from .connection import Connection
 from .guild import Guild
@@ -9,10 +9,23 @@ from .user import User
 from .channel import Channel
 from .message import Message
 
-__all__ = ('Client',)
+__all__ = ('Dispatcher', 'Client')
 
 
-class Client:
+class Dispatcher:
+    def __init__(self, loop: asyncio.AbstractEventLoop):
+        self.loop: asyncio.AbstractEventLoop = loop
+        self.event_handlers: Dict[str, List[Awaitable]] = {}
+
+    def dispatch(self, event: str, *args) -> None:
+        if event not in self.event_handlers:
+            return
+        
+        for handler in self.event_handlers[event]:
+            self.loop.create_task(handler(*args))
+
+
+class Client(Dispatcher):
     """Represents a client connection to FerrisChat.
 
     Parameters
@@ -30,6 +43,7 @@ class Client:
     def __init__(self, /, loop: asyncio.AbstractEventLoop = None, **options) -> None:
         self.loop = loop or asyncio.get_event_loop()
         self._connection: Connection = Connection(self.loop, **options)
+        super().__init__(loop)
 
     def _initialize_connection(self, token: str, /) -> None:
         self._connection._initialize_http(token)

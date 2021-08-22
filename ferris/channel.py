@@ -100,3 +100,9 @@ class Channel(BaseObject):
     def name(self, /) -> str:
         """str: The name of this channel."""
         return self._name
+    
+    def __del__(self, /) -> None:
+        if not hasattr(self, '_connection'):
+            return
+        
+        self._connection.deref_channel(self.id)
