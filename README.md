@@ -5,6 +5,8 @@
 
 # FerrisWheel
 <img src="./docs/_static/ferriswheel.svg" alt="FerrisWheel Logo" width="300"/>
+
+
 An async-ready Python wrapper around [FerrisChat](https://ferris.chat)'s API.
 
 ## Installation Instructions
