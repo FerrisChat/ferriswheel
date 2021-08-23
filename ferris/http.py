@@ -22,7 +22,7 @@ from .utils import from_json
 __all__ = ('APIRouter', 'HTTPClient', 'API_BASE_URL')
 
 
-API_BASE_URL: str = 'https://api.ferris.chat/api/v0'
+API_BASE_URL: str = 'https://api.ferris.chat/v0'
 
 
 class APIRouter:
