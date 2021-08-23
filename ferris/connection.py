@@ -19,7 +19,8 @@ __all__ = ('Connection',)
 
 class Connection:
     def __init__(self, loop: AbstractEventLoop, /, **options) -> None:
-        self.api: APIRouter = None
+        self.loop: AbstractEventLoop = loop
+
         self._http: HTTPClient = None
         self.__token: str = None
 
@@ -27,19 +28,21 @@ class Connection:
 
         self.clear_store()
 
+    @property
+    def api(self) -> Optional[APIRouter]:
+        return self._http.api if self._http else None
+
     def _store_token(self, token: str, /) -> None:
         self.__token = token
 
     def _initialize_http(self, token: str, /) -> None:
         self._http = HTTPClient(token)
-        self.api = APIRouter(self._http)
         self._store_token(token)
 
     async def _initialize_http_with_email(
         self, email: str, password: str, id: int, /
     ) -> None:
         self._http = await HTTPClient.from_email_and_password(email, password, id)
-        self.api = APIRouter(self._http)
         self._store_token(self._http.token)
 
     def clear_store(self, /) -> None:
