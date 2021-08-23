@@ -2,7 +2,15 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, overload, Literal, TypeVar, TYPE_CHECKING
+from typing import (
+    Any,
+    overload,
+    Literal,
+    TypeVar,
+    TYPE_CHECKING,
+    Protocol,
+    runtime_checkable,
+)
 
 from .utils import get_snowflake_creation_date
 
@@ -15,8 +23,8 @@ if TYPE_CHECKING:
     from .types import Data, Snowflake
 
 
-
-class SnowflakeObject(ABC):
+@runtime_checkable
+class SnowflakeObject(ABC, Protocol):
     """An abstract base class representing objects that have a snowflake ID."""
 
     __slots__ = ('_id',)

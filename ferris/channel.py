@@ -4,10 +4,11 @@ from typing import TYPE_CHECKING, cast
 
 from .base import BaseObject
 from .message import Message
+from .utils import sanitize_id
 
 if TYPE_CHECKING:
     from .connection import Connection
-    from .types import Data
+    from .types import Data, Snowflake, Id
 
 __all__ = ('Channel',)
 
@@ -30,7 +31,7 @@ class Channel(BaseObject):
 
         self._guild_id: int = cast(int, data.get('guild_id'))
 
-    async def fetch_message(self, message_id: int) -> Message:
+    async def fetch_message(self, message_id: Id) -> Message:
         """
         |coro|
 
@@ -45,6 +46,7 @@ class Channel(BaseObject):
         -------
         Message
         """
+        message_id = sanitize_id(message_id)
         m = await self._connection.api.messages(message_id).get()
         return Message(self._connection, m)
 
@@ -91,7 +93,7 @@ class Channel(BaseObject):
         await self._connection.api.channels(self.id).delete()
 
     @property
-    def guild_id(self) -> int:
+    def guild_id(self) -> Snowflake:
         """int: The ID of the guild this channel belongs to."""
         return self._guild_id
 

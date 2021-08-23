@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Any, Callable, Iterable, Optional, TypeVar
 
+from .types import Id, Snowflake
+
 __all__ = ('to_json', 'from_json', 'get_snowflake_creation_date', 'find')
 
 T = TypeVar('T', covariant=True)
@@ -29,6 +31,22 @@ else:
         return json.dumps(obj, ensure_ascii=True)
 
     from_json = json.loads
+
+
+def sanitize_id(id: Id) -> Snowflake:
+    """Sanitizes an ID.
+
+    Parameters
+    ----------
+    id: Id
+        The ID to sanitize.
+
+    Returns
+    -------
+    Snowflake
+        The sanitized ID.
+    """
+    return getattr(id, 'id', id)
 
 
 def get_snowflake_creation_date(snowflake: int) -> datetime:

@@ -9,6 +9,10 @@ from .user import User
 from .channel import Channel
 from .websocket import Websocket
 from .message import Message
+from .utils import sanitize_id
+
+if TYPE_CHECKING:
+    from .types import Id
 
 __all__ = ('Dispatcher', 'Client')
 
@@ -74,7 +78,7 @@ class Client(Dispatcher):
         g = await self._connection.api.guilds.post(json={'name': name})
         return Guild(self._connection, g)
 
-    def get_message(self, id: int) -> Optional[Message]:
+    def get_message(self, id: Id) -> Optional[Message]:
         """
         Gets a message from the internal message buffer.
 
@@ -88,9 +92,10 @@ class Client(Dispatcher):
         Optional[:class:`Message`]
             The message with the given ID, or ``None`` if it does not exist.
         """
+        id = sanitize_id(id)
         return self._connection.get_message(id)
 
-    def get_channel(self, id: int) -> Optional[Channel]:
+    def get_channel(self, id: Id) -> Optional[Channel]:
         """
         Gets a channel from the internal channel buffer.
 
@@ -104,9 +109,10 @@ class Client(Dispatcher):
         Optional[:class:`Channel`]
             The channel with the given ID, or ``None`` if it does not exist.
         """
+        id = sanitize_id(id)
         return self._connection.get_channel(id)
 
-    def get_user(self, id: int) -> Optional[User]:
+    def get_user(self, id: Id) -> Optional[User]:
         """
         Gets a user from the internal user buffer.
 
@@ -120,9 +126,10 @@ class Client(Dispatcher):
         Optional[:class:`User`]
             The user with the given ID, or ``None`` if it does not exist.
         """
+        id = sanitize_id(id)
         return self._connection.get_user(id)
 
-    async def fetch_message(self, id: int) -> Message:
+    async def fetch_message(self, id: Id) -> Message:
         """|coro|
 
         Fetches a message from the internal message buffer.
@@ -137,10 +144,11 @@ class Client(Dispatcher):
         :class:`Message`
             The message with the given ID.
         """
+        id = sanitize_id(id)
         m = await self._connection.api.messages(id).get()
         return Message(self._connection, m)
 
-    async def fetch_channel(self, id: int) -> Channel:
+    async def fetch_channel(self, id: Id) -> Channel:
         """|coro|
 
         Fetches a channel by ID.
@@ -155,10 +163,11 @@ class Client(Dispatcher):
         :class:`Channel`
             The channel with the given ID.
         """
+        id = sanitize_id(id)
         c = await self._connection.api.channels(id).get()
         return Channel(self._connection, c)
 
-    async def fetch_user(self, id: int) -> User:
+    async def fetch_user(self, id: Id) -> User:
         """|coro|
 
         Fetches a user by ID.
@@ -173,11 +182,12 @@ class Client(Dispatcher):
         :class:`User`
             The user with the given ID.
         """
+        id = sanitize_id(id)
         u = await self._connection.api.users(id).get()
         return User(self._connection, u)
 
     async def fetch_guild(
-        self, id: int, fetch_members: bool = False, fetch_channels: bool = True
+        self, id: Id, fetch_members: bool = False, fetch_channels: bool = True
     ) -> Guild:
         """|coro|
 
@@ -202,8 +212,12 @@ class Client(Dispatcher):
         :exc:`NotFound`
             A guild with the given ID was not found.
         """
+        id = sanitize_id(id)
         g = await self._connection.api.guilds(id).get(
-            params={'members': str(fetch_members).lower(), 'channels': str(fetch_channels).lower()}
+            params={
+                'members': str(fetch_members).lower(),
+                'channels': str(fetch_channels).lower(),
+            }
         )
         return Guild(self._connection, g)
 
@@ -212,7 +226,7 @@ class Client(Dispatcher):
         ...
 
     @overload
-    async def start(self, email: str, passsword: str, id: int) -> None:
+    async def start(self, email: str, passsword: str, id: Id) -> None:
         ...
 
     async def start(
@@ -236,6 +250,8 @@ class Client(Dispatcher):
         id: Optional[int]
             The ID of the guild to join.
         """
+        id = sanitize_id(id)
+
         if email is not None and password is not None and token is not None:
             raise ValueError('Cannot pass both email and password and token')
 

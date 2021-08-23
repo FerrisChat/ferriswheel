@@ -14,6 +14,8 @@ from .errors import (
     HTTPException,
     NotFound,
     Unauthorized,
+    MissingImplementation,
+    FerrisServerError,
 )
 from .utils import from_json
 
@@ -84,6 +86,10 @@ class HTTPClient:
 
         self._buckets_lock: Dict[str, asyncio.Event] = {}
         self._api_router: APIRouter = APIRouter(self)
+    
+    @property
+    def token(self) -> str:
+        return self.__token
 
     @property
     def api(self) -> APIRouter:
@@ -196,13 +202,20 @@ class HTTPClient:
 
                 if 500 <= response.status < 600:
                     if tries == 1:
-                        try:
-                            data = from_json(content)
-                            reason = data.get('reason')
-                        except:  # TODO: Fix broad except
-                            reason = content
+                        if response.status == 500:
+                            try:
+                                data = from_json(content)
+                                reason = data.get('reason')
+                            except:  # TODO: Fix broad except
+                                reason = content
 
-                        raise FerrisUnavailable(response, reason)
+                            raise FerrisServerError(response, reason)
+
+                        if response.status == 501:
+                            raise MissingImplementation(response, content)
+
+                        raise FerrisUnavailable(response, content)
+
                     continue
 
                 raise HTTPException(response, content)

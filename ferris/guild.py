@@ -3,12 +3,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
 from .base import BaseObject
+from .utils import sanitize_id
 
 if TYPE_CHECKING:
     from .channel import Channel
     from .member import Member
     from .connection import Connection
-    from .types import Data
+    from .types import Data, Id, Snowflake
 
 
 __all__ = ('Guild',)
@@ -44,7 +45,7 @@ class Guild(BaseObject):
             member = Member(self._connection, m)
             self._members[member.id] = member
 
-    async def fetch_member(self, id: int) -> Member:
+    async def fetch_member(self, id: Id) -> Member:
         """|coro|
 
         Fetches a member from this guild.
@@ -73,7 +74,7 @@ class Guild(BaseObject):
         )
         return Channel(self._connection, c)
 
-    async def fetch_channel(self, id: int) -> Channel:
+    async def fetch_channel(self, id: Id) -> Channel:
         """|coro|
 
         Fetches a channel from this guild.
@@ -87,6 +88,7 @@ class Guild(BaseObject):
         -------
         :class:`~.Channel`
         """
+        id = sanitize_id(id)
         c = await self._connection.api.guilds(self.id).channels(id).get()
         return Channel(self._connection, c)
 
@@ -110,7 +112,7 @@ class Guild(BaseObject):
         """
         ...
 
-    def get_channel(self, id: int) -> Optional[Channel]:
+    def get_channel(self, id: Id) -> Optional[Channel]:
         """Tries to retrieve a :class:`.~Channel` object
         given it's ID from the internal cache.
 
@@ -126,9 +128,10 @@ class Guild(BaseObject):
         None
             The channel was not found in the internal cache.
         """
+        id = sanitize_id(id)
         return self._channels.get(id)
 
-    def get_member(self, id: int) -> Optional[Member]:
+    def get_member(self, id: Id) -> Optional[Member]:
         """Tries to retrieve a :class:`.~Member` object
         given it's ID from the internal cache.
 
@@ -144,10 +147,11 @@ class Guild(BaseObject):
         None
             The member was not found in the internal cache.
         """
+        id = sanitize_id(id)
         return self._members.get(id)
 
     @property
-    def owner_id(self, /) -> int:
+    def owner_id(self, /) -> Snowflake:
         """int: The ID of the owner of this guild."""
         return self._owner_id
 

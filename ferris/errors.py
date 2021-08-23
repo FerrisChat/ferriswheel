@@ -7,8 +7,10 @@ __all__ = (
     'Unauthorized',
     'Forbidden',
     'NotFound',
+    'FerrisServerError',
     'FerrisUnavailable',
     'WebsocketException',
+    'MissingImplementation',
     'Reconnect',
 )
 
@@ -62,6 +64,18 @@ class Forbidden(HTTPException):
 
 class NotFound(HTTPException):
     """The server cannot find what you requesed for."""
+
+    pass
+
+
+class MissingImplementation(HTTPException):
+    """You just discovered Ferris at work! Don't tell anybody, but this is planned for the future!"""
+
+    pass
+
+
+class FerrisServerError(HTTPException):
+    """Ferris is currently unavailable. Looks like a JS rabbit got into the server."""
 
     pass
 

@@ -40,7 +40,7 @@ class Connection:
     ) -> None:
         self._http = await HTTPClient.from_email_and_password(email, password, id)
         self.api = APIRouter(self._http)
-        self._store_token(self._http.__token)
+        self._store_token(self._http.token)
 
     def clear_store(self, /) -> None:
         self._users: Dict[int, User] = {}
