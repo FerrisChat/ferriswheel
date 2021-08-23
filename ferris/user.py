@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .connection import Connection
     from .types import Data
 
-__all__ = ('User',)
+__all__ = ('PartialUser', 'User')
 
 
 class PartialUser(BaseObject):
