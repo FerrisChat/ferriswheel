@@ -35,13 +35,13 @@ class Guild(BaseObject):
 
         self._channels: Dict[int, Channel] = {}
 
-        for c in data.get('channels', []):
+        for c in data.get('channels') or []:
             channel = Channel(self._connection, c)
             self._channels[channel.id] = channel
 
         self._members: Dict[int, Member] = {}
 
-        for m in data.get('members', []):
+        for m in data.get('members') or []:
             member = Member(self._connection, m)
             self._members[member.id] = member
 
