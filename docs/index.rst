@@ -1,7 +1,7 @@
 Welcome to FerrisWheel's documentation!
 =======================================
 
-.. image:: /_static/ferriswheel.svg
+.. image:: https://raw.githubusercontent.com/FerrisChat/ferriswheel/v0.0a1.post1/docs/_static/ferriswheel.svg
     :alt: FerrisWheel's logo
     :width: 500
 
@@ -13,7 +13,7 @@ Join our support server if you have any question:
     :target: https://discord.gg/X4Tyq88MMS
     :alt: FerrisWheel's Discord server
 
-A asynchronous wrapper python wrapper for https://ferris.chat api.
+An async-ready Python wrapper around `FerrisChat <https://ferris.chat>`_'s API.
 
 Introduction
 ------------
