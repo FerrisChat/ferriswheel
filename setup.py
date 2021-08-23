@@ -31,6 +31,9 @@ setup(
     version=version,
     packages=[
         "ferris",
+        "ferris.types",
+        "ferris.plugins",
+        "ferris.plugins.commands"
     ],
     license="MIT",
     description="An asynchronous python wrapper for ferris.chat api",
