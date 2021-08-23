@@ -21,6 +21,9 @@ with open('ferris/__init__.py', 'r') as f:
 with open('README.md', encoding='utf-8') as f:
     readme = f.read()
 
+with open('requirements.txt', encoding='utf-8') as f:
+    requirements = f.readlines()
+
 setup(
     name="ferriswheel",
     author=author,
@@ -36,11 +39,11 @@ setup(
         "ferris.plugins.commands"
     ],
     license="MIT",
-    description="An asynchronous python wrapper for ferris.chat api",
+    description="An asynchronous Python wrapper around FerrisChat's API",
     long_description=readme,
     long_description_content_type="text/markdown",
     include_package_data=True,
-    install_requires=["aiohttp"],
+    install_requires=requirements,
     extras_require={
         "docs": [
             "sphinx>=4.1.1",
@@ -48,7 +51,10 @@ setup(
             'sphinx-copybutton',
             'readthedocs-sphinx-search',
         ],
-        "performance": ["orjson>=1.3.0", "aiohttp[speedups]"],
+        "performance": [
+            "orjson>=1.3.0",
+            "aiohttp[speedups]"
+        ],
     },
     python_requires=">=3.8.0",
     classifiers=[
