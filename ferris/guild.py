@@ -24,7 +24,6 @@ class Guild(BaseObject):
         self._process_data(data)
 
     def _process_data(self, data: Data, /) -> None:
-        from .channel import Channel
         from .member import Member
 
         self._store_snowflake(cast(int, data.get('id')))
