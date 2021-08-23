@@ -52,7 +52,7 @@ class User(BaseObject):
 
         self._guilds: Dict[int, Guild] = {}
 
-        for g in data.get('guilds', []):
+        for g in data.get('guilds') or []:
             guild = Guild(self._connection, g)
             self._guilds[guild.id] = guild
 
