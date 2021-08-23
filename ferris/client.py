@@ -219,6 +219,11 @@ class Client(Dispatcher):
             }
         )
         return Guild(self._connection, g)
+    
+    async def stop(self) -> None:
+        await self._connection._http.session.close()
+
+        # TODO: close websocket connection
 
     @overload
     async def start(self, token: str) -> None:
