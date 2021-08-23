@@ -68,7 +68,7 @@ Message
     :inherited-members:
 
 Users
-----
+-----
 
 .. attributetable:: User
 
