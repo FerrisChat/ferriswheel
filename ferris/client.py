@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from typing import TYPE_CHECKING, overload, Optional, Dict, List, Awaitable
+import logging
 
 from .connection import Connection
 from .guild import Guild
@@ -13,6 +14,10 @@ from .utils import sanitize_id
 
 if TYPE_CHECKING:
     from .types import Id
+
+
+log = logging.getLogger(__name__)
+
 
 __all__ = ('Dispatcher', 'Client')
 
@@ -266,8 +271,10 @@ class Client(Dispatcher):
             raise ValueError('Must pass either token or email and password and id')
 
         if token is not None:
+            log.info("Logging in with Token")
             self._initialize_connection(token)
         else:
+            log.info("Logging in with Email and Password")
             await self._connection._initialize_http_with_email(email, password, id)
 
         await self.on_login()

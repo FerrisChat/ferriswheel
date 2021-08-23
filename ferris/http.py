@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Awaitable, ClassVar, Dict, Optional, TYPE_CHECKING
+import logging
+from typing import TYPE_CHECKING, Awaitable, ClassVar, Dict, Optional
 from urllib.parse import quote
 
 import aiohttp
@@ -9,19 +10,20 @@ import aiohttp
 from . import __version__
 from .errors import (
     BadRequest,
+    FerrisServerError,
     FerrisUnavailable,
     Forbidden,
     HTTPException,
+    MissingImplementation,
     NotFound,
     Unauthorized,
-    MissingImplementation,
-    FerrisServerError,
 )
 from .utils import from_json
 
 if TYPE_CHECKING:
     from .types import Data, SupportsStr
 
+log = logging.getLogger(__name__)
 
 __all__ = (
     'APIRouter',
@@ -86,7 +88,7 @@ class HTTPClient:
 
         self._buckets_lock: Dict[str, asyncio.Event] = {}
         self._api_router: APIRouter = APIRouter(self)
-    
+
     @property
     def token(self) -> str:
         return self.__token
@@ -103,6 +105,7 @@ class HTTPClient:
     async def from_email_and_password(
         cls, email: str, password: str, id: int
     ) -> HTTPClient:
+        log.info("Retriving token from email and password")
         for tries in range(cls.MAX_TRIES):
             async with aiohttp.ClientSession() as session:
                 async with session.post(
@@ -114,6 +117,7 @@ class HTTPClient:
                     if 400 > response.status >= 200:
                         token = from_json(content)['token']
                         return cls(token)
+                        log.info("Successfully Retrived token")
 
                     if response.status == 400:
                         data = from_json(content)
@@ -170,12 +174,17 @@ class HTTPClient:
             ) as response:
                 content = await response.text()
 
+                log.debug(f"{method} {url} Returned {response.status} with {content}")
+
                 if 400 > response.status >= 200:
                     return from_json(content)
 
                 if response.status == 429:
                     data = from_json(content)
                     sleep = data.get("retry_after", 0)
+                    log.warning(
+                        f"We have been ratelimited on {method} {url}, retrying in {sleep} seconds"
+                    )
                     bucket.clear()
                     await asyncio.sleep(sleep)
                     bucket.set()
