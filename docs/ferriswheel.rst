@@ -67,12 +67,18 @@ Message
     :members:
     :inherited-members:
 
-User
+Users
 ----
 
 .. attributetable:: User
 
 .. autoclass:: User
+    :members:
+    :inherited-members:
+
+.. attributetable:: PartialUser
+
+.. autoclass:: PartialUser
     :members:
     :inherited-members:
 
