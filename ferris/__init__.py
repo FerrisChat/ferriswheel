@@ -41,7 +41,7 @@ def create_user(username: str, password: str, email: str) -> User:
     """
     resp = urllib.request.urlopen(
         urllib.request.Request(
-            f'{API_BASE_URL}/users',
+            f'{HTTPClient.API_BASE_URL}/users',
             data=to_json(
                 {'email': email, 'password': password, 'username': username}
             ).encode('utf-8'),
