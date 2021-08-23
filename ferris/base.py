@@ -23,8 +23,7 @@ if TYPE_CHECKING:
     from .types import Data, Snowflake
 
 
-@runtime_checkable
-class SnowflakeObject(ABC, Protocol):
+class SnowflakeObject(ABC):
     """An abstract base class representing objects that have a snowflake ID."""
 
     __slots__ = ('_id',)
