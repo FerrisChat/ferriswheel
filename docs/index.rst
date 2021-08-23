@@ -13,7 +13,7 @@ Join our support server if you have any question:
     :target: https://discord.gg/X4Tyq88MMS
     :alt: FerrisWheel's Discord server
 
-A asynchronous wrapper python wrapper for https://ferris.chat api.
+An asynchronous wrapper python wrapper for https://ferris.chat api.
 
 Introduction
 ------------
