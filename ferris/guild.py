@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
 from .base import BaseObject
+from .channel import Channel
 
 if TYPE_CHECKING:
-    from .channel import Channel
     from .member import Member
     from .connection import Connection
     from .types import Data
