@@ -4,7 +4,7 @@
 
 
 # FerrisWheel
-<img src="./docs/_static/ferriswheel.svg" alt="FerrisWheel Logo" width="300"/>
+<img src="https://raw.githubusercontent.com/FerrisChat/ferriswheel/v0.0a1.post1/docs/_static/ferriswheel.svg" alt="FerrisWheel Logo" width="300"/>
 
 
 An async-ready Python wrapper around [FerrisChat](https://ferris.chat)'s API.
