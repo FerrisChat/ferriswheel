@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
 from .base import BaseObject
 from .utils import sanitize_id
+from .channel import Channel
 
 if TYPE_CHECKING:
-    from .channel import Channel
     from .member import Member
     from .connection import Connection
     from .types import Data, Id, Snowflake
@@ -25,7 +25,6 @@ class Guild(BaseObject):
         self._process_data(data)
 
     def _process_data(self, data: Data, /) -> None:
-        from .channel import Channel
         from .member import Member
 
         self._store_snowflake(cast(int, data.get('id')))

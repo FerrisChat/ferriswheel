@@ -37,7 +37,6 @@ class Client(Dispatcher):
     ----------
     loop: Optional[:class:`asyncio.AbstractEventLoop`]
         The event loop to use for the client. If not passed, then the default event loop is used.
-
     max_messages_count: Optional[int]
         The maximum number of messages to store in the internal message buffer.
         Defaults to ``1000``.
