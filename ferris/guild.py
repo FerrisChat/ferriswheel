@@ -41,7 +41,7 @@ class Guild(BaseObject):
 
         self._members: Dict[int, Member] = {}
 
-        for m in data.get('members', []):
+        for m in data.get('members') or []:
             member = Member(self._connection, m)
             self._members[member.id] = member
 
