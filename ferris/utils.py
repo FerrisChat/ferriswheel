@@ -62,7 +62,7 @@ def get_snowflake_creation_date(snowflake: int) -> datetime:
     :class:`datetime.datetime`
         The creation date of the snowflake.
     """
-    seconds = (snowflake >> 64 + FERRIS_EPOCH) / 1000
+    seconds = ((snowflake >> 64) + FERRIS_EPOCH) / 1000
     return datetime.utcfromtimestamp(seconds)
 
 
