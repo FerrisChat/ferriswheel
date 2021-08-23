@@ -1,6 +1,15 @@
 from __future__ import annotations
 
-from typing import Any, Awaitable, Generic, List, Optional, TYPE_CHECKING, TypeVar, Union
+from typing import (
+    Any,
+    Awaitable,
+    Generic,
+    List,
+    Optional,
+    TYPE_CHECKING,
+    TypeVar,
+    Union,
+)
 
 R = TypeVar('R')
 
@@ -33,10 +42,7 @@ class Command(Generic[P, R]):
     """
 
     def __init__(
-        self,
-        name: str,
-        aliases: List[str],
-        callback: CommandCallbackT
+        self, name: str, aliases: List[str], callback: CommandCallbackT
     ) -> None:
         self.name: str = name
         self.aliases: List[str] = aliases

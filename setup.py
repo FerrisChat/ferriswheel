@@ -32,12 +32,7 @@ setup(
         "Issue tracker": "https://github.com/FerrisChat/ferriswheel/issues/new",
     },
     version=version,
-    packages=[
-        "ferris",
-        "ferris.types",
-        "ferris.plugins",
-        "ferris.plugins.commands"
-    ],
+    packages=["ferris", "ferris.types", "ferris.plugins", "ferris.plugins.commands"],
     license="MIT",
     description="An asynchronous Python wrapper around FerrisChat's API",
     long_description=readme,
@@ -51,10 +46,7 @@ setup(
             'sphinx-copybutton',
             'readthedocs-sphinx-search',
         ],
-        "performance": [
-            "orjson>=1.3.0",
-            "aiohttp[speedups]"
-        ],
+        "performance": ["orjson>=1.3.0", "aiohttp[speedups]"],
     },
     python_requires=">=3.8.0",
     classifiers=[

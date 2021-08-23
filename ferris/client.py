@@ -27,7 +27,9 @@ __all__ = ('Dispatcher', 'Client')
 class Dispatcher:
     def __init__(self, loop: asyncio.AbstractEventLoop):
         self.loop: asyncio.AbstractEventLoop = loop
-        self.event_handlers: defaultdict[str, List[Callable[..., Awaitable]]] = defaultdict(list)
+        self.event_handlers: defaultdict[
+            str, List[Callable[..., Awaitable]]
+        ] = defaultdict(list)
 
     def dispatch(self, event: str, *args, **kwargs) -> None:
         coros = []
@@ -278,7 +280,7 @@ class Client(Dispatcher, EventTemplateMixin):
             }
         )
         return Guild(self._connection, g)
-    
+
     async def stop(self) -> None:
         await self._connection._http.session.close()
 

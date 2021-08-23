@@ -10,7 +10,10 @@ if TYPE_CHECKING:
     from ferris.message import Message
 
     _BasePrefixT = Union[str, Sequence[str]]
-    PrefixT = Union[_BasePrefixT, Callable[['Bot', Message], Union[_BasePrefixT, Awaitable[_BasePrefixT]]]]
+    PrefixT = Union[
+        _BasePrefixT,
+        Callable[['Bot', Message], Union[_BasePrefixT, Awaitable[_BasePrefixT]]],
+    ]
 
 
 class CommandSink:
