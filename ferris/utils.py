@@ -3,7 +3,7 @@ from typing import Any, Callable, Iterable, Optional, TypeVar
 
 from .types import Id, Snowflake
 
-__all__ = ('to_json', 'from_json', 'get_snowflake_creation_date', 'find')
+__all__ = ('to_json', 'from_json', 'get_snowflake_creation_date', 'find', 'dt_to_snowflake')
 
 T = TypeVar('T', covariant=True)
 
@@ -62,8 +62,25 @@ def get_snowflake_creation_date(snowflake: int) -> datetime:
     :class:`datetime.datetime`
         The creation date of the snowflake.
     """
-    seconds = (snowflake >> 64 + FERRIS_EPOCH) / 1000
+    seconds = ((snowflake >> 64) + FERRIS_EPOCH) / 1000
     return datetime.utcfromtimestamp(seconds)
+
+
+def dt_to_snowflake(dt: datetime) -> int:
+    """Generates a random snowflake that was created on the given datetime.
+
+    Parameters
+    ----------
+    dt: :class:`datetime.datetime`
+        The target creation date of the snowflake to generate.
+
+    Returns
+    -------
+    int
+        The generated snowflake.
+    """
+    timestamp = dt.timestamp() * 1000 - FERRIS_EPOCH
+    return int(timestamp) << 64
 
 
 def find(predicate: Callable[[T], Any], iterable: Iterable[T]) -> Optional[T]:

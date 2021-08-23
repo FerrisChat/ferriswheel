@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import asyncio
+
+from collections import defaultdict
 from typing import TYPE_CHECKING, overload, Optional, Dict, List, Awaitable
 import logging
 
@@ -25,17 +27,76 @@ __all__ = ('Dispatcher', 'Client')
 class Dispatcher:
     def __init__(self, loop: asyncio.AbstractEventLoop):
         self.loop: asyncio.AbstractEventLoop = loop
-        self.event_handlers: Dict[str, List[Awaitable]] = {}
+        self.event_handlers: defaultdict[str, List[Callable[..., Awaitable]]] = defaultdict(list)
 
-    def dispatch(self, event: str, *args) -> None:
-        if event not in self.event_handlers:
-            return
+    def dispatch(self, event: str, *args, **kwargs) -> None:
+        coros = []
 
-        for handler in self.event_handlers[event]:
-            self.loop.create_task(handler(*args))
+        if callback := getattr(self, f'on_{event}', False):
+            coros.append(callback(*args, **kwargs))
+
+        if callbacks := self.event_handlers.get(event):
+            coros += [cb(*args, **kwargs) for cb in callbacks]
+
+        if coros:
+            asyncio.gather(*coros)
+
+    def add_listener(self, event: str, callback: Callable[..., Awaitable]) -> None:
+        if event.startswith('on_'):
+            event = event[3:]
+
+        self.event_handlers[event].append(callback)
+
+    def remove_listener(self, event: str, callback: Callable[..., Awaitable]) -> None:
+        if event.startswith('on_'):
+            event = event[3:]
+
+        self.event_handlers[event].remove(callback)
+
+    def clear_listeners(self) -> None:
+        self.event_handlers.clear()
+
+    def stop_listening_to(self, event: str, /) -> None:
+        if event.startswith('on_'):
+            event = event[3:]
+
+        self.event_handlers[event].clear()
+        del self.event_handlers[event]
+
+    def listen(self, event: str = None):
+        def decorator(func: Callable[..., Awaitable]) -> Callable[..., Awaitable]:
+            store = event
+
+            if store is None:
+                store = func.__name__
+
+            if store.startswith('on_'):
+                store = event[3:]
+
+            self.add_listener(store, func)
+            return func
+
+        return decorator
+
+    def event(self, func: Callable[..., Awaitable]) -> Callable[..., Awaitable]:
+        event = func.__name__
+
+        if not event.startswith('on_'):
+            event = 'on_' + event
+
+        setattr(self, event, func)
 
 
-class Client(Dispatcher):
+class EventTemplateMixin:
+    async def on_login(self) -> None:
+        """|coro|
+
+        Called when the client has logged in.
+        """
+        pass
+
+
+class Client(Dispatcher, EventTemplateMixin):
     """Represents a client connection to FerrisChat.
 
     Parameters
@@ -56,13 +117,6 @@ class Client(Dispatcher):
 
     def _initialize_connection(self, token: str, /) -> None:
         self._connection._initialize_http(token)
-
-    async def on_login(self) -> None:
-        """|coro|
-
-        Called when the client has logged in.
-        """
-        pass
 
     async def create_guild(self, name: str) -> Guild:
         """|coro|
@@ -277,8 +331,7 @@ class Client(Dispatcher):
             log.info("Logging in with Email and Password")
             await self._connection._initialize_http_with_email(email, password, id)
 
-        await self.on_login()
-
+        self.dispatch('login')
         self.ws = Websocket(self._connection._http)
 
         # await self.ws.connect()
