@@ -7,6 +7,7 @@ from .connection import Connection
 from .guild import Guild
 from .user import User
 from .channel import Channel
+from .websocket import Websocket
 from .message import Message
 
 __all__ = ('Dispatcher', 'Client')
@@ -47,7 +48,7 @@ class Client(Dispatcher):
 
     def _initialize_connection(self, token: str, /) -> None:
         self._connection._initialize_http(token)
-    
+
     async def on_login(self) -> None:
         """|coro|
 
@@ -248,8 +249,12 @@ class Client(Dispatcher):
             self._initialize_connection(token)
         else:
             await self._connection._initialize_http_with_email(email, password, id)
-        
+
         await self.on_login()
+
+        self.ws = Websocket(self._connection._http)
+
+        await self.ws.connect()
 
     def run(self, *args, **kwargs):
         """A helper function equivalent to

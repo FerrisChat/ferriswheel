@@ -8,6 +8,8 @@ __all__ = (
     'Forbidden',
     'NotFound',
     'FerrisUnavailable',
+    'WebsocketException',
+    'Reconnect',
 )
 
 
@@ -68,5 +70,17 @@ class FerrisUnavailable(HTTPException):
     """SSHHH! Ferris is sleeping, and can't answer the request right now.
     Try again later.
     """
+
+    pass
+
+
+class WebsocketException(FerrisException):
+    """Base class for all websocket exceptions."""
+
+    pass
+
+
+class Reconnect(WebsocketException):
+    """Signal to reconnect to the websocket."""
 
     pass

@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import aiohttp
-
 from typing import TYPE_CHECKING, Union
+
+from .utils import to_json
+from .errors import WebsocketException, Reconnect
 
 if TYPE_CHECKING:
     from .http import HTTPClient
@@ -13,6 +15,8 @@ class Websocket:
     """The class that interfaces with FerrisChat's websockets."""
 
     def __init__(self, http: HTTPClient) -> None:
+        self.ws: aiohttp.ClientWebSocketResponse = None
+
         self._http: HTTPClient = http
         self._ws_url: str = None
 
@@ -26,8 +30,29 @@ class Websocket:
         ...  # not implemented
 
     async def _parse_and_handle(self, data: Union[str, bytes]) -> None:
-
+        if isinstance(data, (str, bytes)):
+            data = to_json(data)
+            await self.handle(data)
 
     async def connect(self) -> None:
         """Establishes a websocket connection with FerrisChat."""
-        async for message in
+        if not self._ws_url:
+            await self.prepare()
+
+        self.ws = await self._http.session.ws_connect(self._ws_url, heartbeat=45)
+
+        async for message in self.ws:
+            if message.type in {aiohttp.WSMsgType.TEXT, aiohttp.WSMsgType.BINARY}:
+                await self._parse_and_handle(message.data)
+            elif message.type is aiohttp.WSMsgType.ERROR:
+                raise WebsocketException(message.data)
+            elif message.type in (
+                aiohttp.WSMsgType.CLOSED,
+                aiohttp.WSMsgType.CLOSING,
+                aiohttp.WSMsgType.CLOSE,
+            ):
+                raise Reconnect  # TODO: Reconnect here
+
+    async def close(self) -> None:
+        """Closes the current websocket connection."""
+        await self.ws.close()

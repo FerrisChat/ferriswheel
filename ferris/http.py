@@ -68,9 +68,9 @@ class HTTPClient:
     API_BASE_URL: ClassVar[str] = 'https://api.ferris.chat/v0'
 
     MAX_TRIES: ClassVar[int] = 3
-    USER_AGENT: ClassVar[str] = (
-        f"FerrisWheel (https://github.com/Cryptex-github/ferriswheel v{__version__})"
-    )
+    USER_AGENT: ClassVar[
+        str
+    ] = f"FerrisWheel (https://github.com/Cryptex-github/ferriswheel v{__version__})"
 
     __slots__ = ('__token', '__session', '_buckets_lock', '_api_router')
 
@@ -87,17 +87,18 @@ class HTTPClient:
     def api(self) -> APIRouter:
         return self._api_router
 
+    @property
+    def session(self) -> aiohttp.ClientSession:
+        return self.__session
+
     @classmethod
     async def from_email_and_password(
-        cls,
-        email: str,
-        password: str,
-        id: int
+        cls, email: str, password: str, id: int
     ) -> HTTPClient:
         for tries in range(cls.MAX_TRIES):
             async with aiohttp.ClientSession() as session:
                 async with session.post(
-                    f"{self.API_BASE_URL}/auth/{id}",
+                    f"{cls.API_BASE_URL}/auth/{id}",
                     headers={"Email": email, "Password": password},
                 ) as response:
                     content = await response.text()
