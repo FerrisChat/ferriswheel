@@ -47,7 +47,7 @@ class Client(Dispatcher):
     def __init__(self, /, loop: asyncio.AbstractEventLoop = None, **options) -> None:
         self.loop = loop or asyncio.get_event_loop()
         self._connection: Connection = Connection(self.loop, **options)
-        super().__init__(loop)
+        super().__init__(self.loop)
 
     def _initialize_connection(self, token: str, /) -> None:
         self._connection._initialize_http(token)
@@ -269,7 +269,7 @@ class Client(Dispatcher):
 
         self.ws = Websocket(self._connection._http)
 
-        await self.ws.connect()
+        # await self.ws.connect()
 
     def run(self, *args, **kwargs):
         """A helper function equivalent to
