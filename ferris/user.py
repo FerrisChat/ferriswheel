@@ -32,6 +32,9 @@ class PartialUser(BaseObject):
         """str: The user's name."""
         return self._name
 
+    def __repr__(self) -> str:
+        return f'<PartialUser id={self.id} name={self.name!r}>'
+
 
 class User(BaseObject):
     """
@@ -89,5 +92,5 @@ class User(BaseObject):
 
         self._connection.deref_user(self.id)
 
-    def __expr__(self, /) -> str:
+    def __repr__(self, /) -> str:
         return f'<User id={self.id} name={self.name!r}>'
