@@ -87,6 +87,10 @@ class HTTPClient:
     def api(self) -> APIRouter:
         return self._api_router
 
+    @property
+    def session(self) -> aiohttp.ClientSession:
+        return self.__session
+
     @classmethod
     async def from_email_and_password(
         cls,
