@@ -19,14 +19,13 @@ from .types import Data, SupportsStr
 from .utils import from_json
 
 
-__all__ = ('APIRouter', 'HTTPClient', 'API_BASE_URL')
-
-
-API_BASE_URL: str = 'https://api.ferris.chat/v0'
+__all__ = (
+    'APIRouter',
+    'HTTPClient',
+)
 
 
 class APIRouter:
-
     __slots__ = ('__current_route', '__http_client')
 
     def __init__(self, http: HTTPClient, route: str = '', /) -> None:
@@ -35,7 +34,7 @@ class APIRouter:
 
     @property
     def url(self, /) -> str:
-        return API_BASE_URL + self.__current_route
+        return HTTPClient.API_BASE_URL + self.__current_route
 
     def _make_new(self, route: str, /) -> APIRouter:
         return self.__class__(self.__http_client, route)
@@ -66,13 +65,14 @@ class APIRouter:
 
 
 class HTTPClient:
+    API_BASE_URL: ClassVar[str] = 'https://api.ferris.chat/v0'
+
     MAX_TRIES: ClassVar[int] = 3
     USER_AGENT: ClassVar[str] = (
-        f"FerrisWheel (https://github.com/Cryptex-github/ferriswheel, "
-        f"{__version__})"
+        f"FerrisWheel (https://github.com/Cryptex-github/ferriswheel v{__version__})"
     )
 
-    __slots__ = ('__token', '__session', '_buckets_lock')
+    __slots__ = ('__token', '__session', '_buckets_lock', '_api_router')
 
     def __init__(self, token: str, /) -> None:
         self.__token: str = token
@@ -81,15 +81,23 @@ class HTTPClient:
         )
 
         self._buckets_lock: Dict[str, asyncio.Event] = {}
+        self._api_router: APIRouter = APIRouter(self)
+
+    @property
+    def api(self) -> APIRouter:
+        return self._api_router
 
     @classmethod
     async def from_email_and_password(
-        cls, email: str, password: str, id: int
+        cls,
+        email: str,
+        password: str,
+        id: int
     ) -> HTTPClient:
         for tries in range(cls.MAX_TRIES):
             async with aiohttp.ClientSession() as session:
                 async with session.post(
-                    f"{API_BASE_URL}/auth/{id}",
+                    f"{self.API_BASE_URL}/auth/{id}",
                     headers={"Email": email, "Password": password},
                 ) as response:
                     content = await response.text()
@@ -104,6 +112,7 @@ class HTTPClient:
                         location = data.get('location', {})
                         line = location.get('line')
                         character = location.get('character')
+
                         raise BadRequest(
                             response, f"{reason}\nLine: {line} Character: {character}"
                         )
@@ -122,7 +131,7 @@ class HTTPClient:
                             try:
                                 data = from_json(content)
                                 reason = data.get('reason')
-                            except:
+                            except:  # TODO: Fix broad except
                                 reason = content
 
                             raise FerrisUnavailable(response, reason)
@@ -186,11 +195,10 @@ class HTTPClient:
                         try:
                             data = from_json(content)
                             reason = data.get('reason')
-                        except:
+                        except:  # TODO: Fix broad except
                             reason = content
 
                         raise FerrisUnavailable(response, reason)
-
                     continue
 
                 raise HTTPException(response, content)
