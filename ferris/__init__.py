@@ -14,7 +14,6 @@ from .http import *
 from .member import *
 from .message import *
 from .user import *
-from . import plugins, utils
 from .utils import *
 
 

@@ -1,14 +1,19 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, overload, Literal, TypeVar
+from typing import Any, overload, Literal, TypeVar, TYPE_CHECKING
 
-from .types import Data, Snowflake
 from .utils import get_snowflake_creation_date
 
 
 E = TypeVar('E', bound='BaseObject')
 
 __all__ = ('SnowflakeObject', 'BaseObject', 'Object')
+
+if TYPE_CHECKING:
+    from .types import Data, Snowflake
+
 
 
 class SnowflakeObject(ABC):

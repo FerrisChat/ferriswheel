@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Awaitable, ClassVar, Dict, Optional
+from typing import Awaitable, ClassVar, Dict, Optional, TYPE_CHECKING
 from urllib.parse import quote
 
 import aiohttp
@@ -15,8 +15,10 @@ from .errors import (
     NotFound,
     Unauthorized,
 )
-from .types import Data, SupportsStr
 from .utils import from_json
+
+if TYPE_CHECKING:
+    from .types import Data, SupportsStr
 
 
 __all__ = (
