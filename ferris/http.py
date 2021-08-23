@@ -48,7 +48,7 @@ class APIRouter:
         return self._make_new(f"{self.__current_route}/{quote(str(route))}")
 
     def request(self, method, /, **kwargs) -> Awaitable[Optional[Data]]:
-        return self.__http_client.request(method, self.url, **kwargs)
+        return self.__http_client.request(self.url, method, **kwargs)
 
     def get(self, /, **kwargs) -> Awaitable[Optional[Data]]:
         return self.request('GET', **kwargs)
@@ -148,6 +148,7 @@ class HTTPClient:
         bucket = self._buckets_lock.get(bucket_key)
         if bucket is None:
             self._buckets_lock[bucket_key] = bucket = asyncio.Event()
+            bucket.set()
 
         headers = {}
 
