@@ -19,18 +19,18 @@ if TYPE_CHECKING:
 class SnowflakeObject(ABC):
     """An abstract base class representing objects that have a snowflake ID."""
 
-    __slots__ = ('__id',)
+    __slots__ = ('_id',)
 
     def __init__(self, /) -> None:
-        self.__id: int = None
+        self._id: int = None
 
     def _store_snowflake(self, id: Snowflake, /) -> None:
-        self.__id = id
+        self._id = id
 
     @property
     def id(self, /) -> int:
         """int: The snowflake ID of this object."""
-        return self.__id
+        return self._id
 
 
 class BaseObject(SnowflakeObject, ABC):

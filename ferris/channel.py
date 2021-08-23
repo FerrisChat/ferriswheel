@@ -22,7 +22,6 @@ class Channel(BaseObject):
     def __init__(self, connection: Connection, data: Data, /) -> None:
         self._connection: Connection = connection
         self._process_data(data)
-        super().__init__()
 
     def _process_data(self, data: Data, /) -> None:
         self._store_snowflake(cast(int, data.get('id')))

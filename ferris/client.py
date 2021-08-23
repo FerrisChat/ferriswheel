@@ -203,7 +203,7 @@ class Client(Dispatcher):
             A guild with the given ID was not found.
         """
         g = await self._connection.api.guilds(id).get(
-            params={'members': fetch_members, 'channels': fetch_channels}
+            params={'members': str(fetch_members).lower(), 'channels': str(fetch_channels).lower()}
         )
         return Guild(self._connection, g)
 

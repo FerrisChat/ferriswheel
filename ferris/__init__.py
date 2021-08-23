@@ -1,5 +1,5 @@
 __author__ = 'Cryptex & jay3332'
-__version__ = '0.0a1.dev3'
+__version__ = '0.0a1.post0'
 # 0.1.0 for the finished release
 
 
