@@ -105,6 +105,9 @@ class Channel(BaseObject):
     def name(self, /) -> Optional[str]:
         """str: The name of this channel."""
         return self._name
+    
+    def __repr__(self, /) -> str:
+        return f'<Channel id={self.id} name={self.name} guild_id={self.guild_id}>'
 
     def __del__(self, /) -> None:
         if not hasattr(self, '_connection'):
