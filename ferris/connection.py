@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from asyncio import AbstractEventLoop
 from collections import deque
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import TYPE_CHECKING, Dict, Optional, Any, Union
 
 from .http import APIRouter, HTTPClient
 from .utils import find
@@ -21,15 +21,15 @@ class Connection:
     def __init__(self, loop: AbstractEventLoop, /, **options) -> None:
         self.loop: AbstractEventLoop = loop
 
-        self._http: HTTPClient = None
-        self.__token: str = None
+        self._http: Union[HTTPClient, Any] = None
+        self.__token: Optional[str] = None
 
         self._max_messages_count: int = options.get("max_messages_count", 1000)
 
         self.clear_store()
 
     @property
-    def api(self) -> Optional[APIRouter]:
+    def api(self) -> Union[APIRouter, Any]:
         return self._http.api if self._http else None
 
     def _store_token(self, token: str, /) -> None:

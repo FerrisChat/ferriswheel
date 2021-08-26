@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 
 from collections import defaultdict
-from typing import TYPE_CHECKING, overload, Optional, Dict, List, Awaitable
+from typing import TYPE_CHECKING, overload, Optional, Dict, List, Awaitable, Callable
 import logging
 
 from .connection import Connection
@@ -17,9 +17,7 @@ from .utils import sanitize_id
 if TYPE_CHECKING:
     from .types import Id
 
-
 log = logging.getLogger(__name__)
-
 
 __all__ = ('Dispatcher', 'Client')
 
@@ -41,7 +39,8 @@ class Dispatcher:
             coros += [cb(*args, **kwargs) for cb in callbacks]
 
         if coros:
-            asyncio.gather(*coros)
+            for coro in coros:
+                self.loop.create_task(coro)
 
     def add_listener(self, event: str, callback: Callable[..., Awaitable]) -> None:
         if event.startswith('on_'):
@@ -65,7 +64,7 @@ class Dispatcher:
         self.event_handlers[event].clear()
         del self.event_handlers[event]
 
-    def listen(self, event: str = None):
+    def listen(self, event: Optional[str] = None):
         def decorator(func: Callable[..., Awaitable]) -> Callable[..., Awaitable]:
             store = event
 
@@ -73,7 +72,7 @@ class Dispatcher:
                 store = func.__name__
 
             if store.startswith('on_'):
-                store = event[3:]
+                store = store[3:]
 
             self.add_listener(store, func)
             return func
@@ -87,6 +86,8 @@ class Dispatcher:
             event = 'on_' + event
 
         setattr(self, event, func)
+
+        return func
 
 
 class EventTemplateMixin:
@@ -112,7 +113,7 @@ class Client(Dispatcher, EventTemplateMixin):
 
     __slots__ = ('loop', 'api', '_connection')
 
-    def __init__(self, /, loop: asyncio.AbstractEventLoop = None, **options) -> None:
+    def __init__(self, /, loop: Optional[asyncio.AbstractEventLoop] = None, **options) -> None:
         self.loop = loop or asyncio.get_event_loop()
         self._connection: Connection = Connection(self.loop, **options)
         super().__init__(self.loop)
@@ -284,18 +285,25 @@ class Client(Dispatcher, EventTemplateMixin):
     async def stop(self) -> None:
         await self._connection._http.session.close()
 
+
+        tasks = [task for task in asyncio.all_tasks(self.loop) if not task.done()]
+
+        for task in tasks:
+            task.cancel()
+        
+        await asyncio.gather(*tasks, return_exceptions=True)
         # TODO: close websocket connection
 
     @overload
-    async def start(self, token: str) -> None:
+    async def start(self, *, token: str) -> None:
         ...
 
     @overload
-    async def start(self, email: str, passsword: str, id: Id) -> None:
+    async def start(self, *, email: str, passsword: str, id: Id) -> None:
         ...
 
     async def start(
-        self, token: str = None, email: str = None, password: str = None, id: int = None
+        self, *, token: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None, id: Optional[Id] = None
     ) -> None:
         """|coro|
 
@@ -331,12 +339,17 @@ class Client(Dispatcher, EventTemplateMixin):
             self._initialize_connection(token)
         else:
             log.info("Logging in with Email and Password")
-            await self._connection._initialize_http_with_email(email, password, id)
+            await self._connection._initialize_http_with_email(email, password, id) # type: ignore
 
-        self.dispatch('login')
+        # self.dispatch('login')
+
+        await self.on_login()
+
         self.ws = Websocket(self._connection._http)
 
-        # await self.ws.connect()
+        await asyncio.sleep(3)
+
+        await self.stop()
 
     def run(self, *args, **kwargs):
         """A helper function equivalent to

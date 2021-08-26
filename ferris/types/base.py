@@ -1,6 +1,6 @@
-from typing import Any, Dict, List, Protocol, Union, runtime_checkable
+from typing import Protocol, Union, runtime_checkable, Optional
 
-__all__ = ('SupportsStr', 'SupportsId', 'Id', 'Snowflake', 'Data')
+__all__ = ('SupportsStr', 'SupportsId', 'Id', 'Snowflake')
 
 
 class SupportsStr(Protocol):
@@ -18,5 +18,4 @@ class SupportsId(Protocol):
     id: Snowflake
 
 
-Id = Union[SupportsId, Snowflake]
-Data = Dict[str, Union[Dict[str, Any], List[Any], Snowflake]]
+Id = Optional[Union[SupportsId, Snowflake]]

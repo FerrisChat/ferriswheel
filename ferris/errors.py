@@ -1,3 +1,5 @@
+from typing import Optional
+
 from aiohttp import ClientResponse
 
 __all__ = (
@@ -35,7 +37,7 @@ class HTTPException(FerrisException):
         The aiohttp response object.
     """
 
-    def __init__(self, resp: ClientResponse, content: str = None):
+    def __init__(self, resp: ClientResponse, content: Optional[str] = None):
         content = content or resp.reason
         self.status = resp.status
         self.resp = resp

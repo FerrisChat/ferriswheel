@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Optional
 
 from .base import BaseObject
 from .user import User
@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from .guild import Guild
     from .connection import Connection
     from .types import Data
+    from .types.member import MemberPayload
 
 __all__ = ('Member',)
 
@@ -18,20 +19,24 @@ class Member(BaseObject):
 
     __slots__ = ('_connection', '_user', '_guild', '_guild_id')
 
-    def __init__(self, connection: Connection, data: Data, /) -> None:
+    def __init__(self, connection: Connection, data: MemberPayload, /) -> None:
         self._connection: Connection = connection
         self._process_data(data)
 
-    def _process_data(self, data: Data, /) -> None:
-        self._store_snowflake(cast(int, data.get('user_id')))
+    def _process_data(self, data: Optional[MemberPayload], /) -> None:
+        if not data:
+            return
 
-        self._user: User = User(self._connection, cast(dict, data.get('user', {})))
-        self._connection._store_user(self._user)
+        self._store_snowflake(data.get('user_id'))
 
-        self._guild_id: int = cast(int, data.get('guild_id'))
+        self._user: Optional[User] = User(self._connection, data.get('user', {})) # type: ignore
+        self._connection.store_user(self._user)
+
+        self._guild_id: Optional[int] = data.get('guild_id')
+
         from .guild import Guild
 
-        self._guild: Guild = Guild(self._connection, cast(dict, data.get('guild', {})))
+        self._guild: Optional[Guild] = Guild(self._connection, data.get('guild'))
 
     async def edit(self) -> None:
         """|coro|
@@ -54,17 +59,17 @@ class Member(BaseObject):
         ...
 
     @property
-    def user(self, /) -> User:
+    def user(self, /) -> Optional[User]:
         """:class:`~.User`: The user that belongs to this member."""
         return self._user
 
     @property
-    def guild(self, /) -> Guild:
+    def guild(self, /) -> Optional[Guild]:
         """:class:`~.Guild`: The guild that this member belongs to."""
         return self._guild
 
     @property
-    def guild_id(self, /) -> int:
+    def guild_id(self, /) -> Optional[int]:
         """int: The ID of the guild that this member belongs to."""
         return self._guild_id
 

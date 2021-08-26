@@ -16,11 +16,11 @@ T = TypeVar('T', covariant=True)
 try:
     import orjson
 
-    HAS_ORJSON: bool = True
+    HAS_ORJSON = True
 except ImportError:
     import json
 
-    HAS_ORJSON: bool = False
+    HAS_ORJSON = False
 
 FERRIS_EPOCH: int = 1_577_836_800_000
 
@@ -39,7 +39,7 @@ else:
     from_json = json.loads
 
 
-def sanitize_id(id: Id) -> Snowflake:
+def sanitize_id(id: Id = None) -> Snowflake:
     """Sanitizes an ID.
 
     Parameters
@@ -52,7 +52,7 @@ def sanitize_id(id: Id) -> Snowflake:
     Snowflake
         The sanitized ID.
     """
-    return getattr(id, 'id', id)
+    return getattr(id, 'id', id) if id else None
 
 
 def get_snowflake_creation_date(snowflake: int) -> datetime:

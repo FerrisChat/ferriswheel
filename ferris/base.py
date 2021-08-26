@@ -8,8 +8,7 @@ from typing import (
     Literal,
     TypeVar,
     TYPE_CHECKING,
-    Protocol,
-    runtime_checkable,
+    Optional,
 )
 
 from .utils import get_snowflake_creation_date
@@ -29,15 +28,15 @@ class SnowflakeObject(ABC):
     __slots__ = ('_id',)
 
     def __init__(self, /) -> None:
-        self._id: int = None
+        self._id: Optional[int] = None
 
-    def _store_snowflake(self, id: Snowflake, /) -> None:
+    def _store_snowflake(self, id: Optional[Snowflake], /) -> None:
         self._id = id
 
     @property
     def id(self, /) -> int:
         """int: The snowflake ID of this object."""
-        return self._id
+        return self._id # type: ignore
 
 
 class BaseObject(SnowflakeObject, ABC):
@@ -51,14 +50,14 @@ class BaseObject(SnowflakeObject, ABC):
         return get_snowflake_creation_date(self.id)
 
     @abstractmethod
-    def _process_data(self, data: Data, /) -> None:
+    def _process_data(self, data: Any, /) -> None:
         raise NotImplementedError
 
     def __hash__(self, /) -> int:
         return hash(self.id)
 
     @overload
-    def __eq__(self: E, other: E, /) -> bool:
+    def __eq__(self: E, other: E, /) -> bool: # type: ignore
         ...
 
     @overload

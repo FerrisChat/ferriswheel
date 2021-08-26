@@ -48,7 +48,7 @@ class APIRouter:
     def __getattr__(self, route: str, /) -> APIRouter:
         return self._make_new(f"{self.__current_route}/{route}")
 
-    def __call__(self, route: SupportsStr, /) -> APIRouter:
+    def __call__(self, route: Optional[SupportsStr], /) -> APIRouter:
         return self._make_new(f"{self.__current_route}/{quote(str(route))}")
 
     def request(self, method, /, **kwargs) -> Awaitable[Optional[Data]]:
@@ -151,7 +151,7 @@ class HTTPClient:
 
                         continue
 
-                    raise HTTPException(response, content)
+        raise HTTPException(response, content)
 
     async def request(self, url: str, method: str, /, **kwargs) -> Optional[Data]:
         bucket_key = f"{method} {url}"
@@ -227,4 +227,4 @@ class HTTPClient:
 
                     continue
 
-                raise HTTPException(response, content)
+        raise HTTPException(response, content)

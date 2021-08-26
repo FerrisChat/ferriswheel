@@ -1,4 +1,5 @@
 from __future__ import annotations
+from ferris.types.channel import ChannelPayload
 
 from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
@@ -10,6 +11,7 @@ if TYPE_CHECKING:
     from .member import Member
     from .connection import Connection
     from .types import Data, Id, Snowflake
+    from .types import GuildPayload, ChannelPayload
 
 
 __all__ = ('Guild',)
@@ -20,17 +22,20 @@ class Guild(BaseObject):
 
     __slots__ = ('_connection', '_owner_id', '_name', '_channels', '_members')
 
-    def __init__(self, connection: Connection, data: Data, /) -> None:
+    def __init__(self, connection: Connection, data: Optional[GuildPayload], /) -> None:
         self._connection: Connection = connection
         self._process_data(data)
 
-    def _process_data(self, data: Data, /) -> None:
+    def _process_data(self, data: Optional[GuildPayload], /) -> None:
+        if not data:
+            return
+
         from .member import Member
 
-        self._store_snowflake(cast(int, data.get('id')))
+        self._store_snowflake(data.get('id'))
 
-        self._owner_id: int = cast(int, data.get('owner_id'))
-        self._name: str = cast(str, data.get('name'))
+        self._owner_id: Optional[int] = data.get('owner_id')
+        self._name: Optional[str] = data.get('name')
 
         self._channels: Dict[int, Channel] = {}
 
@@ -68,7 +73,7 @@ class Guild(BaseObject):
         -------
         :class:`~.Channel`
         """
-        c = await self._connection.api.guilds(self.id).channels.post(
+        c: ChannelPayload = await self._connection.api.guilds(self.id).channels.post(
             json={'name': name}
         )
         return Channel(self._connection, c)
@@ -150,12 +155,12 @@ class Guild(BaseObject):
         return self._members.get(id)
 
     @property
-    def owner_id(self, /) -> Snowflake:
+    def owner_id(self, /) -> Optional[Snowflake]:
         """int: The ID of the owner of this guild."""
         return self._owner_id
 
     @property
-    def name(self, /) -> str:
+    def name(self, /) -> Optional[str]:
         """str: The name of this guild."""
         return self._name
 
@@ -173,4 +178,4 @@ class Guild(BaseObject):
         return f'<Guild id={self.id} name={self.name!r}> owner_id={self.owner_id}'
 
     def __str__(self, /) -> str:
-        return self.name
+        return self.name or self.__repr__()

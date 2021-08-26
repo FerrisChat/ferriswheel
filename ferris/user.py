@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, List, cast
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 from .base import BaseObject
 from .guild import Guild
@@ -8,6 +8,7 @@ from .guild import Guild
 if TYPE_CHECKING:
     from .connection import Connection
     from .types import Data
+    from .types.user import UserPayload
 
 __all__ = ('PartialUser', 'User')
 
@@ -19,16 +20,19 @@ class PartialUser(BaseObject):
 
     __slots__ = ('_name',)
 
-    def __init__(self, data: Data, /) -> None:
+    def __init__(self, data: Optional[UserPayload], /) -> None:
         self._process_data(data)
 
-    def _process_data(self, data: Data) -> None:
-        self._store_snowflake(cast(int, data.get('id')))
+    def _process_data(self, data: Optional[UserPayload]) -> None:
+        if not data:
+            return
 
-        self._name = data.get('name')
+        self._store_snowflake(data.get('id'))
+
+        self._name: Optional[str] = data.get('name')
 
     @property
-    def name(self) -> str:
+    def name(self) -> Optional[str]:
         """str: The user's name."""
         return self._name
 
@@ -43,14 +47,14 @@ class User(BaseObject):
 
     __slots__ = ('_connection', '_name', '_guilds')
 
-    def __init__(self, connection: Connection, data: Data, /) -> None:
+    def __init__(self, connection: Connection, data: UserPayload, /) -> None:
         self._connection: Connection = connection
         self._process_data(data)
 
-    def _process_data(self, data: Data, /) -> None:
-        self._store_snowflake(cast(int, data.get('id')))
+    def _process_data(self, data: UserPayload, /) -> None:
+        self._store_snowflake(data.get('id'))
 
-        self._name: str = cast(str, data.get('name'))
+        self._name: Optional[str] = data.get('name')
 
         self._guilds: Dict[int, Guild] = {}
 
@@ -77,7 +81,7 @@ class User(BaseObject):
         ...
 
     @property
-    def name(self, /) -> str:
+    def name(self, /) -> Optional[str]:
         """str: The username of this user."""
         return self._name
 
