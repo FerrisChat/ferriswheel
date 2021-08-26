@@ -32,7 +32,7 @@ class Client(ferris.Client):
 
         log.info("Test done, all passed")
 
-        await self.close()
+        await self.stop()
 
 
 client = Client()
