@@ -21,9 +21,6 @@ jobs:
 
     - name: Install FerrisWheel
       run: python3.9 -m pip install .
-    
-    - name: ls
-      run: ls tests/
 
     - name: Run tests
       run: python3.9 tests/test_ferriswheel.py
