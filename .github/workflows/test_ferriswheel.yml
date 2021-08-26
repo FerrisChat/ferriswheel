@@ -20,12 +20,13 @@ jobs:
         python-version: 3.9
 
     - name: Install FerrisWheel
-      run: |
-        python3.9 -m pip install .
+      run: python3.9 -m pip install .
+    
+    - name: ls
+      run: ls
 
     - name: Run tests
-      run: |
-        python3.9 ../tests/test_ferriswheel.py
+      run: python3.9 tests/test_ferriswheel.py
       env:
         PASSWORD: ${{ secrets.PASSWORD }}
       
