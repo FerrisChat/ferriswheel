@@ -21,7 +21,9 @@ class Channel(BaseObject):
 
     __slots__ = ('_connection', '_name', '_guild_id')
 
-    def __init__(self, connection: Connection, data: Optional[ChannelPayload], /) -> None:
+    def __init__(
+        self, connection: Connection, data: Optional[ChannelPayload], /
+    ) -> None:
         self._connection: Connection = connection
         self._process_data(data)
 
@@ -105,7 +107,7 @@ class Channel(BaseObject):
     def name(self, /) -> Optional[str]:
         """str: The name of this channel."""
         return self._name
-    
+
     def __repr__(self, /) -> str:
         return f'<Channel id={self.id} name={self.name} guild_id={self.guild_id}>'
 

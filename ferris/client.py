@@ -113,7 +113,9 @@ class Client(Dispatcher, EventTemplateMixin):
 
     __slots__ = ('loop', 'api', '_connection')
 
-    def __init__(self, /, loop: Optional[asyncio.AbstractEventLoop] = None, **options) -> None:
+    def __init__(
+        self, /, loop: Optional[asyncio.AbstractEventLoop] = None, **options
+    ) -> None:
         self.loop = loop or asyncio.get_event_loop()
         self._connection: Connection = Connection(self.loop, **options)
         super().__init__(self.loop)
@@ -285,12 +287,11 @@ class Client(Dispatcher, EventTemplateMixin):
     async def stop(self) -> None:
         await self._connection._http.session.close()
 
-
         tasks = [task for task in asyncio.all_tasks(self.loop) if not task.done()]
 
         for task in tasks:
             task.cancel()
-        
+
         await asyncio.gather(*tasks, return_exceptions=True)
         # TODO: close websocket connection
 
@@ -303,7 +304,12 @@ class Client(Dispatcher, EventTemplateMixin):
         ...
 
     async def start(
-        self, *, token: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None, id: Optional[Id] = None
+        self,
+        *,
+        token: Optional[str] = None,
+        email: Optional[str] = None,
+        password: Optional[str] = None,
+        id: Optional[Id] = None,
     ) -> None:
         """|coro|
 
@@ -339,7 +345,7 @@ class Client(Dispatcher, EventTemplateMixin):
             self._initialize_connection(token)
         else:
             log.info("Logging in with Email and Password")
-            await self._connection._initialize_http_with_email(email, password, id) # type: ignore
+            await self._connection._initialize_http_with_email(email, password, id)  # type: ignore
 
         # self.dispatch('login')
 

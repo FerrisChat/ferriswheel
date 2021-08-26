@@ -29,7 +29,7 @@ class Member(BaseObject):
 
         self._store_snowflake(data.get('user_id'))
 
-        self._user: Optional[User] = User(self._connection, data.get('user', {})) # type: ignore
+        self._user: Optional[User] = User(self._connection, data.get('user', {}))  # type: ignore
         self._connection.store_user(self._user)
 
         self._guild_id: Optional[int] = data.get('guild_id')

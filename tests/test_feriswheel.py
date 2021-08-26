@@ -10,7 +10,6 @@ _log.addHandler(logging.StreamHandler())
 _log.setLevel(logging.DEBUG)
 
 
-
 class Client(ferris.Client):
     async def on_login(self):
         log.info("Starting test.")
@@ -38,4 +37,8 @@ class Client(ferris.Client):
 
 client = Client()
 
-client.run(email="test.ferriswheel@ferris.chat", password=os.getenv('PASSWORD'), id=962483372771538950023163150336)
+client.run(
+    email="test.ferriswheel@ferris.chat",
+    password=os.getenv('PASSWORD'),
+    id=962483372771538950023163150336,
+)

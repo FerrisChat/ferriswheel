@@ -18,7 +18,9 @@ class Message(BaseObject):
 
     __slots__ = ('_connection', '_content', '_channel_id', '_author_id')
 
-    def __init__(self, connection: Connection, data: Optional[MessagePayload], /) -> None:
+    def __init__(
+        self, connection: Connection, data: Optional[MessagePayload], /
+    ) -> None:
         self._connection: Connection = connection
         self._process_data(data)
 

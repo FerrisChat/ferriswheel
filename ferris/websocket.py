@@ -23,7 +23,7 @@ class Websocket:
 
     async def prepare(self) -> None:
         """Retrieves the URL needed for websocket connection."""
-        response: WsConnectionInfo = await self._http.api.ws.info.get() # type: ignore
+        response: WsConnectionInfo = await self._http.api.ws.info.get()  # type: ignore
         self._ws_url = response['url']
 
     async def handle(self, data: dict) -> None:

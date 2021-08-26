@@ -10,5 +10,11 @@ from .user import *
 from .ws import *
 
 
-
-Data = Union[AuthResponse, ChannelPayload, GuildPayload, MemberPayload, MessagePayload, UserPayload]
+Data = Union[
+    AuthResponse,
+    ChannelPayload,
+    GuildPayload,
+    MemberPayload,
+    MessagePayload,
+    UserPayload,
+]

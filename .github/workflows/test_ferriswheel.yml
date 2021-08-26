@@ -25,7 +25,7 @@ jobs:
 
     - name: Run tests
       run: |
-        python3.9 -m tests/test_ferriswheel.py
+        python3.9 tests/test_ferriswheel.py
       env:
         PASSWORD: ${{ secrets.PASSWORD }}
       

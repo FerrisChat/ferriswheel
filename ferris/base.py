@@ -36,7 +36,7 @@ class SnowflakeObject(ABC):
     @property
     def id(self, /) -> int:
         """int: The snowflake ID of this object."""
-        return self._id # type: ignore
+        return self._id  # type: ignore
 
 
 class BaseObject(SnowflakeObject, ABC):
@@ -57,7 +57,7 @@ class BaseObject(SnowflakeObject, ABC):
         return hash(self.id)
 
     @overload
-    def __eq__(self: E, other: E, /) -> bool: # type: ignore
+    def __eq__(self: E, other: E, /) -> bool:  # type: ignore
         ...
 
     @overload
