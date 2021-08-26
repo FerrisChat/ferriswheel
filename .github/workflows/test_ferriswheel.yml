@@ -1,0 +1,31 @@
+name: Test FerrisWheel
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Install FerrisWheel
+      run: |
+        python3.9 -m pip install .
+
+    - name: Run tests
+      run: |
+        python3.9 -m tests/test_ferriswheel.py
+      env:
+        PASSWORD: ${{ secrets.PASSWORD }}
+      
