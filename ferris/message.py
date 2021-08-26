@@ -66,3 +66,6 @@ class Message(BaseObject):
     def channel_id(self, /) -> Optional[Snowflake]:
         """int: The ID of the channel this message was sent in."""
         return self._channel_id
+    
+    def __repr__(self, /) -> str:
+        return f'<Message id={self.id} author_id={self.author_id} channel_id={self.channel_id}>'
