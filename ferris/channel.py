@@ -73,9 +73,7 @@ class Channel(BaseObject):
             The message that was sent.
         """
         m = (
-            await self._connection.api.guilds(self.guild_id)
-            .channels(self.id)
-            .messages.post(json={'content': content})
+            await self._connection.api.channels(self.id).messages.post(json={'content': content})
         )
         return Message(self._connection, m)
 
