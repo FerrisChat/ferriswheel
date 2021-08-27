@@ -42,7 +42,7 @@ setup(
     extras_require={
         "docs": [
             "sphinx>=4.1.1",
-            "sphinx-material",
+            "sphinx-material @ git+https://github.com/Cryptex-github/sphinx-material",
             'sphinx-copybutton',
             'readthedocs-sphinx-search',
         ],
