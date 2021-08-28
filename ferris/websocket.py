@@ -19,7 +19,7 @@ class Websocket:
         self.ws: aiohttp.ClientWebSocketResponse
 
         self._http: HTTPClient = http
-        self._ws_url: str
+        self._ws_url: str = ''
 
     async def prepare(self) -> None:
         """Retrieves the URL needed for websocket connection."""
