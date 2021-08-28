@@ -29,7 +29,7 @@ class Dispatcher:
             str, List[Callable[..., Awaitable]]
         ] = defaultdict(list)
 
-    def dispatch(self, event: str, *args, **kwargs) -> None:
+    def dispatch(self, event: str, *args, **kwargs) -> asyncio.Future:
         coros = []
 
         if callback := getattr(self, f'on_{event}', False):
@@ -39,8 +39,7 @@ class Dispatcher:
             coros += [cb(*args, **kwargs) for cb in callbacks]
 
         if coros:
-            for coro in coros:
-                self.loop.create_task(coro)
+            return asyncio.gather(*coros)
 
     def add_listener(self, event: str, callback: Callable[..., Awaitable]) -> None:
         if event.startswith('on_'):
@@ -97,6 +96,13 @@ class EventTemplateMixin:
         Called when the client has logged in.
         """
         pass
+
+    async def on_close(self) -> None:
+        """|coro|
+
+        Called when the client is closing.
+        This could be used for clean-up/memory freeing.
+        """
 
 
 class Client(Dispatcher, EventTemplateMixin):
@@ -284,15 +290,18 @@ class Client(Dispatcher, EventTemplateMixin):
         )
         return Guild(self._connection, g)
 
-    async def stop(self) -> None:
-        await self._connection._http.session.close()
-
-        tasks = [task for task in asyncio.all_tasks(self.loop) if not task.done()]
+    async def cleanup(self) -> None:
+        tasks = filter(lambda task: not task.done(), asyncio.all_tasks(self.loop))
 
         for task in tasks:
             task.cancel()
 
         await asyncio.gather(*tasks, return_exceptions=True)
+
+    async def stop(self) -> None:
+        await self._connection._http.session.close()
+        await self.dispatch('close')
+        await self.cleanup()
         # TODO: close websocket connection
 
     @overload
@@ -347,14 +356,11 @@ class Client(Dispatcher, EventTemplateMixin):
             log.info("Logging in with Email and Password")
             await self._connection._initialize_http_with_email(email, password, id)  # type: ignore
 
-        # self.dispatch('login')
-
-        await self.on_login()
+        await self.dispatch('login')
 
         self.ws = Websocket(self._connection._http)
 
         await asyncio.sleep(3)
-
         await self.stop()
 
     def run(self, *args, **kwargs):
@@ -362,7 +368,7 @@ class Client(Dispatcher, EventTemplateMixin):
 
         .. code-block:: python3
 
-            asyncio.run(self.start, *args, **kwargs)
+            asyncio.run(self.start(*args, **kwargs))
 
         If you want finer control over the event loop, use :meth:`Client.start` instead.
         """
