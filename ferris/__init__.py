@@ -15,6 +15,7 @@ from .member import *
 from .message import *
 from .user import *
 from .utils import *
+from ._http import *
 
 
 import urllib.request

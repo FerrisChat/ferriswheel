@@ -1,0 +1,6 @@
+include README.md
+include LICENSE
+include requirements.txt
+include ferris/py.typed
+include Cargo.toml
+recursive-include src *

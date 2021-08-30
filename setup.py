@@ -1,6 +1,7 @@
 import re
 
 from setuptools import setup
+from setuptools_rust import Binding, RustExtension
 
 with open('ferris/__init__.py', 'r') as f:
     content = f.read()
@@ -32,8 +33,10 @@ setup(
         "Issue tracker": "https://github.com/FerrisChat/ferriswheel/issues/new",
     },
     version=version,
+    rust_extensions=[RustExtension("ferris._http", binding=Binding.PyO3)],
     packages=["ferris", "ferris.types", "ferris.plugins", "ferris.plugins.commands"],
     license="MIT",
+    zip_safe=False,
     description="An asynchronous Python wrapper around FerrisChat's API",
     long_description=readme,
     long_description_content_type="text/markdown",
