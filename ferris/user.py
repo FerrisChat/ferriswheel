@@ -56,6 +56,8 @@ class User(BaseObject):
 
         self._name: Optional[str] = data.get('name')
 
+        self._avatar: Optional[str] = data.get('avatar')
+
         self._guilds: Dict[int, Guild] = {}
 
         for g in data.get('guilds') or []:
@@ -64,6 +66,34 @@ class User(BaseObject):
 
         # self._flags = data.get('flags')
         # UserFlag after ferrischat implemented it
+    
+    async def edit(self, username: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None) -> User:
+        """|coro|
+
+        Edits the user.
+
+        Parameters
+        ----------
+        username : Optional[str]
+            The new username.
+        email : Optional[str]
+            The new email.
+        password : Optional[str]
+            The new password.
+        
+        Returns
+        -------
+        User
+            The edited user.
+        """
+        payload = {
+            'username': username,
+            'email': email,
+            'password': password,
+        }
+        user = await self._connection.api.users(self.id).patch(payload)
+        self._process_data(user)
+        return self
 
     async def fetch_guilds(self) -> List[Guild]:
         """|coro|
@@ -89,6 +119,11 @@ class User(BaseObject):
     def guilds(self, /) -> List[Guild]:
         """List[:class:`~.Guild`]: A list of the guilds this user is in."""
         return list(self._guilds.values())
+    
+    @property
+    def avatar(self, /) -> Optional[str]:
+        """str: The avatar url of this user."""
+        return self._avatar
 
     def __del__(self, /) -> None:
         if not hasattr(self, '_connection'):

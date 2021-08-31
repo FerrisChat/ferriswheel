@@ -15,3 +15,4 @@ class UserPayload(TypedDict):
     name: str
     guilds: List[GuildPayload]
     flags: int
+    avatar: str

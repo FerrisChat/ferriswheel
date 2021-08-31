@@ -35,22 +35,32 @@ class Message(BaseObject):
 
         self._author_id: Optional[Snowflake] = data.get('author_id')
 
-    async def edit(self) -> None:
+    async def edit(self, content: str) -> Message:
         """|coro|
 
         Edits this message.
 
-        .. warning::
-            This method will do nothing as FerrisChat has not implemented this feature yet.
+        Parameters
+        ----------
+        content: str
+            The new content for this message.
+        
+        Returns
+        -------
+        Message
+            The edited message.
         """
-        ...
+        payload = {'content': content}
+        m = await self._connection.api.channels(self.channel_id).messages(self.id).patch(payload)
+        self._process_data(m)
+        return self
 
     async def delete(self) -> None:
         """|coro|
 
         Deletes this message.
         """
-        await self._connection.api.messages(self.id).delete()
+        await self._connection.api.channels(self.channel_id).messages(self.id).delete()
 
     @property
     def author_id(self, /) -> Optional[Snowflake]:

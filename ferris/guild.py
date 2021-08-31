@@ -1,5 +1,4 @@
 from __future__ import annotations
-from ferris.types.channel import ChannelPayload
 
 from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
@@ -12,6 +11,8 @@ if TYPE_CHECKING:
     from .connection import Connection
     from .types import Data, Id, Snowflake
     from .types import GuildPayload, ChannelPayload
+    from ferris.invite import Invite
+
 
 
 __all__ = ('Guild',)
@@ -58,6 +59,41 @@ class Guild(BaseObject):
             This method will do nothing as FerrisChat has not implemented this feature yet.
         """
         ...
+    
+    async def fetch_invites(self) -> List[Invite]:
+        """|coro|
+
+        Fetches all the invites for this guild.
+
+        Returns
+        -------
+        List[:class:`~.Invite`]
+        """
+        invites = await self._connection.api.guilds(self.id).invites.get()
+        return [Invite(self._connection, i) for i in invites]
+    
+    async def create_invite(self, max_age: int = None, max_uses: int = None) -> Invite:
+        """|coro|
+
+        Creates an invite for this guild.
+
+        Parameters
+        ----------
+        max_age: Optional[int]
+            The maximum age of the invite, in seconds.
+        max_uses: Optional[int]
+            The maximum uses of the invite.
+        
+        Returns
+        -------
+        :class:`~.Invite`
+        """
+        payload = {
+            'max_age': max_age,
+            'max_uses': max_uses,
+        }
+        invite = await self._connection.api.guilds(self.id).invites.post(json=payload)
+        return Invite(self._connection, invite)
 
     async def create_channel(self, name: str) -> Channel:
         """|coro|
@@ -96,25 +132,31 @@ class Guild(BaseObject):
         c = await self._connection.api.guilds(self.id).channels(id).get()
         return Channel(self._connection, c)
 
-    async def edit(self) -> None:
+    async def edit(self, name: str) -> Guild:
         """|coro|
 
         Edits this guild.
 
-        .. warning::
-            This method will do nothing as FerrisChat has not implemented this feature yet.
+        Parameters
+        ----------
+        name: str
+            The new name of the guild.
+        
+        Returns
+        -------
+        :class:`~.Guild`
         """
-        ...
+        payload = {name: name}
+        guild = await self._connection.api.guilds(self.id).patch(json=payload)
+        self._process_data(guild)
+        return self
 
     async def delete(self) -> None:
         """|coro|
 
         Deletes this guild.
-
-        .. warning::
-            This method will do nothing as FerrisChat has not implemented this feature yet.
         """
-        ...
+        await self._connection.api.guilds(self.id).delete()
 
     def get_channel(self, id: Id) -> Optional[Channel]:
         """Tries to retrieve a :class:`.~Channel` object

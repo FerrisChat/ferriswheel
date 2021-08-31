@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, List
 
 from .base import BaseObject
 from .message import Message
@@ -76,17 +76,47 @@ class Channel(BaseObject):
             await self._connection.api.channels(self.id).messages.post(json={'content': content})
         )
         return Message(self._connection, m)
+    
+    async def fetch_messages(self, limit: int = 100) -> List[Message]:
+        """
+        |coro|
 
-    async def edit(self) -> None:
+        Fetches messages from this channel.
+
+        Parameters
+        ----------
+        limit: int
+            The maximum number of messages to fetch.
+            Defaults to 100.
+            Set it to 9223372036854775807 to fetch all messages.
+        
+        Returns
+        -------
+        List[Message]
+        """
+        data = await self._connection.api.channels(self.id).messages.get(limit=limit)
+        return [Message(self._connection, m) for m in data]
+
+    async def edit(self, name: str) -> Channel:
         """
         |coro|
 
         Edits this channel.
 
-        .. warning::
-            This method will do nothing as FerrisChat has not implemented this feature yet.
+        Parameters
+        ----------
+        name: str
+            The new name of the channel.
+        
+        Returns
+        -------
+        Channel
+            The channel that was edited.
         """
-        ...
+        data = {'name': name}
+        c = await self._connection.api.channels(self.id).patch(json=data)
+        self._process_data(c)
+        return self
 
     async def delete(self) -> None:
         """

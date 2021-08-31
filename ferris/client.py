@@ -13,6 +13,7 @@ from .channel import Channel
 from .websocket import Websocket
 from .message import Message
 from .utils import sanitize_id
+from .invite import Invite
 
 if TYPE_CHECKING:
     from .types import Id
@@ -128,6 +129,31 @@ class Client(Dispatcher, EventTemplateMixin):
 
     def _initialize_connection(self, token: str, /) -> None:
         self._connection._initialize_http(token)
+    
+    async def join_guild(self, code: str) -> None:
+        """|coro|
+
+        Joins a guild with an invite code.
+
+        Parameters
+        ----------
+        code: str
+            The invite code to use.
+        """
+        await self._connection.api.invites(code).post()
+    
+    async def fetch_invite(self, code: str) -> None:
+        """|coro|
+
+        Fetches an invite by code.
+
+        Parameters
+        ----------
+        code: str
+            The invite code to fetch.
+        """
+        i = await self._connection.api.invites(code).get()
+        return Invite(self._connection, i)
 
     async def create_guild(self, name: str) -> Guild:
         """|coro|

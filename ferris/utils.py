@@ -22,7 +22,10 @@ except ImportError:
 
     HAS_ORJSON = False
 
-FERRIS_EPOCH: int = 1_577_836_800_000
+FERRIS_EPOCH_MS: int = 1_577_836_800_000
+
+
+FERRIS_EPOCH: int = 1_577_836_800
 
 
 if HAS_ORJSON:
@@ -68,7 +71,7 @@ def get_snowflake_creation_date(snowflake: int) -> datetime:
     :class:`datetime.datetime`
         The creation date of the snowflake.
     """
-    seconds = ((snowflake >> 64) + FERRIS_EPOCH) / 1000
+    seconds = ((snowflake >> 64) + FERRIS_EPOCH_MS) / 1000
     return datetime.utcfromtimestamp(seconds)
 
 
@@ -85,7 +88,7 @@ def dt_to_snowflake(dt: datetime) -> int:
     int
         The generated snowflake.
     """
-    timestamp = dt.timestamp() * 1000 - FERRIS_EPOCH
+    timestamp = dt.timestamp() * 1000 - FERRIS_EPOCH_MS
     return int(timestamp) << 64
 
 

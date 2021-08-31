@@ -29,14 +29,14 @@ class Member(BaseObject):
 
         self._store_snowflake(data.get('user_id'))
 
-        self._user: Optional[User] = User(self._connection, data.get('user', {}))  # type: ignore
+        self._user: Optional[User] = User(self._connection, data.get('user', {}) or {})  # type: ignore
         self._connection.store_user(self._user)
 
         self._guild_id: Optional[int] = data.get('guild_id')
 
         from .guild import Guild
 
-        self._guild: Optional[Guild] = Guild(self._connection, data.get('guild'))
+        self._guild: Optional[Guild] = Guild(self._connection, data.get('guild', {}) or {})
 
     async def edit(self) -> None:
         """|coro|
