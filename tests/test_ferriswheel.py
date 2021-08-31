@@ -26,11 +26,12 @@ class Client(ferris.Client):
         log.info(repr(u))
         log.info("Fetch user works.")
 
-        g = await client.fetch_guild(969269623054741111886615412736)
+        g = await client.fetch_guild(969269600531122478301130522624)
         log.info(repr(g))
         log.info("Fetch guild works.")
 
         log.info("Test done, all passed")
+        await self.stop()
 
 
 client = Client()
