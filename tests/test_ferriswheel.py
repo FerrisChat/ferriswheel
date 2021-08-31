@@ -38,5 +38,5 @@ client = Client()
 client.run(
     email="test.ferriswheel@ferris.chat",
     password=os.getenv('PASSWORD'),
-    id=962483372771538950023163150336,
+    id=969265165749451770983817936896,
 )
