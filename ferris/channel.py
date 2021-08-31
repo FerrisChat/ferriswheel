@@ -72,11 +72,11 @@ class Channel(BaseObject):
         Message
             The message that was sent.
         """
-        m = (
-            await self._connection.api.channels(self.id).messages.post(json={'content': content})
+        m = await self._connection.api.channels(self.id).messages.post(
+            json={'content': content}
         )
         return Message(self._connection, m)
-    
+
     async def fetch_messages(self, limit: int = 100) -> List[Message]:
         """
         |coro|
@@ -89,7 +89,7 @@ class Channel(BaseObject):
             The maximum number of messages to fetch.
             Defaults to 100.
             Set it to 9223372036854775807 to fetch all messages.
-        
+
         Returns
         -------
         List[Message]
@@ -107,7 +107,7 @@ class Channel(BaseObject):
         ----------
         name: str
             The new name of the channel.
-        
+
         Returns
         -------
         Channel

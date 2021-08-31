@@ -14,7 +14,7 @@ class Client(ferris.Client):
     async def on_login(self):
         log.info("Starting test.")
 
-        c = await client.fetch_channel(962487915116318470726993575936)
+        c = await client.fetch_channel(969269623054741111886615412736)
         log.info(repr(c))
 
         m = await c.send("Test.")
@@ -22,16 +22,15 @@ class Client(ferris.Client):
 
         log.info("Fetch channel and send message works.")
 
-        u = await client.fetch_user(962483372771538950023163150336)
+        u = await client.fetch_user(969265165749451770983817936896)
         log.info(repr(u))
         log.info("Fetch user works.")
 
-        g = await client.fetch_guild(962487888165481259451216297984)
+        g = await client.fetch_guild(969269623054741111886615412736)
         log.info(repr(g))
         log.info("Fetch guild works.")
 
         log.info("Test done, all passed")
-
 
 
 client = Client()

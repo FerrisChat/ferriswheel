@@ -44,14 +44,18 @@ class Message(BaseObject):
         ----------
         content: str
             The new content for this message.
-        
+
         Returns
         -------
         Message
             The edited message.
         """
         payload = {'content': content}
-        m = await self._connection.api.channels(self.channel_id).messages(self.id).patch(payload)
+        m = (
+            await self._connection.api.channels(self.channel_id)
+            .messages(self.id)
+            .patch(payload)
+        )
         self._process_data(m)
         return self
 
@@ -76,6 +80,6 @@ class Message(BaseObject):
     def channel_id(self, /) -> Optional[Snowflake]:
         """int: The ID of the channel this message was sent in."""
         return self._channel_id
-    
+
     def __repr__(self, /) -> str:
         return f'<Message id={self.id} author_id={self.author_id} channel_id={self.channel_id}>'

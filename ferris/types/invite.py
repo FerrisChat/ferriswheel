@@ -1,6 +1,8 @@
 from typing import TypedDict, TYPE_CHECKING
+
 if TYPE_CHECKING:
     from .base import Snowflake
+
 
 class InvitePayload(TypedDict):
     code: str

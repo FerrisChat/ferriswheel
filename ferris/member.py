@@ -36,7 +36,9 @@ class Member(BaseObject):
 
         from .guild import Guild
 
-        self._guild: Optional[Guild] = Guild(self._connection, data.get('guild', {}) or {})
+        self._guild: Optional[Guild] = Guild(
+            self._connection, data.get('guild', {}) or {}
+        )
 
     async def edit(self) -> None:
         """|coro|

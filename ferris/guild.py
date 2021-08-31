@@ -14,7 +14,6 @@ if TYPE_CHECKING:
     from ferris.invite import Invite
 
 
-
 __all__ = ('Guild',)
 
 
@@ -59,7 +58,7 @@ class Guild(BaseObject):
             This method will do nothing as FerrisChat has not implemented this feature yet.
         """
         ...
-    
+
     async def fetch_invites(self) -> List[Invite]:
         """|coro|
 
@@ -71,7 +70,7 @@ class Guild(BaseObject):
         """
         invites = await self._connection.api.guilds(self.id).invites.get()
         return [Invite(self._connection, i) for i in invites]
-    
+
     async def create_invite(self, max_age: int = None, max_uses: int = None) -> Invite:
         """|coro|
 
@@ -83,7 +82,7 @@ class Guild(BaseObject):
             The maximum age of the invite, in seconds.
         max_uses: Optional[int]
             The maximum uses of the invite.
-        
+
         Returns
         -------
         :class:`~.Invite`
@@ -141,7 +140,7 @@ class Guild(BaseObject):
         ----------
         name: str
             The new name of the guild.
-        
+
         Returns
         -------
         :class:`~.Guild`

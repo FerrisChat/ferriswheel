@@ -129,7 +129,7 @@ class Client(Dispatcher, EventTemplateMixin):
 
     def _initialize_connection(self, token: str, /) -> None:
         self._connection._initialize_http(token)
-    
+
     async def join_guild(self, code: str) -> None:
         """|coro|
 
@@ -141,7 +141,7 @@ class Client(Dispatcher, EventTemplateMixin):
             The invite code to use.
         """
         await self._connection.api.invites(code).post()
-    
+
     async def fetch_invite(self, code: str) -> None:
         """|coro|
 

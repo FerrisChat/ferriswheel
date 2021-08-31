@@ -45,7 +45,7 @@ class User(BaseObject):
     Represents a FerrisChat user.
     """
 
-    __slots__ = ('_connection', '_name', '_guilds')
+    __slots__ = ('_connection', '_name', '_guilds', '_avatar')
 
     def __init__(self, connection: Connection, data: UserPayload, /) -> None:
         self._connection: Connection = connection
@@ -66,8 +66,13 @@ class User(BaseObject):
 
         # self._flags = data.get('flags')
         # UserFlag after ferrischat implemented it
-    
-    async def edit(self, username: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None) -> User:
+
+    async def edit(
+        self,
+        username: Optional[str] = None,
+        email: Optional[str] = None,
+        password: Optional[str] = None,
+    ) -> User:
         """|coro|
 
         Edits the user.
@@ -80,7 +85,7 @@ class User(BaseObject):
             The new email.
         password : Optional[str]
             The new password.
-        
+
         Returns
         -------
         User
@@ -119,7 +124,7 @@ class User(BaseObject):
     def guilds(self, /) -> List[Guild]:
         """List[:class:`~.Guild`]: A list of the guilds this user is in."""
         return list(self._guilds.values())
-    
+
     @property
     def avatar(self, /) -> Optional[str]:
         """str: The avatar url of this user."""
