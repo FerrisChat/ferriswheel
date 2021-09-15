@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 
 from collections import defaultdict
+from .errors import Reconnect, WebsocketException
 from typing import TYPE_CHECKING, overload, Optional, Dict, List, Awaitable, Callable
 import logging
 
@@ -41,6 +42,8 @@ class Dispatcher:
 
         if coros:
             return asyncio.gather(*coros)
+
+        return asyncio.sleep(0)
 
     def add_listener(self, event: str, callback: Callable[..., Awaitable]) -> None:
         if event.startswith('on_'):
@@ -104,6 +107,13 @@ class EventTemplateMixin:
         Called when the client is closing.
         This could be used for clean-up/memory freeing.
         """
+        pass
+
+    async def on_connect(self) -> None:
+        """|coro|
+        Called when the client has connected to FerrisChat ws.
+        """
+        pass
 
 
 class Client(Dispatcher, EventTemplateMixin):
@@ -118,14 +128,25 @@ class Client(Dispatcher, EventTemplateMixin):
         Defaults to ``1000``.
     """
 
-    __slots__ = ('loop', 'api', '_connection')
+    __slots__ = ('loop', 'api', '_connection', '_is_closed', '_user')
 
     def __init__(
         self, /, loop: Optional[asyncio.AbstractEventLoop] = None, **options
     ) -> None:
         self.loop = loop or asyncio.get_event_loop()
-        self._connection: Connection = Connection(self.loop, **options)
+        self._is_closed: bool = False
+        self._connection: Connection = Connection(self.loop, self.dispatch, **options)
         super().__init__(self.loop)
+
+    @property
+    def user(self) -> Optional[User]:
+        """Returns the client's user."""
+        return self._user
+
+    @property
+    def guilds(self) -> List[Guild]:
+        """Returns a list of the client's guilds."""
+        return list(self._connection._guilds.values())
 
     def _initialize_connection(self, token: str, /) -> None:
         self._connection._initialize_http(token)
@@ -384,10 +405,18 @@ class Client(Dispatcher, EventTemplateMixin):
 
         await self.dispatch('login')
 
-        self.ws = Websocket(self._connection._http)
+        self.ws = Websocket(self)
 
-        await asyncio.sleep(3)
-        await self.stop()
+        while not self._is_closed:
+            try:
+                await self.ws.connect()
+            except Reconnect:
+                self.ws = Websocket(self)
+                continue
+            except WebsocketException:
+                raise
+            finally:
+                await self.close()
 
     def run(self, *args, **kwargs):
         """A helper function equivalent to

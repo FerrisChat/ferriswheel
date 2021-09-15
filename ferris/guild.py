@@ -40,7 +40,10 @@ class Guild(BaseObject):
         self._channels: Dict[int, Channel] = {}
 
         for c in data.get('channels') or []:
-            channel = Channel(self._connection, c)
+            if channel := self._connection.get_channel(c.get('id')):
+                channel._process_data(c)
+            else:
+                channel = Channel(self._connection, c)
             self._channels[channel.id] = channel
 
         self._members: Dict[int, Member] = {}

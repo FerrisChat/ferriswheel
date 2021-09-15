@@ -1,4 +1,5 @@
 from __future__ import annotations
+from ferris.types.base import Snowflake
 
 from typing import TYPE_CHECKING, Dict, List, Optional
 
@@ -61,8 +62,17 @@ class User(BaseObject):
         self._guilds: Dict[int, Guild] = {}
 
         for g in data.get('guilds') or []:
-            guild = Guild(self._connection, g)
-            self._guilds[guild.id] = guild
+            guild_id = g.get('id')
+
+            if guild_id in self._guilds:
+                guild = self._connection.get_guild(guild_id)
+                guild._process_data(g)
+
+            if guild_id not in self._guilds:
+                guild = Guild(self._connection, g)
+                self._connection.store_guild(guild)
+
+            self._guilds[guild_id] = self._connection.get_guild(guild_id)
 
         # self._flags = data.get('flags')
         # UserFlag after ferrischat implemented it

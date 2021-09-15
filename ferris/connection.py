@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from asyncio import AbstractEventLoop
 from collections import deque
-from typing import TYPE_CHECKING, Dict, Optional, Any, Union
+from ferris.types.base import Snowflake
+from typing import TYPE_CHECKING, Coroutine, Dict, Optional, Any, Union
 
 from .http import APIRouter, HTTPClient
 from .utils import find
@@ -18,8 +19,13 @@ __all__ = ('Connection',)
 
 
 class Connection:
-    def __init__(self, loop: AbstractEventLoop, /, **options) -> None:
+    def __init__(
+        self, loop: AbstractEventLoop, dispatch: Coroutine, /, **options
+    ) -> None:
         self.loop: AbstractEventLoop = loop
+        self._user: Optional[User] = None
+
+        self.dispatch: Coroutine = dispatch
 
         self._http: Union[HTTPClient, Any] = None
         self.__token: Optional[str] = None
@@ -31,6 +37,10 @@ class Connection:
     @property
     def api(self) -> Union[APIRouter, Any]:
         return self._http.api if self._http else None
+
+    @property
+    def user(self) -> Optional[User]:
+        return self._user
 
     def _store_token(self, token: str, /) -> None:
         self.__token = token
@@ -60,6 +70,12 @@ class Connection:
 
     def store_message(self, message: Message, /) -> None:
         self._messages.append(message)
+
+    def remove_message(self, id: Snowflake, /) -> None:
+        m = self.get_message(id)
+        if not m:
+            return
+        self._messages.remove(m)
 
     def store_user(self, user: User, /) -> None:
         self._users[user.id] = user
