@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from .connection import Connection
     from .types import Data, Snowflake, Id
     from .types.channel import ChannelPayload
+    from .guild import Guild
 
 __all__ = ('Channel',)
 
@@ -125,6 +126,11 @@ class Channel(BaseObject):
         Deletes this channel.
         """
         await self._connection.api.channels(self.id).delete()
+    
+    @property
+    def guild(self, /) -> Optional[Guild]:
+        """Guild: The guild that this channel belongs to."""
+        return self._connection.get_guild(self._guild_id)
 
     @property
     def guild_id(self) -> Optional[Snowflake]:

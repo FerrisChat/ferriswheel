@@ -1,14 +1,18 @@
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING, Coroutine
-from .user import User
-from .message import Message
+
 from .channel import Channel
 from .guild import Guild
 from .member import Member
+from .message import Message
+from .user import User
 
 if TYPE_CHECKING:
     from .connection import Connection
+
+log = logging.getLogger(__name__)
 
 
 class _BaseEventHandler:
@@ -20,7 +24,10 @@ class _BaseEventHandler:
         event = _data.get('c')
         data = _data.get('d')
 
-        self.connection.loop.create_task(getattr(self, event)(data))
+        try:
+            self.connection.loop.create_task(getattr(self, event)(data))
+        except AttributeError:
+            log.error(f'Received unkwown event: {event}')
 
 
 class EventHandler(_BaseEventHandler):
@@ -49,12 +56,12 @@ class EventHandler(_BaseEventHandler):
             self.connection._messages.remove(m)
         else:
             m = Message(self.connection, data.get('message'))
+            self.connection.remove_message(m.id)
         await self.dispatch('message_delete', m)
 
-        self.connection.remove_message(m.id)
 
     async def ChannelCreate(self, data):
-        if c := self._connection.get_channel(data.get('id')):
+        if c := self.connection.get_channel(data.get('id')):
             c._process_data(data.get('channel'))
         else:
             c = Channel(self.connection, data.get('channel'))
@@ -63,13 +70,13 @@ class EventHandler(_BaseEventHandler):
 
     async def ChannelUpdate(self, data):
         old = Channel(self.connection, data.get('old'))
-        if old.id in self.connection._channels:
-            new = self.connection._channels[old.id]
+        if new := self.connection.get_channel(old.id):
             new._process_data(data.get('new'))
         else:
-            self.connection._channels[old.id] = new = Channel(
+            new = Channel(
                 self.connection, data.get('new')
             )
+            self.connection.store_channel(new)
 
         await self.dispatch('channel_update', old, new)
 
@@ -80,16 +87,16 @@ class EventHandler(_BaseEventHandler):
         self.connection._channels.pop(c.id, None)
 
     async def MemberCreate(self, data):
-        guild: Guild = self._connection.get_guild(data.get('guild_id'))
+        guild: Guild = self.connection.get_guild(data.get('guild_id'))
         if member := guild._members.get(data.get('user_id')):
-            member._process_data(data)
+            member._process_data(data.get('member'))
         else:
             member = Member(guild, data.get('member'))
             guild._members[member.id] = member
         await self.dispatch('member_create', member)
 
     async def MemberUpdate(self, data):
-        guild: Guild = self._connection.get_guild(data.get('guild_id'))
+        guild: Guild = self.connection.get_guild(data.get('guild_id'))
         if member := guild._members.get(data.get('user_id')):
             member._process_data(data.get('member'))
         else:
@@ -98,7 +105,7 @@ class EventHandler(_BaseEventHandler):
         await self.dispatch('member_update', member)
 
     async def MemberDelete(self, data):
-        guild: Guild = self._connection.get_guild(data.get('guild_id'))
+        guild: Guild = self.connection.get_guild(data.get('guild_id'))
         if member := guild._members.get(data.get('user_id')):
             guild._members.pop(member.id, None)
         else:
@@ -106,7 +113,7 @@ class EventHandler(_BaseEventHandler):
         await self.dispatch('member_delete', member)
 
     async def UserCreate(self, data):
-        if u := self._connection.get_user(data.get('id')):
+        if u := self.connection.get_user(data.get('id')):
             u._process_data(data.get('user'))
         else:
             u = User(self.connection, data.get('user'))

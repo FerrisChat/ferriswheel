@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 from datetime import datetime
 from .utils import FERRIS_EPOCH
 
@@ -10,6 +10,9 @@ if TYPE_CHECKING:
     from .connection import Connection
     from .types import Snowflake
     from .types.invite import InvitePayload
+    from .member import Member
+    from .user import User
+    from .guild import Guild
 
 
 class Invite:
@@ -43,6 +46,18 @@ class Invite:
         self._uses: int = data.get('uses')
         self._max_uses: int = data.get('max_uses')
         self._max_age: int = data.get('max_age')
+    
+    @property
+    def owner(self, /) -> Optional[Union[Member, User]]:
+        """Optional[Union[Member, User]]: The owner of this invite."""
+        if self.guild:
+            return self.guild.get_member(self.owner_id) or self._connection.get_user(self.owner_id)
+        return self._connection.get_user(self.owner_id)
+    
+    @property
+    def guild(self, /) -> Optional[Guild]:
+        """Optional[Guild]: The guild of this invite."""
+        return self._connection.get_guild(self.guild_id)
 
     @property
     def code(self) -> str:

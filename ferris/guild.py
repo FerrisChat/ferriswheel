@@ -197,6 +197,11 @@ class Guild(BaseObject):
         """
         id = sanitize_id(id)
         return self._members.get(id)
+    
+    @property
+    def owner(self) -> Optional[Member]:
+        """Member: The owner of this guild."""
+        return self.get_member(self._owner_id)
 
     @property
     def owner_id(self, /) -> Optional[Snowflake]:

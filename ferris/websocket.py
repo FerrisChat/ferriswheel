@@ -1,18 +1,23 @@
 from __future__ import annotations
+
+import logging
 from types import coroutine
+from typing import TYPE_CHECKING, Coroutine, Set, Union
 
 import aiohttp
-from typing import TYPE_CHECKING, Union, Coroutine
 
+from .errors import Reconnect, WebsocketException
 from .handler import EventHandler
 from .utils import from_json, to_json
-from .errors import WebsocketException, Reconnect
 
 if TYPE_CHECKING:
+    from .client import Client
     from .http import HTTPClient
     from .types import Data
     from .types.ws import WsConnectionInfo
-    from .client import Client
+
+
+log = logging.getLogger(__name__)
 
 
 class Websocket:
@@ -34,6 +39,7 @@ class Websocket:
 
     async def handle(self, data: dict) -> None:
         """Handles a message received from the websocket."""
+        log.debug(f'Received: {data}')
         self._handler.handle(data)
 
     async def _parse_and_handle(self, data: Union[str, bytes]) -> None:
@@ -61,12 +67,14 @@ class Websocket:
             if message.type in {aiohttp.WSMsgType.TEXT, aiohttp.WSMsgType.BINARY}:
                 await self._parse_and_handle(message.data)
             elif message.type is aiohttp.WSMsgType.ERROR:
+                log.error(f'Websocket error: {message.data}')
                 raise WebsocketException(message.data)
             elif message.type in (
                 aiohttp.WSMsgType.CLOSED,
                 aiohttp.WSMsgType.CLOSING,
                 aiohttp.WSMsgType.CLOSE,
             ):
+                log.info('Websocket closed, attempting to reconnect.')
                 raise Reconnect  # TODO: Reconnect here
 
     async def close(self) -> None:
