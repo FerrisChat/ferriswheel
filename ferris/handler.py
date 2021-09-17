@@ -27,7 +27,7 @@ class _BaseEventHandler:
         log.debug(f"Handling event: {event} Data: {data}")
 
         try:
-            t = asyncio.create_task(getattr(self, event)(data))
+            asyncio.create_task(getattr(self, event)(data))
         except AttributeError:
             log.error(f'Received unkwown event: {event}')
 
