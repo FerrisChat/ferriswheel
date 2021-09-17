@@ -40,10 +40,7 @@ class Dispatcher:
         if callbacks := self.event_handlers.get(event):
             coros += [cb(*args, **kwargs) for cb in callbacks]
 
-        if coros:
-            return asyncio.gather(*coros)
-
-        return asyncio.sleep(0)
+        return asyncio.ensure_future(asyncio.gather(*coros))
 
     def add_listener(self, event: str, callback: Callable[..., Awaitable]) -> None:
         if event.startswith('on_'):
@@ -141,7 +138,7 @@ class Client(Dispatcher, EventTemplateMixin):
     @property
     def user(self) -> Optional[User]:
         """Returns the client's user."""
-        return self._user
+        return self._connection.user
 
     @property
     def guilds(self) -> List[Guild]:
@@ -347,7 +344,7 @@ class Client(Dispatcher, EventTemplateMixin):
 
     async def stop(self) -> None:
         await self._connection._http.session.close()
-        await self.dispatch('close')
+        self.dispatch('close')
         await self.cleanup()
         # TODO: close websocket connection
 
@@ -403,7 +400,7 @@ class Client(Dispatcher, EventTemplateMixin):
             log.info("Logging in with Email and Password")
             await self._connection._initialize_http_with_email(email, password, id)  # type: ignore
 
-        await self.dispatch('login')
+        self.dispatch('login')
 
         self.ws = Websocket(self)
 

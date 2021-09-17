@@ -37,15 +37,15 @@ class Websocket:
         response: WsConnectionInfo = await self._http.api.ws.info.get()  # type: ignore
         self._ws_url = response['url']
 
-    async def handle(self, data: dict) -> None:
+    def handle(self, data: dict) -> None:
         """Handles a message received from the websocket."""
         log.debug(f'Received: {data}')
         self._handler.handle(data)
 
-    async def _parse_and_handle(self, data: Union[str, bytes]) -> None:
+    def _parse_and_handle(self, data: Union[str, bytes]) -> None:
         if isinstance(data, (str, bytes)):
             _data: dict = from_json(data)
-            await self.handle(_data)
+            self.handle(_data)
 
     async def send(self, data: dict, /):
         _data = to_json(data)
@@ -62,10 +62,10 @@ class Websocket:
             {'c': 'Identify', 'd': {'token': self._http.token, 'intents': 0}}
         )
 
-        await self.dispatch('connect')
+        self.dispatch('connect')
         async for message in self.ws:
             if message.type in {aiohttp.WSMsgType.TEXT, aiohttp.WSMsgType.BINARY}:
-                await self._parse_and_handle(message.data)
+                self._parse_and_handle(message.data)
             elif message.type is aiohttp.WSMsgType.ERROR:
                 log.error(f'Websocket error: {message.data}')
                 raise WebsocketException(message.data)

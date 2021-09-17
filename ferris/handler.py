@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 from typing import TYPE_CHECKING, Coroutine
 
@@ -23,9 +24,10 @@ class _BaseEventHandler:
     def handle(self, _data: dict):
         event = _data.get('c')
         data = _data.get('d')
+        log.debug(f"Handling event: {event} Data: {data}")
 
         try:
-            self.connection.loop.create_task(getattr(self, event)(data))
+            t = asyncio.create_task(getattr(self, event)(data))
         except AttributeError:
             log.error(f'Received unkwown event: {event}')
 
@@ -38,7 +40,7 @@ class EventHandler(_BaseEventHandler):
 
     async def MessageCreate(self, data):
         m = Message(self.connection, data.get('message'))
-        await self.dispatch('message', m)
+        self.dispatch('message', m)
         self.connection.store_message(m)
 
     async def MessageUpdate(self, data):
@@ -49,7 +51,7 @@ class EventHandler(_BaseEventHandler):
         else:
             new = Message(self.connection, data.get('new'))
 
-        await self.dispatch('message_edit', old, new)
+        self.dispatch('message_edit', old, new)
 
     async def MessageDelete(self, data):
         if m := self.connection.get_message(data.get('id')):
@@ -57,7 +59,7 @@ class EventHandler(_BaseEventHandler):
         else:
             m = Message(self.connection, data.get('message'))
             self.connection.remove_message(m.id)
-        await self.dispatch('message_delete', m)
+        self.dispatch('message_delete', m)
 
 
     async def ChannelCreate(self, data):
@@ -66,7 +68,7 @@ class EventHandler(_BaseEventHandler):
         else:
             c = Channel(self.connection, data.get('channel'))
             self.connection.store_channel(c)
-        await self.dispatch('channel_create', c)
+        self.dispatch('channel_create', c)
 
     async def ChannelUpdate(self, data):
         old = Channel(self.connection, data.get('old'))
@@ -78,11 +80,11 @@ class EventHandler(_BaseEventHandler):
             )
             self.connection.store_channel(new)
 
-        await self.dispatch('channel_update', old, new)
+        self.dispatch('channel_update', old, new)
 
     async def ChannelDelete(self, data):
         c = Channel(self.connection, data.get('channel'))
-        await self.dispatch('channel_delete', c)
+        self.dispatch('channel_delete', c)
 
         self.connection._channels.pop(c.id, None)
 
@@ -93,7 +95,7 @@ class EventHandler(_BaseEventHandler):
         else:
             member = Member(guild, data.get('member'))
             guild._members[member.id] = member
-        await self.dispatch('member_create', member)
+        self.dispatch('member_create', member)
 
     async def MemberUpdate(self, data):
         guild: Guild = self.connection.get_guild(data.get('guild_id'))
@@ -102,7 +104,7 @@ class EventHandler(_BaseEventHandler):
         else:
             member = Member(guild, data.get('user'))
             guild._members[member.id] = member
-        await self.dispatch('member_update', member)
+        self.dispatch('member_update', member)
 
     async def MemberDelete(self, data):
         guild: Guild = self.connection.get_guild(data.get('guild_id'))
@@ -110,7 +112,7 @@ class EventHandler(_BaseEventHandler):
             guild._members.pop(member.id, None)
         else:
             member = Member(guild, data.get('member'))
-        await self.dispatch('member_delete', member)
+        self.dispatch('member_delete', member)
 
     async def UserCreate(self, data):
         if u := self.connection.get_user(data.get('id')):
@@ -118,4 +120,4 @@ class EventHandler(_BaseEventHandler):
         else:
             u = User(self.connection, data.get('user'))
             self.connection.store_user(u)
-        await self.dispatch('user_create', u)
+        self.dispatch('user_create', u)
