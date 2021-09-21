@@ -177,7 +177,9 @@ class HTTPClient:
                 log.debug(f"{method} {url} Returned {response.status} with {content}")
 
                 if 400 > response.status >= 200:
-                    return from_json(content)
+                    if content:
+                        return from_json(content)
+                    return None
 
                 if response.status == 429:
                     data = from_json(content)
