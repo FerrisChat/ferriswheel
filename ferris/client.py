@@ -342,11 +342,12 @@ class Client(Dispatcher, EventTemplateMixin):
 
         await asyncio.gather(*tasks, return_exceptions=True)
 
-    async def stop(self) -> None:
+    async def close(self) -> None:
         await self._connection._http.session.close()
         self.dispatch('close')
         await self.cleanup()
-        # TODO: close websocket connection
+    
+    stop = close
 
     @overload
     async def start(self, *, token: str) -> None:
