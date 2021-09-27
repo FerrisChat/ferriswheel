@@ -1,18 +1,20 @@
 from __future__ import annotations
 
+import asyncio
 from asyncio import AbstractEventLoop
 from collections import deque
+from typing import TYPE_CHECKING, Any, Coroutine, Dict, Optional, Union
+
 from ferris.types.base import Snowflake
-from typing import TYPE_CHECKING, Coroutine, Dict, Optional, Any, Union
 
 from .http import APIRouter, HTTPClient
 from .utils import find
 
 if TYPE_CHECKING:
+    from .channel import Channel
     from .guild import Guild
     from .message import Message
     from .user import User
-    from .channel import Channel
 
 
 __all__ = ('Connection',)
@@ -26,6 +28,8 @@ class Connection:
         self._user: Optional[User] = None
 
         self.dispatch: Coroutine = dispatch
+
+        self._is_ready: asyncio.Future = loop.create_future()
 
         self._http: Union[HTTPClient, Any] = None
         self.__token: Optional[str] = None

@@ -68,13 +68,15 @@ class Message(BaseObject):
         Deletes this message.
         """
         await self._connection.api.channels(self.channel_id).messages(self.id).delete()
-    
+
     @property
     def author(self, /) -> Optional[Union[Member, User]]:
         if self.channel and self.channel.guild:
-            return self.channel.guild.get_member(self.author_id) or self._connection.get_user(self.author_id)
+            return self.channel.guild.get_member(
+                self.author_id
+            ) or self._connection.get_user(self.author_id)
         return self._connection.get_user(self.author_id)
-    
+
     @property
     def channel(self, /) -> Optional[Channel]:
         """Channel: The channel that this message was sent in"""

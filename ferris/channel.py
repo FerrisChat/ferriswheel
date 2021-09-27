@@ -126,7 +126,7 @@ class Channel(BaseObject):
         Deletes this channel.
         """
         await self._connection.api.channels(self.id).delete()
-    
+
     @property
     def guild(self, /) -> Optional[Guild]:
         """Guild: The guild that this channel belongs to."""

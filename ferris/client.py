@@ -133,12 +133,30 @@ class Client(Dispatcher, EventTemplateMixin):
         self.loop = loop or asyncio.get_event_loop()
         self._is_closed: bool = False
         self._connection: Connection = Connection(self.loop, self.dispatch, **options)
+        self._is_ready = self._connection._is_ready
         super().__init__(self.loop)
 
     @property
     def user(self) -> Optional[User]:
         """Returns the client's user."""
         return self._connection.user
+
+    @property
+    def is_ready(self) -> bool:
+        """Returns whether the client is ready to use."""
+        return self._is_ready.done()
+
+    @property
+    def is_closed(self) -> bool:
+        """Returns whether the client is closed."""
+        return self._is_closed
+
+    async def wait_until_ready(self) -> None:
+        """|coro|
+
+        Waits until the client is ready to use.
+        """
+        return await self._is_ready
 
     @property
     def guilds(self) -> List[Guild]:
@@ -346,7 +364,7 @@ class Client(Dispatcher, EventTemplateMixin):
         await self._connection._http.session.close()
         self.dispatch('close')
         await self.cleanup()
-    
+
     stop = close
 
     @overload

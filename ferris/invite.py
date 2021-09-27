@@ -46,14 +46,16 @@ class Invite:
         self._uses: int = data.get('uses')
         self._max_uses: int = data.get('max_uses')
         self._max_age: int = data.get('max_age')
-    
+
     @property
     def owner(self, /) -> Optional[Union[Member, User]]:
         """Optional[Union[Member, User]]: The owner of this invite."""
         if self.guild:
-            return self.guild.get_member(self.owner_id) or self._connection.get_user(self.owner_id)
+            return self.guild.get_member(self.owner_id) or self._connection.get_user(
+                self.owner_id
+            )
         return self._connection.get_user(self.owner_id)
-    
+
     @property
     def guild(self, /) -> Optional[Guild]:
         """Optional[Guild]: The guild of this invite."""

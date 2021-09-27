@@ -20,6 +20,7 @@ class _BaseEventHandler:
     def __init__(self, connection: Connection) -> None:
         self.connection: Connection = connection
         self.dispatch: Coroutine = connection.dispatch
+        self._is_ready: asyncio.Future = connection._is_ready
 
     def handle(self, _data: dict):
         event = _data.get('c')
@@ -34,9 +35,13 @@ class _BaseEventHandler:
 
 class EventHandler(_BaseEventHandler):
     async def IdentifyAccepted(self, data):
+        self.dispatch('identify_accepted')
         u = User(self.connection, data.get('user', {}))
 
         self.connection._user = u
+
+        self._is_ready.set_result(None)
+        self.dispatch('ready')
 
     async def MessageCreate(self, data):
         m = Message(self.connection, data.get('message'))
@@ -61,7 +66,6 @@ class EventHandler(_BaseEventHandler):
             self.connection.remove_message(m.id)
         self.dispatch('message_delete', m)
 
-
     async def ChannelCreate(self, data):
         if c := self.connection.get_channel(data.get('id')):
             c._process_data(data.get('channel'))
@@ -75,9 +79,7 @@ class EventHandler(_BaseEventHandler):
         if new := self.connection.get_channel(old.id):
             new._process_data(data.get('new'))
         else:
-            new = Channel(
-                self.connection, data.get('new')
-            )
+            new = Channel(self.connection, data.get('new'))
             self.connection.store_channel(new)
 
         self.dispatch('channel_update', old, new)
