@@ -45,7 +45,7 @@ Event Reference
 
 This section outlines all the events listeners can subscribe to.
 
-For more details on listening to events, see :class:`client`.
+For more details on listening to events, see :class:`~Client`.
 
 All listeners must be a |coroutine_link|.
 
