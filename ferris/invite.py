@@ -1,18 +1,20 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Union
 from datetime import datetime
+from typing import TYPE_CHECKING, Optional, Union
+
 from .utils import FERRIS_EPOCH
 
-from .base import BaseObject
+
+__all__ = ('Invite',)
 
 if TYPE_CHECKING:
     from .connection import Connection
+    from .guild import Guild
+    from .member import Member
     from .types import Snowflake
     from .types.invite import InvitePayload
-    from .member import Member
     from .user import User
-    from .guild import Guild
 
 
 class Invite:
