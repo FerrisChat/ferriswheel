@@ -125,7 +125,6 @@ class Client(Dispatcher, EventTemplateMixin):
         Defaults to ``1000``.
     """
 
-    __slots__ = ('loop', 'api', '_connection', '_is_closed', '_user')
 
     def __init__(
         self, /, loop: Optional[asyncio.AbstractEventLoop] = None, **options
