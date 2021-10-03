@@ -125,7 +125,6 @@ class Client(Dispatcher, EventTemplateMixin):
         Defaults to ``1000``.
     """
 
-
     def __init__(
         self, /, loop: Optional[asyncio.AbstractEventLoop] = None, **options
     ) -> None:
