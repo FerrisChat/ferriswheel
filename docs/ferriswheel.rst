@@ -45,7 +45,7 @@ Event Reference
 
 This section outlines all the events listeners can subscribe to.
 
-For more details on listening to events, see :class:`client`.
+For more details on listening to events, see :class:`~Client`.
 
 All listeners must be a |coroutine_link|.
 
@@ -129,6 +129,11 @@ All listeners must be a |coroutine_link|.
 
     :param member: The :class:`~Member` that left.
 
+.. function on_user_create(user)
+
+    Called when a user is created.
+
+    :param user: The :class:`~User` that was created.
 
 
 
