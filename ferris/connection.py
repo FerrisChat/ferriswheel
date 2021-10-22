@@ -37,6 +37,10 @@ class Connection:
         self._max_messages_count: int = options.get("max_messages_count", 1000)
 
         self.clear_store()
+    
+    @property
+    def token(self) -> Optional[str]:
+        return self.__token
 
     @property
     def api(self) -> Union[APIRouter, Any]:
