@@ -34,10 +34,12 @@ class SnowflakeObject(ABC):
         self._id = id
 
     @property
-    def id(self, /) -> int:
+    def id(self, /) -> Optional[int]:
         """int: The snowflake ID of this object."""
-        return self._id  # type: ignore
-
+        try:
+            return self._id  # type: ignore
+        except AttributeError:
+            return None
 
 class BaseObject(SnowflakeObject, ABC):
     """The base class that all FerrisChat-related objects will inherit from."""
