@@ -41,6 +41,7 @@ class SnowflakeObject(ABC):
         except AttributeError:
             return None
 
+
 class BaseObject(SnowflakeObject, ABC):
     """The base class that all FerrisChat-related objects will inherit from."""
 
