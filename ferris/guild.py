@@ -5,13 +5,14 @@ from typing import TYPE_CHECKING, Dict, List, Optional, cast
 from .base import BaseObject
 from .utils import sanitize_id
 from .channel import Channel
+from ferris.invite import Invite
+
 
 if TYPE_CHECKING:
     from .member import Member
     from .connection import Connection
     from .types import Data, Id, Snowflake
     from .types import GuildPayload, ChannelPayload
-    from ferris.invite import Invite
 
 
 __all__ = ('Guild',)

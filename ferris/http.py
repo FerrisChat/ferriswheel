@@ -103,13 +103,13 @@ class HTTPClient:
 
     @classmethod
     async def from_email_and_password(
-        cls, email: str, password: str, id: int
+        cls, email: str, password: str
     ) -> HTTPClient:
         log.info("Retriving token from email and password")
         for tries in range(cls.MAX_TRIES):
             async with aiohttp.ClientSession() as session:
                 async with session.post(
-                    f"{cls.API_BASE_URL}/auth/{id}",
+                    f"{cls.API_BASE_URL}/auth",
                     headers={"Email": email, "Password": password},
                 ) as response:
                     content = await response.text()

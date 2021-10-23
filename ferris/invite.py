@@ -30,6 +30,7 @@ class Invite:
         '_uses',
         '_max_uses',
         '_max_age',
+        '_connection',
     )
 
     def __init__(self, connection: Connection, payload: Optional[InvitePayload]):

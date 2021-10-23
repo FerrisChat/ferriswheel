@@ -379,7 +379,6 @@ class Client(Dispatcher, EventTemplateMixin):
         token: Optional[str] = None,
         email: Optional[str] = None,
         password: Optional[str] = None,
-        id: Optional[Id] = None,
     ) -> None:
         """|coro|
 
@@ -399,7 +398,6 @@ class Client(Dispatcher, EventTemplateMixin):
         id: Optional[int]
             The ID of the guild to join.
         """
-        id = sanitize_id(id)
 
         if email is not None and password is not None and token is not None:
             raise ValueError('Cannot pass both email and password and token')
@@ -407,15 +405,15 @@ class Client(Dispatcher, EventTemplateMixin):
         if token is not None and (email is not None or password is not None):
             raise ValueError('Cannot pass both token and email or password')
 
-        if token is None and (email is None or password is None or id is None):
-            raise ValueError('Must pass either token or email and password and id')
+        if token is None and (email is None or password is None):
+            raise ValueError('Must pass either token or email and password')
 
         if token is not None:
             log.info("Logging in with Token")
             self._initialize_connection(token)
         else:
             log.info("Logging in with Email and Password")
-            await self._connection._initialize_http_with_email(email, password, id)  # type: ignore
+            await self._connection._initialize_http_with_email(email, password)  # type: ignore
 
         self.dispatch('login')
 
