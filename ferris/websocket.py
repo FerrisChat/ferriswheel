@@ -79,4 +79,6 @@ class Websocket:
 
     async def close(self, code) -> None:
         """Closes the current websocket connection."""
-        await self.ws.close(code=code)
+        if ws := getattr(self, 'ws', None):
+            if not ws.closed:
+                await self.ws.close(code=code)
