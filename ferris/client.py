@@ -1,20 +1,23 @@
 from __future__ import annotations
 
 import asyncio
-
-from collections import defaultdict
-from .errors import Reconnect, WebsocketException
-from typing import TYPE_CHECKING, overload, Optional, Dict, List, Awaitable, Callable
 import logging
+import signal
+from collections import defaultdict
+from typing import (TYPE_CHECKING, Awaitable, Callable, Dict, List, Optional,
+                    overload)
 
-from .connection import Connection
-from .guild import Guild
-from .user import User
+from ferris.types import message
+
 from .channel import Channel
-from .websocket import Websocket
-from .message import Message
-from .utils import sanitize_id
+from .connection import Connection
+from .errors import Reconnect, WebsocketException
+from .guild import Guild
 from .invite import Invite
+from .message import Message
+from .user import User
+from .utils import sanitize_id
+from .websocket import Websocket
 
 if TYPE_CHECKING:
     from .types import Id
@@ -22,6 +25,41 @@ if TYPE_CHECKING:
 log = logging.getLogger(__name__)
 
 __all__ = ('Dispatcher', 'Client')
+
+# https://github.com/Rapptz/discord.py/blob/main/discord/client.py#L81
+# https://github.com/python/cpython/blob/main/Lib/asyncio/runners.py
+
+def _cancel_tasks(loop: asyncio.AbstractEventLoop) -> None:
+    tasks = {t for t in asyncio.all_tasks(loop=loop) if not t.done()}
+
+    if not tasks:
+        return
+    
+    log.info(f'Cancelling {len(tasks)} tasks.')
+
+    for task in tasks:
+        task.cancel()
+
+    loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
+    log.info('Cancelled all tasks.')
+
+    for task in tasks:
+        if task.cancelled():
+            continue
+        if task.exception() is not None:
+            loop.call_exception_handler({
+                'message': 'Unhandled exception during Client.run shutdown.',
+                'exception': task.exception(),
+                'task': task
+            })
+
+def _cleanup_loop(loop: asyncio.AbstractEventLoop) -> None:
+    try:
+        _cancel_tasks(loop)
+        loop.run_until_complete(loop.shutdown_asyncgens())
+    finally:
+        log.info('Closing the event loop.')
+        loop.close()
 
 
 class Dispatcher:
@@ -350,18 +388,20 @@ class Client(Dispatcher, EventTemplateMixin):
         )
         return Guild(self._connection, g)
 
-    async def cleanup(self) -> None:
-        tasks = filter(lambda task: not task.done(), asyncio.all_tasks(self.loop))
-
-        for task in tasks:
-            task.cancel()
-
-        await asyncio.gather(*tasks, return_exceptions=True)
-
     async def close(self) -> None:
-        await self._connection._http.session.close()
+        if self.is_closed:
+            return
+        self._is_closed = True
+
+        if hasattr(self, 'ws'):
+            await self.ws.close(code=1000)
+        
+        if http := getattr(self._connection, '_http', None):
+            if session := getattr(http, 'session', None):
+                await session.close()
+
         self.dispatch('close')
-        await self.cleanup()
+
 
     stop = close
 
@@ -419,24 +459,64 @@ class Client(Dispatcher, EventTemplateMixin):
 
         self.ws = Websocket(self)
 
-        while not self._is_closed:
+        while not self.is_closed:
             try:
                 await self.ws.connect()
             except Reconnect:
+                del self.ws
                 self.ws = Websocket(self)
                 continue
             except WebsocketException:
                 raise
-            finally:
-                await self.close()
 
     def run(self, *args, **kwargs):
         """A helper function equivalent to
 
         .. code-block:: python3
 
-            asyncio.run(self.start(*args, **kwargs))
+            try:
+                loop.run_until_complete(start(*args, **kwargs))
+            except KeyboardInterrupt:
+                loop.run_until_complete(_cancel_all_tasks())
+            finally:
+                loop.close()
 
         If you want finer control over the event loop, use :meth:`Client.start` instead.
         """
-        asyncio.run(self.start(*args, **kwargs))
+        # https://github.com/Rapptz/discord.py/blob/master/discord/client.py#L608 and
+        # https://github.com/python/cpython/blob/main/Lib/asyncio/runners.py
+
+        loop = self.loop
+
+        try:
+            loop.add_signal_handler(signal.SIGINT, lambda: loop.stop())
+            loop.add_signal_handler(signal.SIGTERM, lambda: loop.stop())
+        except NotImplementedError:
+            pass
+
+        async def runner():
+            try:
+                await self.start(*args, **kwargs)
+            finally:
+                if not self.is_closed:
+                    await self.close()
+
+        def stop_loop_on_completion(f):
+            loop.stop()
+
+        future = asyncio.ensure_future(runner(), loop=loop)
+        future.add_done_callback(stop_loop_on_completion)
+        try:
+            loop.run_forever()
+        except KeyboardInterrupt:
+            log.info('Received signal to terminate bot and event loop')
+        finally:
+            future.remove_done_callback(stop_loop_on_completion)
+            log.info('Cleaning up tasks.')
+            _cleanup_loop(loop)
+
+        if not future.cancelled():
+            try:
+                return future.result()
+            except KeyboardInterrupt:
+                return None
