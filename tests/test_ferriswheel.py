@@ -11,27 +11,36 @@ _log.setLevel(logging.DEBUG)
 
 
 class Client(ferris.Client):
-    async def on_login(self):
+    async def on_ready(self):
         log.info("Starting test.")
 
-        c = await client.fetch_channel(969269623054741111886615412736)
+        c = await self.create_channel(name='test')
+
+        c = await client.fetch_channel(c.id)
         log.info(repr(c))
 
         m = await c.send("Test.")
         log.info(repr(m))
 
-        log.info("Fetch channel and send message works.")
+        log.info("Create, Fetch channel and send message works.")
 
-        u = await client.fetch_user(969265165749451770983817936896)
+        u = await client.fetch_user(self.user.id)
         log.info(repr(u))
         log.info("Fetch user works.")
 
-        g = await client.fetch_guild(969269600531122478301130522624)
+        g = await self.create_guild(name='test')
+
+        g = await client.fetch_guild(g.id)
         log.info(repr(g))
-        log.info("Fetch guild works.")
+        log.info("Create and Fetch guild works.")
+
+        i = await g.create_invite()
+        log.info(repr(i))
+
+        log.info("Create invite works.")
 
         log.info("Test done, all passed")
-        await self.stop()
+        await self.close()
 
 
 client = Client()
@@ -39,5 +48,4 @@ client = Client()
 client.run(
     email="test.ferriswheel@ferris.chat",
     password=os.getenv('PASSWORD'),
-    id=969265165749451770983817936896,
 )
