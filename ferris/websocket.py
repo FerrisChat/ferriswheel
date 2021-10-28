@@ -75,8 +75,8 @@ class Websocket:
                 aiohttp.WSMsgType.CLOSE,
             ):
                 log.info('Websocket closed, attempting to reconnect.')
-                raise Reconnect  # TODO: Reconnect here
+                raise Reconnect
 
-    async def close(self) -> None:
+    async def close(self, code) -> None:
         """Closes the current websocket connection."""
-        await self.ws.close()
+        await self.ws.close(code=code)

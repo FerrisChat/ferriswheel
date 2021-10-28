@@ -9,6 +9,7 @@ from .guild import Guild
 from .member import Member
 from .message import Message
 from .user import User
+from .invite import Invite
 
 if TYPE_CHECKING:
     from .connection import Connection
@@ -26,6 +27,8 @@ class _BaseEventHandler:
         event = _data.get('c')
         data = _data.get('d')
         log.debug(f"Handling event: {event} Data: {data}")
+
+        self.dispatch('socket_receive', event, data)
 
         try:
             asyncio.create_task(getattr(self, event)(data))
@@ -89,9 +92,14 @@ class EventHandler(_BaseEventHandler):
         self.dispatch('channel_delete', c)
 
         self.connection._channels.pop(c.id, None)
+        
+        self.connection.get_guild(c.guild_id)._channels.pop(c.id, None)
 
     async def MemberCreate(self, data):
         guild: Guild = self.connection.get_guild(data.get('guild_id'))
+        if not guild:
+            return
+
         if member := guild._members.get(data.get('user_id')):
             member._process_data(data.get('member'))
         else:
@@ -115,11 +123,36 @@ class EventHandler(_BaseEventHandler):
         else:
             member = Member(guild, data.get('member'))
         self.dispatch('member_delete', member)
+    
+    async def GuildCreate(self, data):
+        g = Guild(self.connection, data.get('guild'))
 
-    async def UserCreate(self, data):
-        if u := self.connection.get_user(data.get('id')):
-            u._process_data(data.get('user'))
+        self.connection.store_guild(g)
+
+        self.dispatch('guild_create', g)
+    
+    async def GuildUpdate(self, data):
+        old = Guild(self.connection, data.get('old'))
+        if new := self.connection.get_guild(old.id):
+            new._process_data(data.get('new'))
         else:
-            u = User(self.connection, data.get('user'))
-            self.connection.store_user(u)
-        self.dispatch('user_create', u)
+            new = Guild(self.connection, data.get('new'))
+            self.connection.store_guild(new)
+
+        self.dispatch('guild_update', old, new)
+    
+    async def GuildDelete(self, data):
+        g = Guild(self.connection, data.get('guild'))
+        self.connection._guilds.pop(g.id, None)
+
+        self.dispatch('guild_delete', g)
+    
+    async def InviteCreate(self, data):
+        invite = Invite(self.connection, data.get('invite'))
+
+        self.dispatch('invite_create', invite)
+    
+    async def InviteDelete(self, data):
+        invite = Invite(self.connection, data.get('invite'))
+
+        self.dispatch('invite_delete', invite)
