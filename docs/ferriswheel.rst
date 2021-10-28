@@ -31,7 +31,7 @@ Base
     :members:
     :inherited-members:
 
-Channnel
+Channel
 --------
 
 .. attributetable:: Channel
@@ -83,7 +83,7 @@ All listeners must be a |coroutine_link|.
     Called when a message is updated.
 
     :param old: The old :class:`~Message`.
-    :param new: The new :class:`~message`.
+    :param new: The new :class:`~Message`.
 
 .. function on_message_delete(message)
 

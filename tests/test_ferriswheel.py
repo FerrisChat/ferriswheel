@@ -18,11 +18,14 @@ class Client(ferris.Client):
 
         c = await client.fetch_channel(c.id)
         log.info(repr(c))
+        await c.edit(name='test_edit')
 
         m = await c.send("Test.")
         log.info(repr(m))
+        await m.edit(content='test_edit')
 
-        log.info("Create, Fetch channel and send message works.")
+
+        log.info("Create, Fetch, Edit channel, send, edit message works.")
 
         u = await client.fetch_user(self.user.id)
         log.info(repr(u))
@@ -32,12 +35,20 @@ class Client(ferris.Client):
 
         g = await client.fetch_guild(g.id)
         log.info(repr(g))
-        log.info("Create and Fetch guild works.")
+        await g.edit(name='test_edit')
+        log.info("Create and Fetch and edit guild works.")
 
         i = await g.create_invite()
         log.info(repr(i))
 
         log.info("Create invite works.")
+
+        await m.delete()
+        await c.delete()
+        await g.delete()
+
+
+        log.info("Delete message, channel, guild works.")
 
         log.info("Test done, all passed")
         await self.close()
