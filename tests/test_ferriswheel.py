@@ -14,9 +14,16 @@ class Client(ferris.Client):
     async def on_ready(self):
         log.info("Starting test.")
 
-        c = await self.create_channel(name='test')
+        g = await self.create_guild(name='test')
 
-        c = await client.fetch_channel(c.id)
+        g = await self.fetch_guild(g.id)
+        log.info(repr(g))
+        await g.edit(name='test_edit')
+        log.info("Create and Fetch and edit guild works.")
+
+        c = await g.create_channel(name='test')
+
+        c = await self.fetch_channel(c.id)
         log.info(repr(c))
         await c.edit(name='test_edit')
 
@@ -27,16 +34,9 @@ class Client(ferris.Client):
 
         log.info("Create, Fetch, Edit channel, send, edit message works.")
 
-        u = await client.fetch_user(self.user.id)
+        u = await self.fetch_user(self.user.id)
         log.info(repr(u))
         log.info("Fetch user works.")
-
-        g = await self.create_guild(name='test')
-
-        g = await client.fetch_guild(g.id)
-        log.info(repr(g))
-        await g.edit(name='test_edit')
-        log.info("Create and Fetch and edit guild works.")
 
         i = await g.create_invite()
         log.info(repr(i))
@@ -56,7 +56,4 @@ class Client(ferris.Client):
 
 client = Client()
 
-client.run(
-    email="test.ferriswheel@ferris.chat",
-    password=os.getenv('PASSWORD'),
-)
+client.run(token=os.getenv('TOKEN'))

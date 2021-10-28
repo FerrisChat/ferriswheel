@@ -93,3 +93,6 @@ class Invite:
     def max_age(self) -> int:
         """int: The maximum age of this invite."""
         return self._max_age
+    
+    def __repr__(self) -> str:
+        return f'<Invite code={self.code!r} guild={self.guild_id} uses={self.uses} max_uses={self.max_uses} max_age={self.max_age}>'

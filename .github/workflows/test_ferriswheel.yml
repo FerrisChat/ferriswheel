@@ -31,4 +31,5 @@ jobs:
       run: python tests/test_ferriswheel.py
       env:
         PASSWORD: ${{ secrets.PASSWORD }}
+        TOKEN: ${{ secrets.TOKEN }}
       
