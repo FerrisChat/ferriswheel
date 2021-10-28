@@ -78,9 +78,9 @@ All listeners must be a |coroutine_link|.
 
     Called when a message is sent in a channel.
 
-.. function:: on_message_edit(old, new)
+.. function:: on_message_update(old, new)
 
-    Called when a message is edited.
+    Called when a message is updated.
 
     :param old: The old :class:`~Message`.
     :param new: The new :class:`~message`.
@@ -97,9 +97,9 @@ All listeners must be a |coroutine_link|.
 
     :param channel: The :class:`~Channel` that was created.
 
-.. function on_channel_edit(old, new)
+.. function on_channel_update(old, new)
 
-    Called when a channel is edited.
+    Called when a channel is updated.
 
     :param old: The old :class:`~Channel`.
     :param new: The new :class:`~Channel`.
@@ -116,9 +116,9 @@ All listeners must be a |coroutine_link|.
 
     :param member: The :class:`~Member` that joined.
 
-.. function on_member_edit(old, new)
+.. function on_member_update(old, new)
 
-    Called when a member is edited.
+    Called when a member is updated.
 
     :param old: The old :class:`~Member`.
     :param new: The new :class:`~Member`.
@@ -129,11 +129,37 @@ All listeners must be a |coroutine_link|.
 
     :param member: The :class:`~Member` that left.
 
-.. function on_user_create(user)
+.. function on_guild_create(guild)
 
-    Called when a user is created.
+    Called when a guild is created.
 
-    :param user: The :class:`~User` that was created.
+    :param guild: The :class:`~Guild` that was created.
+
+
+.. function on_guild_update(old, new)
+
+    Called when a guild is updated.
+
+    :param old: The old :class:`~Guild`.
+    :param new: The new :class:`~Guild`.
+
+.. function on_guild_delete(guild)
+
+    Called when a guild is deleted.
+
+    :param guild: The :class:`~Guild` that was deleted.
+
+.. function on_invite_create(invite)
+
+    Called when an invite is created.
+
+    :param invite: The :class:`~Invite` that was created.
+
+.. function on_invite_delete(invite)
+
+    Called when an invite is deleted.
+
+    :param invite: The :class:`~Invite` that was deleted.
 
 
 

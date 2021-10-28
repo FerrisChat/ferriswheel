@@ -59,7 +59,7 @@ class EventHandler(_BaseEventHandler):
         else:
             new = Message(self.connection, data.get('new'))
 
-        self.dispatch('message_edit', old, new)
+        self.dispatch('message_update', old, new)
 
     async def MessageDelete(self, data):
         if m := self.connection.get_message(data.get('id')):
