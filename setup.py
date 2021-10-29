@@ -1,6 +1,9 @@
+import pathlib
 import re
 
 from setuptools import setup
+
+ROOT = pathlib.Path(__file__).parent
 
 with open('ferris/__init__.py', 'r') as f:
     content = f.read()
@@ -18,10 +21,10 @@ with open('ferris/__init__.py', 'r') as f:
 #     requirements = f.readlines()
 
 
-with open('README.md', encoding='utf-8') as f:
+with open(ROOT / 'README.md', encoding='utf-8') as f:
     readme = f.read()
 
-with open('requirements.txt', encoding='utf-8') as f:
+with open(ROOT / 'requirements.txt', encoding='utf-8') as f:
     requirements = f.readlines()
 
 setup(
@@ -50,7 +53,7 @@ setup(
     },
     python_requires=">=3.8.0",
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
         'Intended Audience :: Developers',
         'Natural Language :: English',
