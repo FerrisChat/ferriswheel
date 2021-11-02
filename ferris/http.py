@@ -114,8 +114,8 @@ class HTTPClient:
 
                     if 400 > response.status >= 200:
                         token = from_json(content)['token']
-                        return cls(token)
                         log.info('Successfully Retrived token')
+                        return cls(token)
 
                     if response.status == 400:
                         data = from_json(content)
