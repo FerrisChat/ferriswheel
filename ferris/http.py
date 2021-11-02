@@ -46,10 +46,10 @@ class APIRouter:
         return self.__class__(self.__http_client, route)
 
     def __getattr__(self, route: str, /) -> APIRouter:
-        return self._make_new(f"{self.__current_route}/{route}")
+        return self._make_new(f'{self.__current_route}/{route}')
 
     def __call__(self, route: Optional[SupportsStr], /) -> APIRouter:
-        return self._make_new(f"{self.__current_route}/{quote(str(route))}")
+        return self._make_new(f'{self.__current_route}/{quote(str(route))}')
 
     def request(self, method, /, **kwargs) -> Awaitable[Optional[Data]]:
         return self.__http_client.request(self.url, method, **kwargs)
@@ -76,14 +76,14 @@ class HTTPClient:
     MAX_TRIES: ClassVar[int] = 3
     USER_AGENT: ClassVar[
         str
-    ] = f"FerrisWheel (https://github.com/Cryptex-github/ferriswheel v{__version__})"
+    ] = f'FerrisWheel (https://github.com/Cryptex-github/ferriswheel v{__version__})'
 
     __slots__ = ('__token', '__session', '_buckets_lock', '_api_router')
 
     def __init__(self, token: str, /) -> None:
         self.__token: str = token
         self.__session: aiohttp.ClientSession = aiohttp.ClientSession(
-            headers={"User-Agent": self.USER_AGENT, "Authorization": self.__token}
+            headers={'User-Agent': self.USER_AGENT, 'Authorization': self.__token}
         )
 
         self._buckets_lock: Dict[str, asyncio.Event] = {}
@@ -103,19 +103,19 @@ class HTTPClient:
 
     @classmethod
     async def from_email_and_password(cls, email: str, password: str) -> HTTPClient:
-        log.info("Retriving token from email and password")
+        log.info('Retriving token from email and password')
         for tries in range(cls.MAX_TRIES):
             async with aiohttp.ClientSession() as session:
                 async with session.post(
-                    f"{cls.API_BASE_URL}/auth",
-                    headers={"Email": email, "Password": password},
+                    f'{cls.API_BASE_URL}/auth',
+                    headers={'Email': email, 'Password': password},
                 ) as response:
                     content = await response.text()
 
                     if 400 > response.status >= 200:
                         token = from_json(content)['token']
                         return cls(token)
-                        log.info("Successfully Retrived token")
+                        log.info('Successfully Retrived token')
 
                     if response.status == 400:
                         data = from_json(content)
@@ -125,7 +125,7 @@ class HTTPClient:
                         character = location.get('character')
 
                         raise BadRequest(
-                            response, f"{reason}\nLine: {line} Character: {character}"
+                            response, f'{reason}\nLine: {line} Character: {character}'
                         )
 
                     if response.status == 404:
@@ -152,7 +152,7 @@ class HTTPClient:
         raise HTTPException(response, content)
 
     async def request(self, url: str, method: str, /, **kwargs) -> Optional[Data]:
-        bucket_key = f"{method} {url}"
+        bucket_key = f'{method} {url}'
         bucket = self._buckets_lock.get(bucket_key)
         if bucket is None:
             self._buckets_lock[bucket_key] = bucket = asyncio.Event()
@@ -160,8 +160,8 @@ class HTTPClient:
 
         headers = {}
 
-        if "data" in kwargs:
-            headers["Content-Type"] = "application/json"
+        if 'data' in kwargs:
+            headers['Content-Type'] = 'application/json'
 
         if not bucket.is_set():
             await bucket.wait()
@@ -172,16 +172,16 @@ class HTTPClient:
             ) as response:
                 content = await response.text()
 
-                log.debug(f"{method} {url} Returned {response.status} with {content}")
+                log.debug(f'{method} {url} Returned {response.status} with {content}')
 
                 if 400 > response.status >= 200:
                     return from_json(content)
 
                 if response.status == 429:
                     data = from_json(content)
-                    sleep = data.get("retry_after", 0)
+                    sleep = data.get('retry_after', 0)
                     log.warning(
-                        f"We have been ratelimited on {method} {url}, retrying in {sleep} seconds"
+                        f'We have been ratelimited on {method} {url}, retrying in {sleep} seconds'
                     )
                     bucket.clear()
                     await asyncio.sleep(sleep)
@@ -195,7 +195,7 @@ class HTTPClient:
                     line = location.get('line')
                     character = location.get('character')
                     raise BadRequest(
-                        response, f"{reason}\nLine: {line} Character: {character}"
+                        response, f'{reason}\nLine: {line} Character: {character}'
                     )
 
                 if response.status == 404:
