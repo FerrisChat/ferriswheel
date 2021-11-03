@@ -89,13 +89,15 @@ class Channel(BaseObject):
         limit: int
             The maximum number of messages to fetch.
             Defaults to 100.
-            Set it to 9223372036854775807 to fetch all messages.
+            Set it to None to fetch all messages.
 
         Returns
         -------
         List[Message]
         """
-        data = await self._connection.api.channels(self.id).messages.get(limit=limit)
+        if limit is None:
+            limit = 9223372036854775807
+        data = await self._connection.api.channels(self.id).messages.get(params={'limit': limit})
         return [Message(self._connection, m) for m in data]
 
     async def edit(self, name: str) -> Channel:
