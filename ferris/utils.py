@@ -20,6 +20,9 @@ T = TypeVar('T', covariant=True)
 # except ImportError:
 #     import json
 
+
+import json
+
 HAS_ORJSON = False
 
 FERRIS_EPOCH_MS: int = 1_577_836_800_000
