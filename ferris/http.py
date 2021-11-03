@@ -172,7 +172,7 @@ class HTTPClient:
             ) as response:
                 content = await response.text()
 
-                log.debug(f'{method} {url} Returned {response.status} with {content}')
+                log.debug(f'{method} {url} {kwargs.get("json")} Returned {response.status} with {content}')
 
                 if 400 > response.status >= 200:
                     return from_json(content)
