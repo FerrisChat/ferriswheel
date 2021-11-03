@@ -13,14 +13,14 @@ __all__ = (
 
 T = TypeVar('T', covariant=True)
 
-try:
-    import orjson
+# try:
+#     import orjson
 
-    HAS_ORJSON = True
-except ImportError:
-    import json
+#     HAS_ORJSON = True
+# except ImportError:
+#     import json
 
-    HAS_ORJSON = False
+HAS_ORJSON = False
 
 FERRIS_EPOCH_MS: int = 1_577_836_800_000
 
