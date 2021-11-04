@@ -16,6 +16,7 @@ Client
 
 .. autoclass:: Client
     :members:
+    :inherited-members:
 
 Base
 ----
@@ -52,6 +53,10 @@ All listeners must be a |coroutine_link|.
 .. function:: on_login()
 
     Called when the client logs in.
+
+.. function:: on_error(error)
+
+    Called when an error is raised in an event handler.
 
 .. function:: on_connect()
 

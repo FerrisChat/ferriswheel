@@ -68,6 +68,14 @@ class Dispatcher:
         self.event_handlers: defaultdict[
             str, List[Callable[..., Awaitable]]
         ] = defaultdict(list)
+    
+    async def wrap_event(self, coro: Callable[..., Awaitable]) -> Callable[..., Awaitable]:
+        try:
+            await coro
+        except asyncio.CancelledError:
+            pass
+        except Exception as exc:
+            self.dispatch('error', exc)
 
     def dispatch(self, event: str, *args, **kwargs) -> asyncio.Future:
         coros = []
@@ -76,7 +84,7 @@ class Dispatcher:
             coros.append(callback(*args, **kwargs))
 
         if callbacks := self.event_handlers.get(event):
-            coros += [cb(*args, **kwargs) for cb in callbacks]
+            coros += [self.wrap_event(cb(*args, **kwargs)) for cb in callbacks]
 
         return asyncio.ensure_future(asyncio.gather(*coros))
 
@@ -147,6 +155,13 @@ class EventTemplateMixin:
     async def on_connect(self) -> None:
         """|coro|
         Called when the client has connected to FerrisChat ws.
+        """
+        pass
+
+    async def on_error(self, error: Exception) -> None:
+        """|coro|
+
+        Called when an exception is raised in an event handler.
         """
         pass
 
