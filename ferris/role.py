@@ -18,6 +18,7 @@ __all__ = ("Role",)
 class Role(BaseObject):
     """Represents a role object in FerrisChat."""
 
+    __all__ = ('_guild_id', '_name', '_color', '_position', '_permissions')
 
     def __init__(
         self, connection: Connection, data: Optional[RolePayload], /

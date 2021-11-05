@@ -9,6 +9,7 @@ from .guild import Guild
 from .member import Member
 from .message import Message
 from .user import User
+from .role import Role
 from .invite import Invite
 
 if TYPE_CHECKING:
@@ -156,3 +157,70 @@ class EventHandler(_BaseEventHandler):
         invite = Invite(self.connection, data.get('invite'))
 
         self.dispatch('invite_delete', invite)
+    
+    async def RoleCreate(self, data):
+        r = data.get('role')
+        guild: Guild = self.connection.get_guild(r.get('guild_id'))
+        if role := guild._roles.get(r.get('id')):
+            role._process_data(r)
+        else:
+            role = Role(self.connection, r)
+            guild._roles[role.id] = role
+
+        self.dispatch('role_create', role)
+    
+    async def RoleUpdate(self, data):
+        old = Role(self.connection, data.get('old'))
+        r = data.get('new')
+        guild: Guild = self.connection.get_guild(r.get('guild_id'))
+        if role := guild._roles.get(r.get('id')):
+            role._process_data(r)
+        else:
+            role = Role(self.connection, r)
+            guild._roles[role.id] = role
+
+        self.dispatch('role_update', old, role)
+    
+    async def RoleDelete(self, data):
+        r = data.get('role')
+        guild: Guild = self.connection.get_guild(r.get('guild_id'))
+        if role := guild._roles.get(r.get('id')):
+            guild._roles.pop(role.id, None)
+        else:
+            role = Role(self.connection, r)
+        self.dispatch('role_delete', role)
+    
+    async def MemberRoleAdd(self, data):
+        m = data.get('member')
+
+        g = self.connection.get_guild(m.get('guild_id'))
+
+        if member := g._members.get(m.get('user_id')):
+            member._process_data(m)
+        else:
+            member = Member(self.connection, m)
+            g._members[member.id] = member
+        
+        role = Role(self.connection, data.get('role'))
+
+        member._roles[role.id] = role
+
+        self.dispatch('member_role_add', member, role)
+    
+    async def MemberRoleRemove(self, data):
+        m = data.get('member')
+
+        g = self.connection.get_guild(m.get('guild_id'))
+
+        if member := g._members.get(m.get('user_id')):
+            member._process_data(m)
+        else:
+            member = Member(self.connection, m)
+            g._members[member.id] = member
+        
+        role = Role(self.connection, data.get('role'))
+
+        member._roles.pop(role.id, None)
+
+        self.dispatch('member_role_remove', member, role)
+        

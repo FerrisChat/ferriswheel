@@ -22,7 +22,7 @@ __all__ = ('Guild',)
 class Guild(BaseObject):
     """Represents a FerrisChat guild."""
 
-    __slots__ = ('_connection', '_owner_id', '_name', '_channels', '_members')
+    __slots__ = ('_connection', '_owner_id', '_name', '_channels', '_members', '_roles')
 
     def __init__(self, connection: Connection, data: Optional[GuildPayload], /) -> None:
         self._connection: Connection = connection
