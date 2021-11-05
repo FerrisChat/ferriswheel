@@ -1,11 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
+
+from .types.base import Id
 
 from .base import BaseObject
 from .user import User
 
 if TYPE_CHECKING:
+    from .role import Role
     from .guild import Guild
     from .connection import Connection
     from .types import Data
@@ -51,6 +54,30 @@ class Member(BaseObject):
             self._connection.store_guild(guild)
 
         self._guild: Optional[Guild] = guild
+    
+    async def add_role(self, role: Union[Role, Id]) -> None:
+        """|coro|
+
+        Adds a role to this member.
+
+        Parameters
+        ----------
+        role: :class:`~.Role` or :class:`~.Snowflake`
+            The role to add to this member.
+        """
+        await self._connection.api.guilds(self.guild_id).members(self.id).roles(role.id).post()
+    
+    async def remove_role(self, role: Union[Role, Id]) -> None:
+        """|coro|
+
+        Removes a role from this member.
+
+        Parameters
+        ----------
+        role: :class:`~.Role` or :class:`~.Snowflake`
+            The role to remove from this member.
+        """
+        await self._connection.api.guilds(self.guild_id).members(self.id).roles(role.id).delete()
 
     async def edit(self) -> None:
         """|coro|

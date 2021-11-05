@@ -2,17 +2,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, List, Optional, cast
 
-from .base import BaseObject
-from .utils import sanitize_id
-from .channel import Channel
-from ferris.invite import Invite
+from ferris.role import Role
 
+from .base import BaseObject
+from .channel import Channel
+from .invite import Invite
+from .role import Role
+from .utils import sanitize_id
 
 if TYPE_CHECKING:
     from .member import Member
     from .connection import Connection
-    from .types import Data, Id, Snowflake
-    from .types import GuildPayload, ChannelPayload
+    from .types import ChannelPayload, Data, GuildPayload, Id, Snowflake
 
 
 __all__ = ('Guild',)
@@ -39,6 +40,7 @@ class Guild(BaseObject):
         self._name: Optional[str] = data.get('name')
 
         self._channels: Dict[int, Channel] = {}
+        self._roles: Dict[int, Role] = {}
 
         for c in data.get('channels') or []:
             if channel := self._connection.get_channel(c.get('id')):
@@ -53,15 +55,51 @@ class Guild(BaseObject):
             member = Member(self._connection, m)
             self._members[member.id] = member
 
+        for r in data.get('roles') or []:
+            role = Role(self._connection, r)
+            self._roles[role.id] = role
+    
+    async def fetch_role(self, id: Id) -> Role:
+        """|coro|
+
+        Fetches a role from this guild.
+
+        Parameters
+        ----------
+        id: int
+            The ID of the role to fetch.
+
+        Returns
+        -------
+        :class:`~.Role`
+        """
+        id = sanitize_id(id)
+
+        role = await self._connection.api.guilds(self.id).roles(id).get()
+
+        return Role(self._connection, role)
+
     async def fetch_member(self, id: Id) -> Member:
         """|coro|
 
         Fetches a member from this guild.
 
-        .. warning::
-            This method will do nothing as FerrisChat has not implemented this feature yet.
+        Parameters
+        ----------
+        id: int
+            The ID of the member to fetch.
+        
+        Returns
+        -------
+        :class:`~.Member`
         """
-        ...
+        from .member import Member
+
+        id = sanitize_id(id)
+
+        m = await self._connection.api.guilds(self.id).members(id).get()
+
+        return Member(self._connection, m)
 
     async def fetch_invites(self) -> List[Invite]:
         """|coro|
@@ -74,6 +112,29 @@ class Guild(BaseObject):
         """
         invites = await self._connection.api.guilds(self.id).invites.get()
         return [Invite(self._connection, i) for i in invites]
+    
+    async def create_role(self, name: str) -> Role:
+        """|coro|
+
+        Creates a role in this guild.
+
+        Parameters
+        ----------
+        name: str
+            The name of the role.
+
+        Returns
+        -------
+        :class:`~.Role`
+        """
+        r = await self._connection.api.guilds(self.id).roles.post(
+            json={'name': name}
+        )
+        role = Role(self._connection, r)
+
+        self._roles[role.id] = role
+
+        return role
 
     async def create_invite(self, max_age: int = None, max_uses: int = None) -> Invite:
         """|coro|
@@ -160,6 +221,23 @@ class Guild(BaseObject):
         Deletes this guild.
         """
         await self._connection.api.guilds(self.id).delete()
+    
+    def get_role(self, id: Id) -> Optional[Role]:
+        """
+        Gets a role from this guild.
+
+        Parameters
+        ----------
+        id: int
+            The ID of the role to fetch.
+
+        Returns
+        -------
+        Optional[:class:`~.Role`]
+        """
+        id = sanitize_id(id)
+
+        return self._roles.get(id)
 
     def get_channel(self, id: Id) -> Optional[Channel]:
         """Tries to retrieve a :class:`.~Channel` object
@@ -213,6 +291,11 @@ class Guild(BaseObject):
     def name(self, /) -> Optional[str]:
         """str: The name of this guild."""
         return self._name
+    
+    @property
+    def roles(self, /) -> List[Role]:
+        """List[:class:`.Role`]: The roles in this guild."""
+        return list(self._roles.values())
 
     @property
     def channels(self, /) -> List[Channel]:

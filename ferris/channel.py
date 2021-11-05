@@ -98,7 +98,7 @@ class Channel(BaseObject):
         if limit is None:
             limit = 9223372036854775807
         data = await self._connection.api.channels(self.id).messages.get(params={'limit': limit})
-        return [Message(self._connection, m) for m in data]
+        return [Message(self._connection, m) for m in data['messages']]
 
     async def edit(self, name: str) -> Channel:
         """

@@ -6,9 +6,9 @@ from .channel import *
 from .guild import *
 from .member import *
 from .message import *
+from .role import *
 from .user import *
 from .ws import *
-
 
 Data = Union[
     AuthResponse,

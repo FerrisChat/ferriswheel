@@ -16,6 +16,7 @@ from .http import *
 from .invite import *
 from .member import *
 from .message import *
+from .role import *
 from .user import *
 from .utils import *
 
