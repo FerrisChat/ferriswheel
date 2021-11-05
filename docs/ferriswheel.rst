@@ -166,6 +166,39 @@ All listeners must be a |coroutine_link|.
 
     :param invite: The :class:`~Invite` that was deleted.
 
+.. function on_role_create(role)
+
+    Called when a role is created.
+
+    :param role: The :class:`~Role` that was created.
+
+.. function on_role_update(old, new)
+
+    Called when a role is updated.
+
+    :param old: The old :class:`~Role`.
+    :param new: The new :class:`~Role`.
+
+.. function on_role_delete(role)
+
+    Called when a role is deleted.
+
+    :param role: The :class:`~Role` that was deleted.
+
+.. function on_member_role_add(member, role)
+
+    Called when a member is added to a role.
+
+    :param member: The :class:`~Member` that was added.
+    :param role: The :class:`~Role` that was added.
+
+.. function on_member_role_remove(member, role)
+
+    Called when a member is removed from a role.
+
+    :param member: The :class:`~Member` that was removed.
+    :param role: The :class:`~Role` that was removed.
+
 
 
 Guild
@@ -203,7 +236,16 @@ Message
     :members:
     :inherited-members:
 
-Users
+Role
+----
+
+.. attributetable:: Role
+
+.. autoclass:: Role
+    :members:
+    :inherited-members:
+
+User
 -----
 
 .. attributetable:: User
