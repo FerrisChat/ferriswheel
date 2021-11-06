@@ -4,14 +4,14 @@ from typing import TYPE_CHECKING, Optional, Union
 
 from .base import BaseObject
 
-
 if TYPE_CHECKING:
+    from .channel import Channel
     from .connection import Connection
+    from .guild import Guild
+    from .member import Member
     from .types import Data, Snowflake
     from .types.message import MessagePayload
-    from .channel import Channel
     from .user import User
-    from .member import Member
 
 __all__ = ('Message',)
 
@@ -81,6 +81,11 @@ class Message(BaseObject):
     def channel(self, /) -> Optional[Channel]:
         """Channel: The channel that this message was sent in"""
         return self._connection.get_channel(self.channel_id)
+    
+    @property
+    def guild(self, /) -> Optional[Guild]:
+        """Guild: The guild that this message was sent in"""
+        return self.channel.guild
 
     @property
     def author_id(self, /) -> Optional[Snowflake]:
