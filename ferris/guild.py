@@ -193,7 +193,7 @@ class Guild(BaseObject):
         :class:`~.Channel`
         """
         id = sanitize_id(id)
-        c = await self._connection.api.guilds(self.id).channels(id).get()
+        c = await self._connection.api.channels(id).get()
         return Channel(self._connection, c)
 
     async def edit(self, name: str) -> Guild:
