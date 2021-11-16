@@ -106,7 +106,7 @@ class User(BaseObject):
             'email': email,
             'password': password,
         }
-        user = await self._connection.api.users(self.id).patch(payload)
+        user = await self._connection.api.users(self.id).patch(json=payload)
         self._process_data(user)
         return self
 
