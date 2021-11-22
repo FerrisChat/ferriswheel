@@ -332,10 +332,13 @@ class Client(Dispatcher, EventTemplateMixin):
         """
         id = sanitize_id(id)
         m = await self._connection.api.messages(id).get()
+
+        m = Message(self._connection, m)
+
         if cache:
             self._connection.store_message(m)
 
-        return Message(self._connection, m)
+        return m
 
     async def fetch_channel(self, id: Id, *, cache: bool = False) -> Channel:
         """|coro|
@@ -358,10 +361,12 @@ class Client(Dispatcher, EventTemplateMixin):
         id = sanitize_id(id)
         c = await self._connection.api.channels(id).get()
 
+        c = Channel(self._connection, c)
+
         if cache:
             self._connection.store_channel(c)
 
-        return Channel(self._connection, c)
+        return c
 
     async def fetch_user(self, id: Id, *, cache: bool = False) -> User:
         """|coro|
@@ -384,10 +389,12 @@ class Client(Dispatcher, EventTemplateMixin):
         id = sanitize_id(id)
         u = await self._connection.api.users(id).get()
 
+        u = User(self._connection, u)
+
         if cache:
             self._connection.store_user(u)
 
-        return User(self._connection, u)
+        return u
 
     async def fetch_guild(
         self, id: Id, *, fetch_members: bool = False, fetch_channels: bool = True, cache: bool = False
@@ -424,7 +431,13 @@ class Client(Dispatcher, EventTemplateMixin):
                 'channels': str(fetch_channels).lower(),
             }
         )
-        return Guild(self._connection, g)
+
+        g = Guild(self._connection, g)
+
+        if cache:
+            self._connection.store_guild(g)
+        
+        return g
 
     async def close(self) -> None:
         if self.is_closed:
