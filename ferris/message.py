@@ -66,7 +66,7 @@ class Message(BaseObject):
         m = (
             await self._connection.api.channels(self.channel_id)
             .messages(self.id)
-            .patch(payload)
+            .patch(json=payload)
         )
         self._process_data(m)
         return self
