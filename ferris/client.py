@@ -176,6 +176,10 @@ class Client(Dispatcher, EventTemplateMixin):
     max_messages_count: Optional[int]
         The maximum number of messages to store in the internal message buffer.
         Defaults to ``1000``.
+    
+    max_heartbeat_timeout: Optional[int]
+        The maximum timeout in seconds between sending a heartbeat to the server.
+        If heartbeat took longer than this timeout, the client will attempt to reconnect.
     """
 
     def __init__(
@@ -191,6 +195,13 @@ class Client(Dispatcher, EventTemplateMixin):
     def user(self) -> Optional[User]:
         """Returns the client's user."""
         return self._connection.user
+    
+    @property
+    def latency(self) -> float:
+        """Returns the websocket latency between the client and the server."""
+        if ws := getattr(self, 'ws', None):
+            return self.ws._heartbeat_manager.latency
+        return float('inf')
 
     @property
     def is_ready(self) -> bool:

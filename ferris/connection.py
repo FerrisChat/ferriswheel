@@ -36,6 +36,8 @@ class Connection:
 
         self._max_messages_count: int = options.get("max_messages_count", 1000)
 
+        self._max_heartbeat_timeout: int = options.get("max_heartbeat_timeout", 60)
+
         self.clear_store()
 
     @property

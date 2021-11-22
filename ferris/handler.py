@@ -14,14 +14,18 @@ from .invite import Invite
 
 if TYPE_CHECKING:
     from .connection import Connection
+    from .websocket import KeepAliveManager
 
 log = logging.getLogger(__name__)
 
 
 class _BaseEventHandler:
-    def __init__(self, connection: Connection) -> None:
+    def __init__(self, connection: Connection, heartbeat_manager: KeepAliveManager) -> None:
         self.connection: Connection = connection
         self.dispatch: Coroutine = connection.dispatch
+
+        self._heartbeat_manager: KeepAliveManager = heartbeat_manager
+
         self._is_ready: asyncio.Future = connection._is_ready
 
     def handle(self, _data: dict):
@@ -224,4 +228,10 @@ class EventHandler(_BaseEventHandler):
         member._roles.pop(role.id, None)
 
         self.dispatch('member_role_remove', member, role)
+    
+    async def Ping(self, _):
+        self._heartbeat_manager.pong()
+    
+    async def Pong(self, _):
+        self._heartbeat_manager.ack()
         
