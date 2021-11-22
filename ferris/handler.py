@@ -41,6 +41,7 @@ class EventHandler(_BaseEventHandler):
     async def IdentifyAccepted(self, data):
         self.dispatch('identify_accepted')
         u = User(self.connection, data.get('user', {}))
+        self.connection.store_user(u)
 
         self.connection._user = u
 

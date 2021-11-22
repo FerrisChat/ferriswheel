@@ -48,6 +48,7 @@ class Guild(BaseObject):
             else:
                 channel = Channel(self._connection, c)
             self._channels[channel.id] = channel
+            self._connection.store_channel(channel)
 
         self._members: Dict[int, Member] = {}
 

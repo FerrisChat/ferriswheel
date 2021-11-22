@@ -1,4 +1,5 @@
 from __future__ import annotations
+from datetime import datetime
 
 from typing import TYPE_CHECKING, Optional, Union
 
@@ -37,6 +38,13 @@ class Message(BaseObject):
         self._channel_id: Optional[Snowflake] = data.get('channel_id')
 
         self._author_id: Optional[Snowflake] = data.get('author_id')
+        self._author: Optional[User] = User(self._connection, data.get('author'))
+
+        self._edited_at: Optional[datetime] = None
+
+        if edited_at := data.get('edited_at'):
+            self._edited_at = datetime.fromisoformat(data['edited_at'])
+        
 
     async def edit(self, content: str) -> Message:
         """|coro|
@@ -70,12 +78,16 @@ class Message(BaseObject):
         await self._connection.api.channels(self.channel_id).messages(self.id).delete()
 
     @property
-    def author(self, /) -> Optional[Union[Member, User]]:
-        if self.channel and self.channel.guild:
-            return self.channel.guild.get_member(
-                self.author_id
-            ) or self._connection.get_user(self.author_id)
-        return self._connection.get_user(self.author_id)
+    def author(self, /) -> Optional[User]:
+        """
+        User: The author of this message.
+        """
+        return self._author
+
+    @property
+    def edited_at(self, /) -> Optional[datetime]:
+        """datetime: The time at which this message was last edited."""
+        return self._edited_at
 
     @property
     def channel(self, /) -> Optional[Channel]:
