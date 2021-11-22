@@ -1,7 +1,7 @@
 from __future__ import annotations
-from datetime import datetime
 
-from typing import TYPE_CHECKING, Optional, Union
+from datetime import datetime
+from typing import TYPE_CHECKING, Optional
 
 from .base import BaseObject
 
@@ -9,10 +9,9 @@ if TYPE_CHECKING:
     from .channel import Channel
     from .connection import Connection
     from .guild import Guild
-    from .member import Member
+    from .user import User
     from .types import Data, Snowflake
     from .types.message import MessagePayload
-    from .user import User
 
 __all__ = ('Message',)
 
@@ -20,7 +19,7 @@ __all__ = ('Message',)
 class Message(BaseObject):
     """Represents a message from FerrisChat."""
 
-    __slots__ = ('_connection', '_content', '_channel_id', '_author_id')
+    __slots__ = ('_connection', '_content', '_channel_id', '_author_id', '_author', '_edited_at')
 
     def __init__(
         self, connection: Connection, data: Optional[MessagePayload], /
@@ -31,6 +30,8 @@ class Message(BaseObject):
     def _process_data(self, data: Optional[MessagePayload], /) -> None:
         if not data:
             return
+
+        from .user import User
 
         self._store_snowflake(data.get('id'))
 
@@ -43,7 +44,7 @@ class Message(BaseObject):
         self._edited_at: Optional[datetime] = None
 
         if edited_at := data.get('edited_at'):
-            self._edited_at = datetime.fromisoformat(data['edited_at'])
+            self._edited_at = datetime.fromisoformat(edited_at)
         
 
     async def edit(self, content: str) -> Message:
