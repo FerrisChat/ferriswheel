@@ -311,7 +311,7 @@ class Client(Dispatcher, EventTemplateMixin):
         id = sanitize_id(id)
         return self._connection.get_user(id)
 
-    async def fetch_message(self, id: Id) -> Message:
+    async def fetch_message(self, id: Id, *, cache: bool = False) -> Message:
         """|coro|
 
         Fetches a message from the internal message buffer.
@@ -320,6 +320,10 @@ class Client(Dispatcher, EventTemplateMixin):
         ----------
         id: int
             The ID of the message to fetch.
+        
+        cache: Optional[bool]
+            Whether to cache the message in the internal message cache.
+            Defaults to ``False``.
 
         Returns
         -------
@@ -328,9 +332,12 @@ class Client(Dispatcher, EventTemplateMixin):
         """
         id = sanitize_id(id)
         m = await self._connection.api.messages(id).get()
+        if cache:
+            self._connection.store_message(m)
+
         return Message(self._connection, m)
 
-    async def fetch_channel(self, id: Id) -> Channel:
+    async def fetch_channel(self, id: Id, *, cache: bool = False) -> Channel:
         """|coro|
 
         Fetches a channel by ID.
@@ -339,6 +346,9 @@ class Client(Dispatcher, EventTemplateMixin):
         ----------
         id: int
             The ID of the channel to fetch.
+        
+        cache: Optional[bool]
+            Whether to cache the channel in the internal channel cache.
 
         Returns
         -------
@@ -347,9 +357,13 @@ class Client(Dispatcher, EventTemplateMixin):
         """
         id = sanitize_id(id)
         c = await self._connection.api.channels(id).get()
+
+        if cache:
+            self._connection.store_channel(c)
+
         return Channel(self._connection, c)
 
-    async def fetch_user(self, id: Id) -> User:
+    async def fetch_user(self, id: Id, *, cache: bool = False) -> User:
         """|coro|
 
         Fetches a user by ID.
@@ -358,6 +372,9 @@ class Client(Dispatcher, EventTemplateMixin):
         ----------
         id: int
             The ID of the user to fetch.
+        
+        cache: Optional[bool]
+            Whether to cache the user in the internal user cache.
 
         Returns
         -------
@@ -366,10 +383,14 @@ class Client(Dispatcher, EventTemplateMixin):
         """
         id = sanitize_id(id)
         u = await self._connection.api.users(id).get()
+
+        if cache:
+            self._connection.store_user(u)
+
         return User(self._connection, u)
 
     async def fetch_guild(
-        self, id: Id, fetch_members: bool = False, fetch_channels: bool = True
+        self, id: Id, *, fetch_members: bool = False, fetch_channels: bool = True, cache: bool = False
     ) -> Guild:
         """|coro|
 
@@ -383,6 +404,8 @@ class Client(Dispatcher, EventTemplateMixin):
             Whether to fetch the guild's members. Defaults to ``False``.
         fetch_channels: Optional[bool], default True
             Whether to fetch the guild's channels. Defaults to ``True``.
+        cache: Optional[bool], default False
+            Whether to cache the guild in the internal guild cache.
 
         Returns
         -------

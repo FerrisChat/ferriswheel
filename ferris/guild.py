@@ -60,7 +60,7 @@ class Guild(BaseObject):
             role = Role(self._connection, r)
             self._roles[role.id] = role
     
-    async def fetch_role(self, id: Id) -> Role:
+    async def fetch_role(self, id: Id, *, cache: bool = False) -> Role:
         """|coro|
 
         Fetches a role from this guild.
@@ -78,9 +78,14 @@ class Guild(BaseObject):
 
         role = await self._connection.api.guilds(self.id).roles(id).get()
 
-        return Role(self._connection, role)
+        role = Role(self._connection, role)
 
-    async def fetch_member(self, id: Id) -> Member:
+        if cache:
+            self._roles[role.id] = role
+
+        return role
+
+    async def fetch_member(self, id: Id, *, cache: bool = False) -> Member:
         """|coro|
 
         Fetches a member from this guild.
@@ -100,7 +105,12 @@ class Guild(BaseObject):
 
         m = await self._connection.api.guilds(self.id).members(id).get()
 
-        return Member(self._connection, m)
+        m = Member(self._connection, m)
+
+        if cache:
+            self._members[m.id] = m
+
+        return m
 
     async def fetch_invites(self) -> List[Invite]:
         """|coro|
@@ -179,7 +189,7 @@ class Guild(BaseObject):
         )
         return Channel(self._connection, c)
 
-    async def fetch_channel(self, id: Id) -> Channel:
+    async def fetch_channel(self, id: Id, *, cache: bool = False) -> Channel:
         """|coro|
 
         Fetches a channel from this guild.
@@ -195,7 +205,14 @@ class Guild(BaseObject):
         """
         id = sanitize_id(id)
         c = await self._connection.api.channels(id).get()
-        return Channel(self._connection, c)
+
+        c = Channel(self._connection, c)
+
+        if cache:
+            self._channels[c.id] = c
+            self._connection.store_channel(c)
+        
+        return c 
 
     async def edit(self, name: str) -> Guild:
         """|coro|
