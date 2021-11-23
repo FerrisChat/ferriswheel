@@ -139,17 +139,12 @@ class Websocket:
 
     def __init__(self, client: Client) -> None:
         self.ws: aiohttp.ClientWebSocketResponse
-
         self._http: HTTPClient = client._connection._http
-
         self._loop: asyncio.AbstractEventLoop = client._connection.loop
 
         self._max_heartbeat_timeout: int = client._connection._max_heartbeat_timeout
-
         self._main_thread_id: int = threading.get_ident()
-
         self._heartbeat_manager: KeepAliveManager = KeepAliveManager(self)
-
         self._handler: EventHandler = EventHandler(client._connection, self._heartbeat_manager)
 
         self.dispatch: Coroutine = client.dispatch
