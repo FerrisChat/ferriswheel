@@ -93,7 +93,7 @@ class Role(BaseObject):
             'position': position,
             'permissions': permissions,
         }
-        r = await self._connection.api.guilds(self.guild_id).roles(self.id).patch(payload)
+        r = await self._connection.api.guilds(self.guild_id).roles(self.id).patch(json=payload)
         self._process_data(r)
 
         return self
