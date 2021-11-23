@@ -202,6 +202,7 @@ class Websocket:
                 aiohttp.WSMsgType.CLOSE,
             ):
                 log.info('Websocket closed, attempting to reconnect.')
+                self._heartbeat_manager.stop()
                 raise Reconnect
 
     async def close(self, code) -> None:
