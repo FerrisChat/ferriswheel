@@ -31,17 +31,13 @@ class KeepAliveManager(threading.Thread):
         self._ws = ws
 
         self._interval: int = 45
-
         self._stop_event: threading.Event = threading.Event()
-
+        
         self._max_heartbeat_timeout: int = ws._max_heartbeat_timeout
 
         self._last_ack: float = time.perf_counter()
-
         self._last_send: float = time.perf_counter()
-
         self._last_recv: float = time.perf_counter()
-        
         self._latency: float = float('inf')
 
         super().__init__(name="FerrisWheel-KeepAliveManager", daemon=True)
