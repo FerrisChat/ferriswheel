@@ -56,24 +56,24 @@ class Connection:
         self.__token = token
 
     def _initialize_http(self, token: str, /) -> None:
-        self._http = HTTPClient(token)
+        self._http: HTTPClient = HTTPClient(token)
         self._store_token(token)
 
     async def _initialize_http_with_email(self, email: str, password: str, /) -> None:
-        self._http = await HTTPClient.from_email_and_password(email, password)
+        self._http: HTTPClient = await HTTPClient.from_email_and_password(email, password)
         self._store_token(self._http.token)
 
     def clear_store(self, /) -> None:
-        self._users: Dict[int, User] = {}
-        self._guilds: Dict[int, Guild] = {}
-        self._channels: Dict[int, Channel] = {}
+        self._users: Dict[Snowflake, User] = {}
+        self._guilds: Dict[Snowflake, Guild] = {}
+        self._channels: Dict[Snowflake, Channel] = {}
 
         self._messages: deque = deque(maxlen=self._max_messages_count)
 
-    def deref_user(self, id: int, /) -> None:
+    def deref_user(self, id: Snowflake, /) -> None:
         self._users.pop(id, None)
 
-    def deref_channel(self, id: int, /) -> None:
+    def deref_channel(self, id: Snowflake, /) -> None:
         self._channels.pop(id, None)
 
     def store_message(self, message: Message, /) -> None:
@@ -94,14 +94,14 @@ class Connection:
     def store_channel(self, channel: Channel, /) -> None:
         self._channels[channel.id] = channel
 
-    def get_message(self, id: int, /) -> Optional[Message]:
+    def get_message(self, id: Snowflake, /) -> Optional[Message]:
         return find(lambda m: m.id == id, self._messages)
 
-    def get_user(self, id: int, /) -> Optional[User]:
+    def get_user(self, id: Snowflake, /) -> Optional[User]:
         return self._users.get(id)
 
-    def get_guild(self, id: int, /) -> Optional[Guild]:
+    def get_guild(self, id: Snowflake, /) -> Optional[Guild]:
         return self._guilds.get(id)
 
-    def get_channel(self, id: int, /) -> Optional[Channel]:
+    def get_channel(self, id: Snowflake, /) -> Optional[Channel]:
         return self._channels.get(id)

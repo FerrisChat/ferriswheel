@@ -4,8 +4,8 @@ import asyncio
 import logging
 import signal
 from collections import defaultdict
-from typing import (TYPE_CHECKING, Awaitable, Callable, Dict, List, Optional,
-                    overload)
+from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Dict, List,
+                    Optional, overload)
 
 from ferris.types import message
 
@@ -531,7 +531,7 @@ class Client(Dispatcher, EventTemplateMixin):
             except WebsocketException:
                 raise
 
-    def run(self, *args, **kwargs):
+    def run(self, *args, **kwargs) -> Any:
         """A helper function equivalent to
 
         .. code-block:: python3

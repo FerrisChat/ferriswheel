@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, List
+from typing import TYPE_CHECKING, Optional, List, Generator
 
 from .base import BaseObject
 from .message import Message
 from .utils import sanitize_id
 
 if TYPE_CHECKING:
+    from typing_extensions import Self
     from .connection import Connection
     from .types import Data, Snowflake, Id
     from .types.channel import ChannelPayload
@@ -78,7 +79,7 @@ class Channel(BaseObject):
         )
         return Message(self._connection, m)
 
-    async def fetch_messages(self, limit: int = 100, offset: int = 0) -> List[Message]:
+    async def fetch_messages(self, limit: int = 100, offset: int = 0) -> Generator[Message, None, None]:
         """
         |coro|
 
@@ -97,14 +98,14 @@ class Channel(BaseObject):
 
         Returns
         -------
-        List[Message]
+        Generator[Message]
         """
         if limit is None:
             limit = 9223372036854775807
         data = await self._connection.api.channels(self.id).messages.get(params={'limit': limit, 'offset': offset})
-        return [Message(self._connection, m) for m in data['messages']]
+        return (Message(self._connection, m) for m in data['messages'])
 
-    async def edit(self, name: str) -> Channel:
+    async def edit(self, name: str) -> Self:
         """
         |coro|
 

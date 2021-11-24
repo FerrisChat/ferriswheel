@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Optional
 from .base import BaseObject
 
 if TYPE_CHECKING:
+    from typing_extensions import Self
     from .channel import Channel
     from .connection import Connection
     from .guild import Guild
@@ -47,7 +48,7 @@ class Message(BaseObject):
             self._edited_at = datetime.fromisoformat(edited_at)
         
 
-    async def edit(self, content: str) -> Message:
+    async def edit(self, content: str) -> Self:
         """|coro|
 
         Edits this message.

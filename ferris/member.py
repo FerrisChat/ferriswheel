@@ -40,7 +40,7 @@ class Member(BaseObject):
             self._user: Optional[User] = User(self._connection, data.get('user') or {})  # type: ignore
             self._connection.store_user(self._user)
 
-        self._guild_id: Optional[int] = data.get('guild_id')
+        self._guild_id: Optional[Snowflake] = data.get('guild_id')
 
         if guild := self._connection.get_guild(self._guild_id):
             guild._process_data(data.get('guild') or {})

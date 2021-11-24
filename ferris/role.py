@@ -6,6 +6,7 @@ from .base import BaseObject
 
 
 if TYPE_CHECKING:
+    from typing_extensions import Self
     from .connection import Connection
     from .types import Data, Snowflake
     from .types.role import RolePayload
@@ -68,7 +69,7 @@ class Role(BaseObject):
         """The permissions of the role."""
         return self._permissions
     
-    async def edit(self, *, name: str = None, color: int = None, position: int = None, permissions: int = None) -> None:
+    async def edit(self, *, name: str = None, color: int = None, position: int = None, permissions: int = None) -> Self:
         """Edits the role.
 
         Parameters

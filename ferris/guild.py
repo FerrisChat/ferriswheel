@@ -11,6 +11,7 @@ from .role import Role
 from .utils import sanitize_id
 
 if TYPE_CHECKING:
+    from typing_extensions import Self
     from .member import Member
     from .connection import Connection
     from .types import ChannelPayload, Data, GuildPayload, Id, Snowflake
@@ -36,11 +37,11 @@ class Guild(BaseObject):
 
         self._store_snowflake(data.get('id'))
 
-        self._owner_id: Optional[int] = data.get('owner_id')
+        self._owner_id: Optional[Snowflake] = data.get('owner_id')
         self._name: Optional[str] = data.get('name')
 
-        self._channels: Dict[int, Channel] = {}
-        self._roles: Dict[int, Role] = {}
+        self._channels: Dict[Snowflake, Channel] = {}
+        self._roles: Dict[Snowflake, Role] = {}
 
         for c in data.get('channels') or []:
             if channel := self._connection.get_channel(c.get('id')):
@@ -50,7 +51,7 @@ class Guild(BaseObject):
             self._channels[channel.id] = channel
             self._connection.store_channel(channel)
 
-        self._members: Dict[int, Member] = {}
+        self._members: Dict[Snowflake, Member] = {}
 
         for m in data.get('members') or []:
             member = Member(self._connection, m)
@@ -214,7 +215,7 @@ class Guild(BaseObject):
         
         return c 
 
-    async def edit(self, name: str) -> Guild:
+    async def edit(self, name: str) -> Self:
         """|coro|
 
         Edits this guild.

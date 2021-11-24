@@ -7,6 +7,7 @@ from .base import BaseObject
 from .guild import Guild
 
 if TYPE_CHECKING:
+    from typing_extensions import Self
     from .connection import Connection
     from .types import Data
     from .types.user import UserPayload
@@ -59,7 +60,7 @@ class User(BaseObject):
 
         self._avatar: Optional[str] = data.get('avatar')
 
-        self._guilds: Dict[int, Guild] = {}
+        self._guilds: Dict[Snowflake, Guild] = {}
 
         for g in data.get('guilds') or []:
             guild_id = g.get('id')
@@ -82,7 +83,7 @@ class User(BaseObject):
         username: Optional[str] = None,
         email: Optional[str] = None,
         password: Optional[str] = None,
-    ) -> User:
+    ) -> Self:
         """|coro|
 
         Edits the user.

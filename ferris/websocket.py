@@ -8,7 +8,7 @@ import threading
 import time
 import traceback
 from types import coroutine
-from typing import TYPE_CHECKING, Coroutine, Dict, Union
+from typing import TYPE_CHECKING, Coroutine, Dict, Union, NoReturn
 
 import aiohttp
 
@@ -151,19 +151,19 @@ class Websocket:
         response: WsConnectionInfo = await self._http.api.ws.info.get()  # type: ignore
         self._ws_url = response['url']
 
-    def handle(self, data: dict) -> None:
+    def handle(self, data: dict, /) -> None:
         """Handles a message received from the websocket."""
         log.debug(f'Received: {data}')
         self._handler.handle(data)
 
-    def _parse_and_handle(self, data: Union[str, bytes]) -> None:
+    def _parse_and_handle(self, data: Union[str, bytes], /) -> None:
         self._heartbeat_manager.tick()
 
         if isinstance(data, (str, bytes)):
             _data: dict = from_json(data)
             self.handle(_data)
 
-    async def send(self, data: dict, /):
+    async def send(self, data: dict, /) -> None:
         _data = to_json(data)
         await self.ws.send_str(_data)
 
@@ -178,7 +178,8 @@ class Websocket:
             {'c': 'Identify', 'd': {'token': self._http.token, 'intents': 0}}
         )
 
-        self._heartbeat_manager.start()
+        if not self._heartbeat_manager.is_alive():
+            self._heartbeat_manager.start()
 
         self.dispatch('connect')
         async for message in self.ws:
@@ -205,6 +206,6 @@ class Websocket:
             if not ws.closed:
                 await self.ws.close(code=code)
 
-    def raise_reconnect(self) -> None:
+    def raise_reconnect(self) -> NoReturn:
         """Raises a Disconnect event."""
         raise Reconnect
