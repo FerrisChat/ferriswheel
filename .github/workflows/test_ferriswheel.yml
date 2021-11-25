@@ -23,13 +23,21 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python }}
+    
+    - uses: actions/cache@v2
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ env.pythonLocation }}-${{ hashFiles('setup.py') }}-${{ hashFiles('requirements.txt') }}
+    
+    - name: Install dependencies
+      run: |
+        pip install --upgrade --upgrade-strategy eager -r requirements.txt -e .
 
     - name: Install FerrisWheel
-      run: python -m pip install .
+      run: python -m pip install -U .
 
     - name: Run tests
       run: python tests/test_ferriswheel.py
       env:
         PASSWORD: ${{ secrets.PASSWORD }}
         TOKEN: ${{ secrets.TOKEN }}
-      
