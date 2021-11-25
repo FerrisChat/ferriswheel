@@ -1,5 +1,11 @@
+from __future__ import annotations
+
+import functools
+import sys
+import inspect
 from datetime import datetime
-from typing import Any, Callable, Iterable, Optional, TypeVar, TYPE_CHECKING, Awaitable, Union, overload
+from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Iterable,
+                    Optional, TypeVar, Union, overload)
 
 from .types import Id, Snowflake
 
@@ -23,6 +29,13 @@ else:
 R = TypeVar('R')
 
 T = TypeVar('T', covariant=True)
+
+if sys.version_info[:3] >= (3, 9, 0):
+    A = Callable[P, Awaitable[R]] # type: ignore
+    F = Callable[P, R] # type: ignore
+else:
+    A = Callable[[P], Awaitable[R]] # type: ignore
+    F = Callable[[P], R] # type: ignore
 
 # try:
 #     import orjson
@@ -146,7 +159,7 @@ def ensure_async(func: Callable[P, R], /) -> Callable[P, Awaitable[R]]:
     ...
 
 
-def ensure_async(func: Union[Callable[P, Awaitable[R]], Callable[P, R]], /) -> Callable[P, Awaitable[R]]:
+def ensure_async(func: Union[A, F], /) -> A:
     """Ensures that the given function is asynchronous.
     In other terms, if the function is already async, it will stay the same.
     Else, it will be converted into an async function. (Note that it will still be ran synchronously.)
