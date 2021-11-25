@@ -27,7 +27,6 @@ class Client(ferris.Client):
                 await g.edit(name='test_edit')
                 log.info("Create and Fetch and edit guild works.")
             
-            async def test_channel():
                 c = await g.create_channel(name='test')
 
                 c = await self.fetch_channel(c.id)
@@ -58,7 +57,9 @@ class Client(ferris.Client):
                 
                 log.info("Delete message, channel, guild works.")
 
-            f = await asyncio.gather(test_guild(), test_channel(), test_user(), test_invite(), test_delete())
+            f = await asyncio.gather(test_guild(), test_user(), test_invite())
+
+            await test_delete()
 
             for r in f:
                 if r is not None:
