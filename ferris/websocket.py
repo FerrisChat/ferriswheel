@@ -42,49 +42,52 @@ class KeepAliveManager(threading.Thread):
 
         super().__init__(name="FerrisWheel-KeepAliveManager", daemon=True)
     
-    def run(self) -> None:
-        while not self._stop_event.wait(self._interval):
-            if self._last_recv + self._max_heartbeat_timeout < time.perf_counter():
-                log.warning('Websocket stopped responding to gateway. Reconnecting.')
-                coro = self._ws.close(4000)
-                f = asyncio.run_coroutine_threadsafe(coro, self._ws._loop)
-                
-                try:
-                    f.result()
-                except Exception as e:
-                    log.exception(f'Exception {e} raised while reconnecting websocket.')
-                finally:
-                    self.stop()
-                    self._ws.raise_reconnect()
-                    return
+    def send_heartbeat(self) -> None:
+        if self._last_recv + self._max_heartbeat_timeout < time.perf_counter():
+            log.warning('Websocket stopped responding to gateway. Reconnecting.')
+            coro = self._ws.close(4000)
+            f = asyncio.run_coroutine_threadsafe(coro, self._ws._loop)
             
-            f = self.ping()
-
             try:
-                blocked_for: int = 0
-
-                while True:
-                    try:
-                        f.result(10)
-                        break
-                    except concurrent.futures.TimeoutError:
-                        blocked_for += 10
-                        try:
-                            frame = sys._current_frames()[self._main_thread_id]
-                        except KeyError:
-                            m = self.block_message
-                        else:
-                            stack: str = ''.join(traceback.format_stack(frame))
-                            m: str = f'{self.block_message}\nLoop Threadtraceback: (most recent call last):\n{stack}'
-                        
-                        log.warning(m, blocked_for)
+                f.result()
             except Exception as e:
-                log.exception(f'Exception {e} raised while sending ping.')
+                log.exception(f'Exception {e} raised while reconnecting websocket.')
+            finally:
                 self.stop()
                 self._ws.raise_reconnect()
                 return
-            else:
-                self._last_send = time.perf_counter()
+
+        f = self.ping()
+
+        try:
+            blocked_for: int = 0
+
+            while True:
+                try:
+                    f.result(10)
+                    break
+                except concurrent.futures.TimeoutError:
+                    blocked_for += 10
+                    try:
+                        frame = sys._current_frames()[self._main_thread_id]
+                    except KeyError:
+                        m = self.block_message
+                    else:
+                        stack: str = ''.join(traceback.format_stack(frame))
+                        m: str = f'{self.block_message}\nLoop Threadtraceback: (most recent call last):\n{stack}'
+                    
+                    log.warning(m, blocked_for)
+        except Exception as e:
+            log.exception(f'Exception {e} raised while sending ping.')
+            self.stop()
+            self._ws.raise_reconnect()
+            return
+        else:
+            self._last_send = time.perf_counter()
+    
+    def run(self) -> None:
+        while not self._stop_event.wait(self._interval):
+            self.send_heartbeat()
 
     def ping(self) -> asyncio.Future:
         coro = self._ws.send(self.ping_payload)

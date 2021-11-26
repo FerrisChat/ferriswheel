@@ -32,7 +32,6 @@ class Client(ferris.Client):
             log.info(repr(m))
             await m.edit(content='test_edit')
 
-
             log.info("Create, Fetch, Edit channel, send, edit message works.")
 
             u = await self.fetch_user(self.user.id)
