@@ -208,4 +208,4 @@ class Websocket:
 
     def raise_reconnect(self) -> NoReturn:
         """Raises a Disconnect event."""
-        raise Reconnect
+        raise Reconnect from None
