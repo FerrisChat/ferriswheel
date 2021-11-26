@@ -45,8 +45,6 @@ class EventHandler(_BaseEventHandler):
     async def IdentifyAccepted(self, data):
         self.dispatch('identify_accepted')
 
-        self._heartbeat_manager.send_heartbeat()
-
         u = User(self.connection, data.get('user', {}))
         self.connection.store_user(u)
 
