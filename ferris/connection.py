@@ -60,7 +60,9 @@ class Connection:
         self._store_token(token)
 
     async def _initialize_http_with_email(self, email: str, password: str, /) -> None:
-        self._http: HTTPClient = await HTTPClient.from_email_and_password(email, password)
+        self._http: HTTPClient = await HTTPClient.from_email_and_password(
+            email, password
+        )
         self._store_token(self._http.token)
 
     def clear_store(self, /) -> None:

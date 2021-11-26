@@ -21,9 +21,7 @@ class Role(BaseObject):
 
     __all__ = ('_guild_id', '_name', '_color', '_position', '_permissions')
 
-    def __init__(
-        self, connection: Connection, data: Optional[RolePayload], /
-    ) -> None:
+    def __init__(self, connection: Connection, data: Optional[RolePayload], /) -> None:
         self._connection: Connection = connection
         self._process_data(data)
 
@@ -48,28 +46,35 @@ class Role(BaseObject):
     def guild_id(self) -> Snowflake:
         """The ID of the guild the role is in."""
         return self._guild_id
-    
+
     @property
     def name(self) -> str:
         """The name of the role."""
         return self._name
-    
+
     @property
     def color(self) -> int:
         """The color of the role."""
         return self._color
-    
+
     @property
     def position(self) -> int:
         """The position of the role."""
         return self._position
-    
+
     @property
     def permissions(self) -> int:
         """The permissions of the role."""
         return self._permissions
-    
-    async def edit(self, *, name: str = None, color: int = None, position: int = None, permissions: int = None) -> Self:
+
+    async def edit(
+        self,
+        *,
+        name: str = None,
+        color: int = None,
+        position: int = None,
+        permissions: int = None,
+    ) -> Self:
         """Edits the role.
 
         Parameters
@@ -82,7 +87,7 @@ class Role(BaseObject):
             The new position of the role.
         permissions: int
             The new permissions of the role.
-        
+
 
         Returns
         -------
@@ -94,11 +99,15 @@ class Role(BaseObject):
             'position': position,
             'permissions': permissions,
         }
-        r = await self._connection.api.guilds(self.guild_id).roles(self.id).patch(json=payload)
+        r = (
+            await self._connection.api.guilds(self.guild_id)
+            .roles(self.id)
+            .patch(json=payload)
+        )
         self._process_data(r)
 
         return self
-    
+
     async def delete(self) -> None:
         """Deletes the role."""
         await self._connection.api.guilds(self.guild_id).roles(self.id).delete()

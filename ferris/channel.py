@@ -79,7 +79,9 @@ class Channel(BaseObject):
         )
         return Message(self._connection, m)
 
-    async def fetch_messages(self, limit: int = 100, offset: int = 0) -> Generator[Message, None, None]:
+    async def fetch_messages(
+        self, limit: int = 100, offset: int = 0
+    ) -> Generator[Message, None, None]:
         """
         |coro|
 
@@ -91,7 +93,7 @@ class Channel(BaseObject):
             The maximum number of messages to fetch.
             Defaults to 100.
             Set it to None to fetch all messages.
-        
+
         offset: int
             The number of messages to skip.
             Defaults to 0.
@@ -102,7 +104,9 @@ class Channel(BaseObject):
         """
         if limit is None:
             limit = 9223372036854775807
-        data = await self._connection.api.channels(self.id).messages.get(params={'limit': limit, 'offset': offset})
+        data = await self._connection.api.channels(self.id).messages.get(
+            params={'limit': limit, 'offset': offset}
+        )
         return (Message(self._connection, m) for m in data['messages'])
 
     async def edit(self, name: str) -> Self:

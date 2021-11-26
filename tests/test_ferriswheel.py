@@ -47,13 +47,9 @@ class Client(ferris.Client):
             await c.delete()
             await g.delete()
 
-
             log.info("Delete message, channel, guild works.")
 
             log.info("Test done, all passed")
-        except Exception as e:
-            log.exception(e)
-            os._exit(1)
         finally:
             await self.close()
 

@@ -20,7 +20,9 @@ log = logging.getLogger(__name__)
 
 
 class _BaseEventHandler:
-    def __init__(self, connection: Connection, heartbeat_manager: KeepAliveManager) -> None:
+    def __init__(
+        self, connection: Connection, heartbeat_manager: KeepAliveManager
+    ) -> None:
         self.connection: Connection = connection
         self.dispatch: Coroutine = connection.dispatch
 
@@ -99,7 +101,7 @@ class EventHandler(_BaseEventHandler):
         self.dispatch('channel_delete', c)
 
         self.connection._channels.pop(c.id, None)
-        
+
         self.connection.get_guild(c.guild_id)._channels.pop(c.id, None)
 
     async def MemberCreate(self, data):
@@ -130,14 +132,14 @@ class EventHandler(_BaseEventHandler):
         else:
             member = Member(guild, data.get('member'))
         self.dispatch('member_delete', member)
-    
+
     async def GuildCreate(self, data):
         g = Guild(self.connection, data.get('guild'))
 
         self.connection.store_guild(g)
 
         self.dispatch('guild_create', g)
-    
+
     async def GuildUpdate(self, data):
         old = Guild(self.connection, data.get('old'))
         if new := self.connection.get_guild(old.id):
@@ -147,23 +149,23 @@ class EventHandler(_BaseEventHandler):
             self.connection.store_guild(new)
 
         self.dispatch('guild_update', old, new)
-    
+
     async def GuildDelete(self, data):
         g = Guild(self.connection, data.get('guild'))
         self.connection._guilds.pop(g.id, None)
 
         self.dispatch('guild_delete', g)
-    
+
     async def InviteCreate(self, data):
         invite = Invite(self.connection, data.get('invite'))
 
         self.dispatch('invite_create', invite)
-    
+
     async def InviteDelete(self, data):
         invite = Invite(self.connection, data.get('invite'))
 
         self.dispatch('invite_delete', invite)
-    
+
     async def RoleCreate(self, data):
         r = data.get('role')
         guild: Guild = self.connection.get_guild(r.get('guild_id'))
@@ -174,7 +176,7 @@ class EventHandler(_BaseEventHandler):
             guild._roles[role.id] = role
 
         self.dispatch('role_create', role)
-    
+
     async def RoleUpdate(self, data):
         old = Role(self.connection, data.get('old'))
         r = data.get('new')
@@ -186,7 +188,7 @@ class EventHandler(_BaseEventHandler):
             guild._roles[role.id] = role
 
         self.dispatch('role_update', old, role)
-    
+
     async def RoleDelete(self, data):
         r = data.get('role')
         guild: Guild = self.connection.get_guild(r.get('guild_id'))
@@ -195,7 +197,7 @@ class EventHandler(_BaseEventHandler):
         else:
             role = Role(self.connection, r)
         self.dispatch('role_delete', role)
-    
+
     async def MemberRoleAdd(self, data):
         m = data.get('member')
 
@@ -206,13 +208,13 @@ class EventHandler(_BaseEventHandler):
         else:
             member = Member(self.connection, m)
             g._members[member.id] = member
-        
+
         role = Role(self.connection, data.get('role'))
 
         member._roles[role.id] = role
 
         self.dispatch('member_role_add', member, role)
-    
+
     async def MemberRoleRemove(self, data):
         m = data.get('member')
 
@@ -223,16 +225,15 @@ class EventHandler(_BaseEventHandler):
         else:
             member = Member(self.connection, m)
             g._members[member.id] = member
-        
+
         role = Role(self.connection, data.get('role'))
 
         member._roles.pop(role.id, None)
 
         self.dispatch('member_role_remove', member, role)
-    
+
     async def Ping(self, _):
         self._heartbeat_manager.pong()
-    
+
     async def Pong(self, _):
         self._heartbeat_manager.ack()
-        

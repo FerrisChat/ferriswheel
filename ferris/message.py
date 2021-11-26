@@ -20,7 +20,14 @@ __all__ = ('Message',)
 class Message(BaseObject):
     """Represents a message from FerrisChat."""
 
-    __slots__ = ('_connection', '_content', '_channel_id', '_author_id', '_author', '_edited_at')
+    __slots__ = (
+        '_connection',
+        '_content',
+        '_channel_id',
+        '_author_id',
+        '_author',
+        '_edited_at',
+    )
 
     def __init__(
         self, connection: Connection, data: Optional[MessagePayload], /
@@ -46,7 +53,6 @@ class Message(BaseObject):
 
         if edited_at := data.get('edited_at'):
             self._edited_at = datetime.fromisoformat(edited_at)
-        
 
     async def edit(self, content: str) -> Self:
         """|coro|
@@ -95,7 +101,7 @@ class Message(BaseObject):
     def channel(self, /) -> Optional[Channel]:
         """Channel: The channel that this message was sent in"""
         return self._connection.get_channel(self.channel_id)
-    
+
     @property
     def guild(self, /) -> Optional[Guild]:
         """Guild: The guild that this message was sent in"""

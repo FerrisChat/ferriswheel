@@ -60,7 +60,7 @@ class Guild(BaseObject):
         for r in data.get('roles') or []:
             role = Role(self._connection, r)
             self._roles[role.id] = role
-    
+
     async def fetch_role(self, id: Id, *, cache: bool = False) -> Role:
         """|coro|
 
@@ -95,7 +95,7 @@ class Guild(BaseObject):
         ----------
         id: int
             The ID of the member to fetch.
-        
+
         Returns
         -------
         :class:`~.Member`
@@ -124,7 +124,7 @@ class Guild(BaseObject):
         """
         invites = await self._connection.api.guilds(self.id).invites.get()
         return [Invite(self._connection, i) for i in invites]
-    
+
     async def create_role(self, name: str) -> Role:
         """|coro|
 
@@ -139,9 +139,7 @@ class Guild(BaseObject):
         -------
         :class:`~.Role`
         """
-        r = await self._connection.api.guilds(self.id).roles.post(
-            json={'name': name}
-        )
+        r = await self._connection.api.guilds(self.id).roles.post(json={'name': name})
         role = Role(self._connection, r)
 
         self._roles[role.id] = role
@@ -212,8 +210,8 @@ class Guild(BaseObject):
         if cache:
             self._channels[c.id] = c
             self._connection.store_channel(c)
-        
-        return c 
+
+        return c
 
     async def edit(self, name: str) -> Self:
         """|coro|
@@ -240,7 +238,7 @@ class Guild(BaseObject):
         Deletes this guild.
         """
         await self._connection.api.guilds(self.id).delete()
-    
+
     def get_role(self, id: Id) -> Optional[Role]:
         """
         Gets a role from this guild.
@@ -310,7 +308,7 @@ class Guild(BaseObject):
     def name(self, /) -> Optional[str]:
         """str: The name of this guild."""
         return self._name
-    
+
     @property
     def roles(self, /) -> List[Role]:
         """List[:class:`.Role`]: The roles in this guild."""

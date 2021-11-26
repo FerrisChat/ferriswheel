@@ -32,7 +32,7 @@ class KeepAliveManager(threading.Thread):
 
         self._interval: int = 45
         self._stop_event: threading.Event = threading.Event()
-        
+
         self._max_heartbeat_timeout: int = ws._max_heartbeat_timeout
 
         self._last_ack: float = time.perf_counter()
@@ -41,14 +41,14 @@ class KeepAliveManager(threading.Thread):
         self._latency: float = float('inf')
 
         super().__init__(name="FerrisWheel-KeepAliveManager", daemon=True)
-    
+
     def run(self) -> None:
         while not self._stop_event.wait(self._interval):
             if self._last_recv + self._max_heartbeat_timeout < time.perf_counter():
                 log.warning('Websocket stopped responding to gateway. Reconnecting.')
                 coro = self._ws.close(4000)
                 f = asyncio.run_coroutine_threadsafe(coro, self._ws._loop)
-                
+
                 try:
                     f.result()
                 except Exception as e:
@@ -57,7 +57,7 @@ class KeepAliveManager(threading.Thread):
                     self.stop()
                     self._ws.raise_reconnect()
                     return
-            
+
             f = self.ping()
 
             try:
@@ -76,7 +76,7 @@ class KeepAliveManager(threading.Thread):
                         else:
                             stack: str = ''.join(traceback.format_stack(frame))
                             m: str = f'{self.block_message}\nLoop Threadtraceback: (most recent call last):\n{stack}'
-                        
+
                         log.warning(m, blocked_for)
             except Exception as e:
                 log.exception(f'Exception {e} raised while sending ping.')
@@ -93,20 +93,20 @@ class KeepAliveManager(threading.Thread):
     def pong(self) -> asyncio.Future:
         coro = self._ws.send(self.pong_payload)
         return asyncio.run_coroutine_threadsafe(coro, self._ws._loop)
-    
+
     def stop(self) -> None:
         self._stop_event.set()
-    
+
     def tick(self) -> None:
         self._last_recv = time.perf_counter()
-    
+
     def ack(self) -> None:
         self._last_ack = time.perf_counter()
         self._latency = self._last_ack - self._last_send
 
         if self._latency > 10:
             log.warning(f'Websocket is {self._latency:.1f} seconds behind.')
-    
+
     @property
     def latency(self) -> float:
         """
@@ -123,7 +123,7 @@ class KeepAliveManager(threading.Thread):
     def ping_payload(self) -> Dict[str, str]:
         """Returns the ping payload to be sent to the websocket."""
         return {'c': 'Ping'}
-    
+
     @property
     def pong_payload(self) -> Dict[str, str]:
         """Returns the pong payload to be sent to the websocket."""
@@ -141,7 +141,9 @@ class Websocket:
         self._max_heartbeat_timeout: int = client._connection._max_heartbeat_timeout
         self._main_thread_id: int = threading.get_ident()
         self._heartbeat_manager: KeepAliveManager = KeepAliveManager(self)
-        self._handler: EventHandler = EventHandler(client._connection, self._heartbeat_manager)
+        self._handler: EventHandler = EventHandler(
+            client._connection, self._heartbeat_manager
+        )
 
         self.dispatch: Coroutine = client.dispatch
         self._ws_url: str = ''

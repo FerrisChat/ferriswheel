@@ -4,8 +4,16 @@ import asyncio
 import logging
 import signal
 from collections import defaultdict
-from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Dict, List,
-                    Optional, overload)
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Awaitable,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    overload,
+)
 
 from ferris.types import message
 
@@ -29,12 +37,13 @@ __all__ = ('Dispatcher', 'Client')
 # https://github.com/Rapptz/discord.py/blob/main/discord/client.py#L81
 # https://github.com/python/cpython/blob/main/Lib/asyncio/runners.py
 
+
 def _cancel_tasks(loop: asyncio.AbstractEventLoop) -> None:
     tasks = {t for t in asyncio.all_tasks(loop=loop) if not t.done()}
 
     if not tasks:
         return
-    
+
     log.info(f'Cancelling {len(tasks)} tasks.')
 
     for task in tasks:
@@ -47,11 +56,14 @@ def _cancel_tasks(loop: asyncio.AbstractEventLoop) -> None:
         if task.cancelled():
             continue
         if task.exception() is not None:
-            loop.call_exception_handler({
-                'message': 'Unhandled exception during Client.run shutdown.',
-                'exception': task.exception(),
-                'task': task
-            })
+            loop.call_exception_handler(
+                {
+                    'message': 'Unhandled exception during Client.run shutdown.',
+                    'exception': task.exception(),
+                    'task': task,
+                }
+            )
+
 
 def _cleanup_loop(loop: asyncio.AbstractEventLoop) -> None:
     try:
@@ -68,8 +80,10 @@ class Dispatcher:
         self.event_handlers: defaultdict[
             str, List[Callable[..., Awaitable]]
         ] = defaultdict(list)
-    
-    async def wrap_event(self, coro: Callable[..., Awaitable]) -> Callable[..., Awaitable]:
+
+    async def wrap_event(
+        self, coro: Callable[..., Awaitable]
+    ) -> Callable[..., Awaitable]:
         try:
             await coro
         except asyncio.CancelledError:
@@ -176,7 +190,7 @@ class Client(Dispatcher, EventTemplateMixin):
     max_messages_count: Optional[int]
         The maximum number of messages to store in the internal message buffer.
         Defaults to ``1000``.
-    
+
     max_heartbeat_timeout: Optional[int]
         The maximum timeout in seconds between sending a heartbeat to the server.
         If heartbeat took longer than this timeout, the client will attempt to reconnect.
@@ -195,7 +209,7 @@ class Client(Dispatcher, EventTemplateMixin):
     def user(self) -> Optional[User]:
         """Returns the client's user."""
         return self._connection.user
-    
+
     @property
     def latency(self) -> float:
         """Returns the websocket latency between the client and the server."""
@@ -331,7 +345,7 @@ class Client(Dispatcher, EventTemplateMixin):
         ----------
         id: int
             The ID of the message to fetch.
-        
+
         cache: Optional[bool]
             Whether to cache the message in the internal message cache.
             Defaults to ``False``.
@@ -360,7 +374,7 @@ class Client(Dispatcher, EventTemplateMixin):
         ----------
         id: int
             The ID of the channel to fetch.
-        
+
         cache: Optional[bool]
             Whether to cache the channel in the internal channel cache.
 
@@ -388,7 +402,7 @@ class Client(Dispatcher, EventTemplateMixin):
         ----------
         id: int
             The ID of the user to fetch.
-        
+
         cache: Optional[bool]
             Whether to cache the user in the internal user cache.
 
@@ -408,7 +422,12 @@ class Client(Dispatcher, EventTemplateMixin):
         return u
 
     async def fetch_guild(
-        self, id: Id, *, fetch_members: bool = False, fetch_channels: bool = True, cache: bool = False
+        self,
+        id: Id,
+        *,
+        fetch_members: bool = False,
+        fetch_channels: bool = True,
+        cache: bool = False,
     ) -> Guild:
         """|coro|
 
@@ -447,7 +466,7 @@ class Client(Dispatcher, EventTemplateMixin):
 
         if cache:
             self._connection.store_guild(g)
-        
+
         return g
 
     async def close(self) -> None:
@@ -457,13 +476,12 @@ class Client(Dispatcher, EventTemplateMixin):
 
         if hasattr(self, 'ws'):
             await self.ws.close(code=1000)
-        
+
         if http := getattr(self._connection, '_http', None):
             if session := getattr(http, 'session', None):
                 await session.close()
 
         self.dispatch('close')
-
 
     stop = close
 

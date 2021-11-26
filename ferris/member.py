@@ -57,7 +57,7 @@ class Member(BaseObject):
         self._guild: Optional[Guild] = guild
 
         self._roles: Dict[Snowflake, Role] = {}
-    
+
     async def add_role(self, role: Union[Role, Id]) -> None:
         """|coro|
 
@@ -68,8 +68,10 @@ class Member(BaseObject):
         role: :class:`~.Role` or :class:`~.Snowflake`
             The role to add to this member.
         """
-        await self._connection.api.guilds(self.guild_id).members(self.id).roles(role.id).post()
-    
+        await self._connection.api.guilds(self.guild_id).members(self.id).roles(
+            role.id
+        ).post()
+
     async def remove_role(self, role: Union[Role, Id]) -> None:
         """|coro|
 
@@ -80,7 +82,9 @@ class Member(BaseObject):
         role: :class:`~.Role` or :class:`~.Snowflake`
             The role to remove from this member.
         """
-        await self._connection.api.guilds(self.guild_id).members(self.id).roles(role.id).delete()
+        await self._connection.api.guilds(self.guild_id).members(self.id).roles(
+            role.id
+        ).delete()
 
     async def edit(self) -> None:
         """|coro|

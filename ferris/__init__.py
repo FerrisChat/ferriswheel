@@ -45,7 +45,10 @@ def create_user(username: str, password: str, email: str) -> PartialUser:
             data=to_json(
                 {'email': email, 'password': password, 'username': username}
             ).encode('utf-8'),
-            headers={'Content-Type': 'application/json', 'User-Agent': f'FerrisWheel (https://github.com/Cryptex-github/ferriswheel v{__version__})'},
+            headers={
+                'Content-Type': 'application/json',
+                'User-Agent': f'FerrisWheel (https://github.com/Cryptex-github/ferriswheel v{__version__})',
+            },
             method='POST',
         )
     )
