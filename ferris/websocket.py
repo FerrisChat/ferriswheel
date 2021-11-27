@@ -69,7 +69,7 @@ class KeepAliveManager(threading.Thread):
                     except concurrent.futures.TimeoutError:
                         blocked_for += 10
                         try:
-                            frame = sys._current_frames()[self._main_thread_id]
+                            frame = sys._current_frames()[self._ws._main_thread_id]
                         except KeyError:
                             m = self.block_message
                         else:
