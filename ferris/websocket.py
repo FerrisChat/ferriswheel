@@ -8,7 +8,7 @@ import threading
 import time
 import traceback
 from types import coroutine
-from typing import TYPE_CHECKING, Coroutine, Dict, Union, NoReturn
+from typing import TYPE_CHECKING, Coroutine, Dict, Union, Any
 
 import aiohttp
 
@@ -55,7 +55,6 @@ class KeepAliveManager(threading.Thread):
                     log.exception(f'Exception {e} raised while reconnecting websocket.')
                 finally:
                     self.stop()
-                    self._ws.raise_reconnect()
                     return
 
             f = self.ping()
@@ -81,7 +80,6 @@ class KeepAliveManager(threading.Thread):
             except Exception as e:
                 log.exception(f'Exception {e} raised while sending ping.')
                 self.stop()
-                self._ws.raise_reconnect()
                 return
             else:
                 self._last_send = time.perf_counter()
@@ -153,7 +151,7 @@ class Websocket:
         response: WsConnectionInfo = await self._http.api.ws.info.get()  # type: ignore
         self._ws_url = response['url']
 
-    def handle(self, data: dict, /) -> None:
+    def handle(self, data: Dict[Any, Any], /) -> None:
         """Handles a message received from the websocket."""
         log.debug(f'Received: {data}')
         self._handler.handle(data)
@@ -165,7 +163,7 @@ class Websocket:
             _data: dict = from_json(data)
             self.handle(_data)
 
-    async def send(self, data: dict, /) -> None:
+    async def send(self, data: Dict[Any, Any], /) -> None:
         _data = to_json(data)
         await self.ws.send_str(_data)
 
@@ -199,7 +197,7 @@ class Websocket:
                 self._heartbeat_manager.stop()
                 raise Reconnect
 
-    async def close(self, code) -> None:
+    async def close(self, code: int) -> None:
         """Closes the current websocket connection."""
         if ws := getattr(self, 'ws', None):
             if self._heartbeat_manager.is_alive():
@@ -207,7 +205,3 @@ class Websocket:
 
             if not ws.closed:
                 await self.ws.close(code=code)
-
-    def raise_reconnect(self) -> NoReturn:
-        """Raises a Disconnect event."""
-        raise Reconnect from None

@@ -17,9 +17,6 @@ with open('ferris/__init__.py', 'r') as f:
     except AttributeError:
         author = 'Cryptex & jay3332'
 
-# with open('requirements.txt', 'r') as f:
-#     requirements = f.readlines()
-
 
 with open(ROOT / 'README.md', encoding='utf-8') as f:
     readme = f.read()
