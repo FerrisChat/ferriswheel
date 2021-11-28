@@ -364,6 +364,14 @@ class Client(Dispatcher, EventTemplateMixin):
             self._connection.store_message(m)
 
         return m
+    
+    async def ping(self) -> None:
+        """|coro|
+
+        Pings the server. This will ping the REST API not ws.
+        If you want ws latency, use :attr:`latency` instead.
+        """
+        await self._connection.api.ping().get()
 
     async def fetch_channel(self, id: Id, *, cache: bool = False) -> Channel:
         """|coro|
