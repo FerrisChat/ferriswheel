@@ -43,9 +43,7 @@ class Invite:
         self._code: str = data.get('code')
         self._owner_id: Snowflake = data.get('owner_id')
         self._guild_id: Snowflake = data.get('guild_id')
-        self._created_at: datetime = datetime.fromtimestamp(
-            (data.get('created_at', 0) + FERRIS_EPOCH)
-        )
+        self._created_at: datetime = datetime.fromisoformat(data.get('created_at'))
         self._uses: int = data.get('uses')
         self._max_uses: int = data.get('max_uses')
         self._max_age: int = data.get('max_age')
