@@ -44,11 +44,11 @@ class Invite:
         self._owner_id: Snowflake = data.get('owner_id')
         self._guild_id: Snowflake = data.get('guild_id')
         try:
-            self._created_at: datetime = datetime.fromtimestamp(
+            self._created_at: Optional[datetime] = datetime.fromtimestamp(
                 (data.get('created_at', 0) + FERRIS_EPOCH)
             )
         except OSError:
-            pass # FIXME: When ferrischat fixes it.
+            self._created_at: Optional[datetime] = None # FIXME: When ferrischat fixes it.
         self._uses: int = data.get('uses')
         self._max_uses: int = data.get('max_uses')
         self._max_age: int = data.get('max_age')
