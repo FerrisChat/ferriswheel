@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Protocol, Tuple, Any, Dict
 
 __all__ = ('ParserCallbackProto',)
