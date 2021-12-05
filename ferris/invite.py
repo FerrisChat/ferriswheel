@@ -39,7 +39,8 @@ class Invite:
 
     def _process_data(self, data: Optional[InvitePayload], /) -> None:
         if not data:
-            return
+            data: dict = {}
+
         self._code: str = data.get('code')
         self._owner_id: Snowflake = data.get('owner_id')
         self._guild_id: Snowflake = data.get('guild_id')

@@ -53,7 +53,10 @@ class User(BaseObject):
         self._connection: Connection = connection
         self._process_data(data)
 
-    def _process_data(self, data: UserPayload, /) -> None:
+    def _process_data(self, data: Optional[UserPayload], /) -> None:
+        if not data:
+            data: dict = {}
+
         self._store_snowflake(data.get('id'))
 
         self._name: Optional[str] = data.get('name')

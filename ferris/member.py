@@ -29,7 +29,7 @@ class Member(BaseObject):
 
     def _process_data(self, data: Optional[MemberPayload], /) -> None:
         if not data:
-            return
+            data: dict = {}
 
         self._store_snowflake(data.get('user_id'))
 

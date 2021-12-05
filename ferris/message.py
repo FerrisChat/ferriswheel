@@ -37,7 +37,7 @@ class Message(BaseObject):
 
     def _process_data(self, data: Optional[MessagePayload], /) -> None:
         if not data:
-            return
+            data: dict = {}
 
         from .user import User
 

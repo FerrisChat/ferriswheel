@@ -31,7 +31,7 @@ class Guild(BaseObject):
 
     def _process_data(self, data: Optional[GuildPayload], /) -> None:
         if not data:
-            return
+            data: dict = {}
 
         from .member import Member
 

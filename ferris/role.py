@@ -27,7 +27,7 @@ class Role(BaseObject):
 
     def _process_data(self, data: Optional[RolePayload], /) -> None:
         if not data:
-            return
+            data: dict = {}
 
         self._store_snowflake(data.get('id'))
 

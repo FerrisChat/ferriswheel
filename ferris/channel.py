@@ -31,7 +31,7 @@ class Channel(BaseObject):
 
     def _process_data(self, data: Optional[ChannelPayload], /) -> None:
         if not data:
-            return
+            data: dict = {}
 
         self._store_snowflake(data.get('id'))
 
