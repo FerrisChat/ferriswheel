@@ -1,4 +1,5 @@
-from typing import Protocol, Union, runtime_checkable, Optional
+from typing import Protocol, Type, Union, runtime_checkable, Optional
+from typing_extensions import TypeAlias
 
 __all__ = ('SupportsStr', 'SupportsId', 'Id', 'Snowflake')
 
@@ -8,7 +9,7 @@ class SupportsStr(Protocol):
         ...
 
 
-Snowflake = int
+Snowflake: TypeAlias = int
 
 
 @runtime_checkable
@@ -18,4 +19,4 @@ class SupportsId(Protocol):
     id: Snowflake
 
 
-Id = Optional[Union[SupportsId, Snowflake]]
+Id: TypeAlias = Optional[Union[SupportsId, Snowflake]]

@@ -9,6 +9,7 @@ from .message import *
 from .role import *
 from .user import *
 from .ws import *
+from .plugins import *
 
 Data = Union[
     AuthResponse,

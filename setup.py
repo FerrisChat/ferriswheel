@@ -32,7 +32,7 @@ setup(
         "Issue tracker": "https://github.com/FerrisChat/ferriswheel/issues/new",
     },
     version=version,
-    packages=["ferris", "ferris.types", "ferris.plugins", "ferris.plugins.commands"],
+    packages=["ferris", "ferris.types", "ferris.plugins", "ferris.plugins.commands", "ferris.types.plugins", "ferris.types.plugins.commands"],
     license="MIT",
     description="An asynchronous Python wrapper around FerrisChat's API",
     long_description=readme,
