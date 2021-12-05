@@ -108,7 +108,7 @@ class HTTPClient:
             async with aiohttp.ClientSession() as session:
                 async with session.post(
                     f'{cls.API_BASE_URL}/auth',
-                    headers={'Email': email, 'Password': password},
+                    json={'email': email, 'password': password},
                 ) as response:
                     content = await response.text()
 
