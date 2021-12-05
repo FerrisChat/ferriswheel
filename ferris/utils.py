@@ -1,6 +1,10 @@
 from datetime import datetime
 from typing import Any, Callable, Iterable, Optional, TypeVar
 
+import sys
+
+from typing_extensions import ParamSpec
+
 from .types import Id, Snowflake
 
 __all__ = (
@@ -11,7 +15,9 @@ __all__ = (
     'dt_to_snowflake',
 )
 
-T = TypeVar('T', covariant=True)
+T = TypeVar('T')
+P = ParamSpec('P')
+
 
 # try:
 #     import orjson
@@ -29,6 +35,15 @@ FERRIS_EPOCH_MS: int = 1_577_836_800_000
 
 
 FERRIS_EPOCH: int = 1_577_836_800
+
+PY_3_8 = sys.version_info <= (3, 9)
+
+
+if PY_3_8:
+    PT = Callable[[P], T] # type: ignore 
+    # thanks pyhton 3.8
+else:
+    PT = Callable[P, T]
 
 
 if HAS_ORJSON:
@@ -124,3 +139,12 @@ def find(predicate: Callable[[T], Any], iterable: Iterable[T]) -> Optional[T]:
         if predicate(element):
             return element
     return None
+
+def pending(f: PT) -> PT:
+    warning_text: str = """
+.. warning::
+This method is a pending feature, is not currently usable as FerrisChat have not implemented it yet but it will be soon."""
+
+    f.__doc__ += warning_text
+
+    return f    

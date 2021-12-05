@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional, List, Generator
 
 from .base import BaseObject
 from .message import Message
-from .utils import sanitize_id
+from .utils import pending, sanitize_id
 
 if TYPE_CHECKING:
     from typing_extensions import Self
@@ -57,6 +57,34 @@ class Channel(BaseObject):
         message_id = sanitize_id(message_id)
         m = await self._connection.api.messages(message_id).get()
         return Message(self._connection, m)
+    
+    @pending
+    async def _start_typing(self) -> None:
+        """|coro|
+
+        Starts typing in this channel.
+
+        .. warning::
+            This method is intended for internal use only.
+        """
+        await self._connection.api.channels(self.id).typing.post()
+    
+    @pending
+    async def _stop_typing(self) -> None:
+        """|coro|
+
+        Stops typing in this channel.
+
+        .. warning::
+            This method is intended for internal use only.
+        """
+        await self._connection.api.channels(self.id).typing.delete()
+    
+    @pending
+    async def type_for(self, seconds: int):
+        await self._start_typing()
+
+        # TODO
 
     async def send(self, content: str) -> Message:
         """
