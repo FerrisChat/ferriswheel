@@ -250,6 +250,23 @@ class Client(Dispatcher, EventTemplateMixin):
             The invite code to use.
         """
         await self._connection.api.invites(code).post()
+    
+    async def create_bot(self, name: str) -> User:
+        """|coro|
+
+        Creates a bot account.
+
+        Parameters
+        ----------
+        name: str
+            The name of the bot.
+        
+        Returns
+        -------
+        :class:`User`
+        """
+        u = await self._connection.api.users(self.user.id).bots.post({'username': name})
+        return User(u, self._connection)
 
     async def fetch_invite(self, code: str) -> None:
         """|coro|
