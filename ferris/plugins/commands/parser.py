@@ -11,6 +11,7 @@ from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Dict, Generic,
                     Union, overload)
 
 from ...utils import ensure_async
+
 from .errors import *
 
 ConverterOutputT = TypeVar('ConverterOutputT')
@@ -20,13 +21,14 @@ NotT = TypeVar('NotT')
 
 if TYPE_CHECKING:
     from .models import Context
+    from ferris.types import ParserCallbackProto
 
     ArgumentPrepareT = Callable[[str], str]
     ConverterT = Union['Converter', Type['Converter'], Callable[[str], ConverterOutputT]]
-    ParserCallback = Callable[[Context, Any, ...], Any]
+    ParserCallback = ParserCallbackProto
 
     ArgumentT = TypeVar('ArgumentT', bound='Argument')
-    BlacklistT = TypeVar('BlacklistT', bound=ConverterT)
+    BlacklistT = TypeVar('BlacklistT', bound=ConverterT) # type: ignore
     ParserT = TypeVar('ParserT', bound=Union['_Subparser', 'Parser'])
 
 _NoneType: Type[None] = type(None)
@@ -761,7 +763,7 @@ class _Subparser:
         return ' '.join(arg.signature for arg in self._arguments)
 
     @classmethod
-    def from_function(cls: Type[P], func: ParserCallback, /) -> P:
+    def from_function(cls: Type[_Subparser], func: ParserCallback, /) -> _Subparser:
         """Creates a new :class:`~.Parser` from a function."""
         params = list(inspect.signature(func).parameters.values())
 
