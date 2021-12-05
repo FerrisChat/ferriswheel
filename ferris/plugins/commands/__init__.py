@@ -1,4 +1,4 @@
-from . import errors, parser, utils
+from . import errors, parser
 from .core import CaseInsensitiveDict, CommandSink, Bot
 from .errors import *
 from .models import Command, Context
