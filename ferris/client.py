@@ -239,9 +239,6 @@ class Client(Dispatcher, EventTemplateMixin):
         """Returns a list of the client's guilds."""
         return list(self._connection._guilds.values())
 
-    def _initialize_connection(self, token: str, /) -> None:
-        self._connection._initialize_http(token)
-
     async def join_guild(self, code: str) -> None:
         """|coro|
 
@@ -538,7 +535,7 @@ class Client(Dispatcher, EventTemplateMixin):
 
         if token is not None:
             log.info("Logging in with Token")
-            self._initialize_connection(token)
+            self._connection._initialize_http(token)
         else:
             log.info("Logging in with Email and Password")
             await self._connection._initialize_http_with_email(email, password)  # type: ignore
