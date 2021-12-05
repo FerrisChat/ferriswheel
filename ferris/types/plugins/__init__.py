@@ -1,1 +1,3 @@
-from commands import *
+from . import commands
+
+__all__ = ('commands')

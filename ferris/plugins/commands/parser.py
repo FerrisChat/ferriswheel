@@ -21,7 +21,7 @@ NotT = TypeVar('NotT')
 
 if TYPE_CHECKING:
     from .models import Context
-    from ferris.types import ParserCallbackProto
+    from ferris.types.plugins.commands import ParserCallbackProto
 
     ArgumentPrepareT = Callable[[str], str]
     ConverterT = Union['Converter', Type['Converter'], Callable[[str], ConverterOutputT]]
