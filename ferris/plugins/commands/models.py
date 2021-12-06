@@ -1,27 +1,16 @@
 from __future__ import annotations
 
 import inspect
+from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Collection, Dict,
+                    Generic, List, Optional, Tuple, TypeVar)
 
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Collection,
-    Dict,
-    Generic,
-    List,
-    Optional,
-    Tuple,
-    TYPE_CHECKING,
-    TypeVar,
-)
-
-from .parser import Parser
 from ...message import Message
+from .parser import Parser
 
 R = TypeVar('R')
 
 if TYPE_CHECKING:
+    from ferris import Channel, Guild, Message, User
     from typing_extensions import Concatenate, ParamSpec
 
     from .core import Bot
@@ -247,6 +236,11 @@ class Context:
         self.args: Optional[tuple] = None
         self.kwargs: Optional[Dict[str, Any]] = None
         self.reader: Optional[StringReader] = None
+
+        self.channel: Optional[Channel] = message.channel
+        self.send: Optional[Callable[[str], Message]] = getattr(self.channel, 'send', None)
+        self.author: Optional[User] = message.author
+        self.guild: Optional[Guild] = message.guild
 
     def __repr__(self) -> str:
         return f'<Context command={self.command!r}>'
