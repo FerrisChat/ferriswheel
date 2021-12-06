@@ -53,26 +53,26 @@ PY_3_8 = sys.version_info < (3, 9)
 
 
 
-if HAS_ORJSON:
+# if HAS_ORJSON:
 
-    def to_json(obj: Any) -> str:
-        return orjson.dumps(obj).decode('utf-8')
+#     def to_json(obj: Any) -> str:
+#         return orjson.dumps(obj).decode('utf-8')
 
-    def from_json(json_str: str) -> Any:
-        if not json_str:
-            return None
-        return orjson.loads(json_str)
+#     def from_json(json_str: str) -> Any:
+#         if not json_str:
+#             return None
+#         return orjson.loads(json_str)
 
 
-else:
+# else:
 
-    def to_json(obj: Any) -> str:
-        return json.dumps(obj, ensure_ascii=True)
+def to_json(obj: Any) -> str:
+    return json.dumps(obj, ensure_ascii=True)
 
-    def from_json(json_str: str) -> Any:
-        if not json_str:
-            return None
-        return json.loads(json_str)
+def from_json(json_str: str) -> Any:
+    if not json_str:
+        return None
+    return json.loads(json_str)
 
 
 def sanitize_id(id: Id = None) -> Snowflake:
