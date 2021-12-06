@@ -1,9 +1,23 @@
-from datetime import datetime
-from typing import Any, Callable, Iterable, Optional, TypeVar
+from __future__ import annotations
 
+import asyncio
+import functools
+import inspect
 import sys
+from datetime import datetime
+from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Iterable, Optional, TypeVar,
+                    Union, overload)
 
-from typing_extensions import ParamSpec
+if TYPE_CHECKING:
+    from typing_extensions import ParamSpec
+    P = ParamSpec('P')
+
+    T = TypeVar('T')
+    R = TypeVar('R')
+    TR = Callable[[T], Awaitable[R]]
+    PT = Callable[[P], T] # type: ignore 
+    A = Callable[[P], Awaitable[R]] # type: ignore
+    F = Callable[[P], R] # type: ignore
 
 from .types import Id, Snowflake
 
@@ -15,8 +29,7 @@ __all__ = (
     'dt_to_snowflake',
 )
 
-T = TypeVar('T')
-P = ParamSpec('P')
+
 
 
 # try:
@@ -36,14 +49,8 @@ FERRIS_EPOCH_MS: int = 1_577_836_800_000
 
 FERRIS_EPOCH: int = 1_577_836_800
 
-PY_3_8 = sys.version_info <= (3, 9)
+PY_3_8 = sys.version_info < (3, 9)
 
-
-if PY_3_8:
-    PT = Callable[[P], T] # type: ignore 
-    # thanks pyhton 3.8
-else:
-    PT = Callable[P, T]
 
 
 if HAS_ORJSON:
@@ -147,4 +154,37 @@ This method is a pending feature, is not currently usable as FerrisChat have not
 
     f.__doc__ += warning_text
 
-    return f    
+    return f
+
+@overload
+def ensure_async(func: TR, /) -> TR:
+    ...
+
+
+@overload
+def ensure_async(func: TR, /) -> TR:
+    ...
+
+
+def ensure_async(func: Union[A, F], /) -> A:
+    """Ensures that the given function is asynchronous.
+    In other terms, if the function is already async, it will stay the same.
+    Else, it will be converted into an async function. (Note that it will still be ran synchronously.)
+    """
+    @functools.wraps(func)
+    async def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+        maybe_coro = func(*args, **kwargs)
+
+        if inspect.isawaitable(maybe_coro):
+            return await maybe_coro
+
+        return maybe_coro
+
+    return wrapper
+
+async def _call_later(seconds: int, func: Union[A, F]) -> None:
+    await asyncio.sleep(seconds)
+    await ensure_async(func)()
+
+def call_later(seconds: int, func: Union[A, F]) -> asyncio.Task:
+    return asyncio.create_task(_call_later(seconds, func))

@@ -120,9 +120,12 @@ class HTTPClient:
                     if response.status == 400:
                         data = from_json(content)
                         reason = data.get('reason')
-                        location = data.get('location', {})
-                        line = location.get('line')
-                        character = location.get('character')
+                        location = data.get('location')
+                        if location:
+                            line = location.get('line')
+                            character = location.get('character')
+                        else:
+                            line = character = None
 
                         raise BadRequest(
                             response, f'{reason}\nLine: {line} Character: {character}'

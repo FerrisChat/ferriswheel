@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, List, Generator
+from typing import TYPE_CHECKING, Optional, List, Generator, Any
+
+import asyncio
 
 from .base import BaseObject
 from .message import Message
-from .utils import pending, sanitize_id
+from .utils import pending, sanitize_id, call_later
 
 if TYPE_CHECKING:
     from typing_extensions import Self
@@ -14,6 +16,25 @@ if TYPE_CHECKING:
     from .guild import Guild
 
 __all__ = ('Channel',)
+
+
+class Typing:
+    def __init__(self, channel: Channel) -> None:
+        self._channel = channel
+    
+    def __enter__(self: Self) -> Self:
+        asyncio.create_task(self._channel._start_typing())
+
+        return self
+    
+    def __exit__(self, *_: Any) -> None:
+        asyncio.create_task(self._channel._stop_typing())
+    
+    async def __aenter__(self: Self) -> Self:
+        return self.__enter__()
+    
+    async def __aexit__(self, *_: Any) -> None:
+        return self.__exit__()
 
 
 class Channel(BaseObject):
@@ -81,10 +102,35 @@ class Channel(BaseObject):
         await self._connection.api.channels(self.id).typing.delete()
     
     @pending
-    async def type_for(self, seconds: int):
-        await self._start_typing()
+    async def type_for(self, seconds: int) -> asyncio.Task:
+        """|coro|
 
-        # TODO
+        Starts typing in this channel for a specified amount of time.
+
+        Parameters
+        ----------
+        seconds: int
+
+        Returns
+        -------
+        asyncio.Task
+        """
+        await self._start_typing()
+        
+        return call_later(seconds, self._stop_typing)
+    
+    @pending
+    def typing(self) -> Typing:
+        """
+        |coro|
+
+        Starts typing in this channel.
+
+        Returns
+        -------
+        Typing
+        """
+        return Typing(self)
 
     async def send(self, content: str) -> Message:
         """
