@@ -527,8 +527,6 @@ class Client(Dispatcher, EventTemplateMixin):
         Establishes a websocket connection with FerrisChat's gateway.
         A form of authentication (email and password, or a token) must be provided.
 
-        The `id` kwarg is only needed when an email and password is used to login.
-
         Parameters
         ----------
         token: Optional[str]

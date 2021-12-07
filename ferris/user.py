@@ -47,7 +47,7 @@ class User(BaseObject):
     Represents a FerrisChat user.
     """
 
-    __slots__ = ('_connection', '_name', '_guilds', '_avatar')
+    __slots__ = ('_connection', '_name', '_avatar')
 
     def __init__(self, connection: Connection, data: UserPayload, /) -> None:
         self._connection: Connection = connection
@@ -62,21 +62,6 @@ class User(BaseObject):
         self._name: Optional[str] = data.get('name')
 
         self._avatar: Optional[str] = data.get('avatar')
-
-        self._guilds: Dict[Snowflake, Guild] = {}
-
-        for g in data.get('guilds') or []:
-            guild_id = g.get('id')
-
-            if guild_id in self._guilds:
-                guild = self._connection.get_guild(guild_id)
-                guild._process_data(g)
-
-            if guild_id not in self._guilds:
-                guild = Guild(self._connection, g)
-                self._connection.store_guild(guild)
-
-            self._guilds[guild_id] = self._connection.get_guild(guild_id)
 
         # self._flags = data.get('flags')
         # UserFlag after ferrischat implemented it
@@ -110,9 +95,16 @@ class User(BaseObject):
             'email': email,
             'password': password,
         }
-        user = await self._connection.api.users(self.id).patch(json=payload)
+        user = await self._connection.api.users.me.patch(json=payload)
         self._process_data(user)
         return self
+    
+    async def delete(self) -> None:
+        """|coro|
+
+        Deletes the :class:`~ClientUser`.
+        """
+        await self._connection.api.users.me.delete()
 
     async def fetch_guilds(self) -> List[Guild]:
         """|coro|
@@ -152,3 +144,27 @@ class User(BaseObject):
 
     def __repr__(self, /) -> str:
         return f'<User id={self.id} name={self.name!r}>'
+
+
+class ClientUser(User):
+    __slots__ = ('guilds',)
+
+    def __init__(self, connection: Connection, data: UserPayload, /) -> None:
+        super().__init__(connection, data)
+        
+        self._guilds: Dict[Snowflake, Guild] = {}
+
+        for g in data.get('guilds') or []:
+            guild_id = g.get('id')
+
+            if guild_id in self._guilds:
+                guild = self._connection.get_guild(guild_id)
+                guild._process_data(g)
+
+            if guild_id not in self._guilds:
+                guild = Guild(self._connection, g)
+                self._connection.store_guild(guild)
+
+            self._guilds[guild_id] = self._connection.get_guild(guild_id)
+
+

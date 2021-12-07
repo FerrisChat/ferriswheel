@@ -28,8 +28,6 @@ class _BaseEventHandler:
 
         self._heartbeat_manager: KeepAliveManager = heartbeat_manager
 
-        self._is_ready: asyncio.Future = connection._is_ready
-
     def handle(self, _data: dict):
         event = _data.get('c')
         data = _data.get('d')
@@ -52,8 +50,10 @@ class EventHandler(_BaseEventHandler):
 
         self.connection._user = u
 
-        self._is_ready.set_result(None)
+        self.connection._is_ready.set_result(None)
         self.dispatch('ready')
+
+        self.connection._is_ready = self.connection.loop.create_future()
 
     async def MessageCreate(self, data):
         m = Message(self.connection, data.get('message'))
