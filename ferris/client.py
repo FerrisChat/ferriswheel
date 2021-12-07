@@ -517,8 +517,8 @@ class Client(Dispatcher, EventTemplateMixin):
 
     async def start(
         self,
-        *,
         token: Optional[str] = None,
+        *,
         email: Optional[str] = None,
         password: Optional[str] = None,
     ) -> None:
