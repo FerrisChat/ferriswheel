@@ -6,6 +6,7 @@ from collections import deque
 from typing import TYPE_CHECKING, Any, Coroutine, Dict, Optional, Union
 
 from ferris.types.base import Snowflake
+from ferris.user import ClientUser
 
 from .http import APIRouter, HTTPClient
 from .utils import find
@@ -49,7 +50,7 @@ class Connection:
         return self._http.api if self._http else None
 
     @property
-    def user(self) -> Optional[User]:
+    def user(self) -> Optional[ClientUser]:
         return self._user
 
     def _store_token(self, token: str, /) -> None:

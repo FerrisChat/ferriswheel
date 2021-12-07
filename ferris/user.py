@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from .types import Data
     from .types.user import UserPayload
 
-__all__ = ('PartialUser', 'User')
+__all__ = ('PartialUser', 'User', 'ClientUser')
 
 
 class PartialUser(BaseObject):
@@ -66,70 +66,10 @@ class User(BaseObject):
         # self._flags = data.get('flags')
         # UserFlag after ferrischat implemented it
 
-    async def edit(
-        self,
-        username: Optional[str] = None,
-        email: Optional[str] = None,
-        password: Optional[str] = None,
-    ) -> Self:
-        """|coro|
-
-        Edits the user.
-
-        Parameters
-        ----------
-        username : Optional[str]
-            The new username.
-        email : Optional[str]
-            The new email.
-        password : Optional[str]
-            The new password.
-
-        Returns
-        -------
-        User
-            The edited user.
-        """
-        payload = {
-            'username': username,
-            'email': email,
-            'password': password,
-        }
-        user = await self._connection.api.users.me.patch(json=payload)
-        self._process_data(user)
-        return self
-    
-    async def delete(self) -> None:
-        """|coro|
-
-        Deletes the :class:`~ClientUser`.
-        """
-        await self._connection.api.users.me.delete()
-
-    async def fetch_guilds(self) -> List[Guild]:
-        """|coro|
-
-        Fetches all the guilds this user is in.
-
-        Returns
-        -------
-        List[:class:`~.Guild`]
-            A list of the guilds this user is in.
-
-        .. warning::
-            This method will do nothing as FerrisChat has not implemented this feature yet.
-        """
-        ...
-
     @property
     def name(self, /) -> Optional[str]:
         """str: The username of this user."""
         return self._name
-
-    @property
-    def guilds(self, /) -> List[Guild]:
-        """List[:class:`~.Guild`]: A list of the guilds this user is in."""
-        return list(self._guilds.values())
 
     @property
     def avatar(self, /) -> Optional[str]:
@@ -147,8 +87,6 @@ class User(BaseObject):
 
 
 class ClientUser(User):
-    __slots__ = ('guilds',)
-
     def __init__(self, connection: Connection, data: UserPayload, /) -> None:
         super().__init__(connection, data)
         
@@ -157,14 +95,53 @@ class ClientUser(User):
         for g in data.get('guilds') or []:
             guild_id = g.get('id')
 
-            if guild_id in self._guilds:
+            if guild_id in self._connection._guilds:
                 guild = self._connection.get_guild(guild_id)
                 guild._process_data(g)
 
             if guild_id not in self._guilds:
                 guild = Guild(self._connection, g)
                 self._connection.store_guild(guild)
+    
+    async def edit(
+        self,
+        username: Optional[str] = None,
+        email: Optional[str] = None,
+        password: Optional[str] = None,
+    ) -> Self:
+        """|coro|
 
-            self._guilds[guild_id] = self._connection.get_guild(guild_id)
+        Edits the :class:`~ClientUser`.
+
+        Parameters
+        ----------
+        username : Optional[str]
+            The new username.
+        email : Optional[str]
+            The new email.
+        password : Optional[str]
+            The new password.
+
+        Returns
+        -------
+        User
+            The edited :class:`~ClientUser`.
+        """
+        payload = {
+            'username': username,
+            'email': email,
+            'password': password,
+        }
+        user = await self._connection.api.users.me.patch(json=payload)
+        self._process_data(user)
+        return self
+    
+    async def delete(self) -> None:
+        """|coro|
+
+        Deletes the :class:`~ClientUser`.
+        """
+        await self._connection.api.users.me.delete()
+
 
 

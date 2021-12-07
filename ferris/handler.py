@@ -8,7 +8,7 @@ from .channel import Channel
 from .guild import Guild
 from .member import Member
 from .message import Message
-from .user import User
+from .user import ClientUser, User
 from .role import Role
 from .invite import Invite
 
@@ -45,7 +45,7 @@ class EventHandler(_BaseEventHandler):
     async def IdentifyAccepted(self, data):
         self.dispatch('identify_accepted')
 
-        u = User(self.connection, data.get('user', {}))
+        u = ClientUser(self.connection, data.get('user', {}))
         self.connection.store_user(u)
 
         self.connection._user = u

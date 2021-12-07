@@ -23,7 +23,7 @@ from .errors import Reconnect, WebsocketException
 from .guild import Guild
 from .invite import Invite
 from .message import Message
-from .user import User
+from .user import ClientUser, User
 from .utils import sanitize_id
 from .websocket import Websocket
 
@@ -206,8 +206,8 @@ class Client(Dispatcher, EventTemplateMixin):
         super().__init__(self.loop)
 
     @property
-    def user(self) -> Optional[User]:
-        """Returns the client's user."""
+    def user(self) -> Optional[ClientUser]:
+        """Returns the connected :class:`~ClientUser`"""
         return self._connection.user
 
     @property
@@ -298,6 +298,31 @@ class Client(Dispatcher, EventTemplateMixin):
         """
         g = await self._connection.api.guilds.post(json={'name': name})
         return Guild(self._connection, g)
+    
+    async def fetch_self(self, cache: bool = True) -> ClientUser:
+        """|coro|
+
+        Fetches the client's user.
+
+        Parameters
+        ----------
+        cache: bool
+            Whether to cache the user. Defaults to ``True``.
+
+        Returns
+        -------
+        :class:`ClientUser`
+            The client's user.
+        """
+        u = await self._connection.api.users.me.get()
+
+        if cache:
+            u = self._connection.user
+            u._process_data(u)
+        else:
+            u = ClientUser(self._connection, u)
+
+        return u
 
     def get_message(self, id: Id) -> Optional[Message]:
         """
