@@ -56,4 +56,4 @@ class Client(ferris.Client):
 
 client = Client()
 
-client.run(email='ferriswheelci@ferris.chat', password=os.getenv('PASSWORD'))
+client.run(token=os.getenv('TOKEN'))
