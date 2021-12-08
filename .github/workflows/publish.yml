@@ -29,8 +29,8 @@ jobs:
         twine upload dist/*
 
     - name: Upload release binaries to latest release
-        uses: alexellis/upload-assets@master
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
+      uses: alexellis/upload-assets@master
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
           asset_paths: '["dist/*"]'
