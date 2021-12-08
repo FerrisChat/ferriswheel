@@ -27,3 +27,9 @@ jobs:
       run: |
         python setup.py sdist bdist_wheel
         twine upload dist/*
+    - name: Upload release binaries to latest release
+        uses: alexellis/upload-assets@master
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          asset_paths: '["dist/*"]'
