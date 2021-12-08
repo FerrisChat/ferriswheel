@@ -151,17 +151,13 @@ class Websocket:
         response: WsConnectionInfo = await self._http.api.ws.info.get()  # type: ignore
         self._ws_url = response['url']
 
-    def handle(self, data: Dict[Any, Any], /) -> None:
-        """Handles a message received from the websocket."""
-        log.debug(f'Received: {data}')
-        self._handler.handle(data)
-
     def _parse_and_handle(self, data: Union[str, bytes], /) -> None:
+        """Handles a message received from the websocket."""
         self._heartbeat_manager.tick()
 
         if isinstance(data, (str, bytes)):
             _data: dict = from_json(data)
-            self.handle(_data)
+            self._handler.handle(_data or {})
 
     async def send(self, data: Dict[Any, Any], /) -> None:
         _data = to_json(data)
