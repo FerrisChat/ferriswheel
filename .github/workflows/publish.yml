@@ -27,6 +27,7 @@ jobs:
       run: |
         python setup.py sdist bdist_wheel
         twine upload dist/*
+
     - name: Upload release binaries to latest release
         uses: alexellis/upload-assets@master
         env:
