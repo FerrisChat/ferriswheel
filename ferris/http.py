@@ -2,22 +2,16 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 from typing import TYPE_CHECKING, Awaitable, ClassVar, Dict, Optional
 from urllib.parse import quote
 
 import aiohttp
 
 from . import __version__
-from .errors import (
-    BadRequest,
-    FerrisServerError,
-    FerrisUnavailable,
-    Forbidden,
-    HTTPException,
-    MissingImplementation,
-    NotFound,
-    Unauthorized,
-)
+from .errors import (BadRequest, FerrisServerError, FerrisUnavailable,
+                     Forbidden, HTTPException, MissingImplementation, NotFound,
+                     Unauthorized)
 from .utils import from_json
 
 if TYPE_CHECKING:
@@ -73,6 +67,8 @@ class APIRouter:
 class HTTPClient:
     API_BASE_URL: ClassVar[str] = 'https://api.ferris.chat/v0'
 
+    USE_SSL: ClassVar[bool] = os.getenv('FERRIS_USE_SSL', 'true').lower() == 'true'
+
     MAX_TRIES: ClassVar[int] = 3
     USER_AGENT: ClassVar[
         str
@@ -83,7 +79,8 @@ class HTTPClient:
     def __init__(self, token: str, /) -> None:
         self.__token: str = token
         self.__session: aiohttp.ClientSession = aiohttp.ClientSession(
-            headers={'User-Agent': self.USER_AGENT, 'Authorization': self.__token}
+            headers={'User-Agent': self.USER_AGENT, 'Authorization': self.__token},
+            connector=aiohttp.TCPConnector(ssl=self.USE_SSL),
         )
 
         self._buckets_lock: Dict[str, asyncio.Event] = {}
@@ -105,52 +102,53 @@ class HTTPClient:
     async def from_email_and_password(cls, email: str, password: str) -> HTTPClient:
         log.info('Retriving token from email and password')
         for tries in range(cls.MAX_TRIES):
-            async with aiohttp.ClientSession() as session:
-                async with session.post(
-                    f'{cls.API_BASE_URL}/auth',
-                    json={'email': email, 'password': password},
-                ) as response:
-                    content = await response.text()
+            async with aiohttp.request(
+                'POST',
+                f'{cls.API_BASE_URL}/auth',
+                json={'email': email, 'password': password},
+                connector=aiohttp.TCPConnector(ssl=cls.USE_SSL)
+            ) as response:
+                content = await response.text()
 
-                    if 400 > response.status >= 200:
-                        token = from_json(content)['token']
-                        log.info('Successfully Retrived token')
-                        return cls(token)
+                if 400 > response.status >= 200:
+                    token = from_json(content)['token']
+                    log.info('Successfully Retrived token')
+                    return cls(token)
 
-                    if response.status == 400:
-                        data = from_json(content)
-                        reason = data.get('reason')
-                        location = data.get('location')
-                        if location:
-                            line = location.get('line')
-                            character = location.get('character')
-                        else:
-                            line = character = None
+                if response.status == 400:
+                    data = from_json(content)
+                    reason = data.get('reason')
+                    location = data.get('location')
+                    if location:
+                        line = location.get('line')
+                        character = location.get('character')
+                    else:
+                        line = character = None
 
-                        raise BadRequest(
-                            response, f'{reason}\nLine: {line} Character: {character}'
-                        )
+                    raise BadRequest(
+                        response, f'{reason}\nLine: {line} Character: {character}'
+                    )
 
-                    if response.status == 404:
-                        raise NotFound(response, content)
+                if response.status == 404:
+                    raise NotFound(response, content)
 
-                    if response.status == 401:
-                        raise Unauthorized(response, content)
+                if response.status == 401:
+                    raise Unauthorized(response, content)
 
-                    if response.status == 403:
-                        raise Forbidden(response, content)
+                if response.status == 403:
+                    raise Forbidden(response, content)
 
-                    if 500 <= response.status < 600:
-                        if tries == 1:
-                            try:
-                                data = from_json(content)
-                                reason = data.get('reason')
-                            except:  # TODO: Fix broad except
-                                reason = content
+                if 500 <= response.status < 600:
+                    if tries == 1:
+                        try:
+                            data = from_json(content)
+                            reason = data.get('reason')
+                        except:  # TODO: Fix broad except
+                            reason = content
 
-                            raise FerrisUnavailable(response, reason)
+                        raise FerrisUnavailable(response, reason)
 
-                        continue
+                    continue
 
         raise HTTPException(response, content)
 

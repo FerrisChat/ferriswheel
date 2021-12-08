@@ -44,9 +44,15 @@ class Message(BaseObject):
         self._store_snowflake(data.get('id'))
 
         self._content: Optional[str] = data.get('content')
-        self._channel_id: Optional[Snowflake] = data.get('channel_id')
 
-        self._author_id: Optional[Snowflake] = data.get('author_id')
+        self._channel: Optional[Channel] = None
+
+        if c := data.get('channel'):
+            self._channel = Channel(self._connection, c)
+        
+        self._channel_id: Snowflake = data.get('channel_id')
+
+        self._author_id: Snowflake = data.get('author_id')
         self._author: Optional[User] = User(self._connection, data.get('author'))
 
         self._edited_at: Optional[datetime] = None
@@ -100,7 +106,13 @@ class Message(BaseObject):
     @property
     def channel(self, /) -> Optional[Channel]:
         """Channel: The channel that this message was sent in"""
-        return self._connection.get_channel(self.channel_id)
+        return self._cahnnel or self._connection.get_channel(self.channel_id)
+    
+    @property
+    def channel_id(self, /) -> Snowflake:
+        """Snowflake: The ID of the channel this message was sent in."""
+        return self._channel_id
+    
 
     @property
     def guild(self, /) -> Optional[Guild]:
@@ -108,7 +120,7 @@ class Message(BaseObject):
         return self.channel.guild
 
     @property
-    def author_id(self, /) -> Optional[Snowflake]:
+    def author_id(self, /) -> Snowflake:
         """int: Returns the author ID of this message."""
         return self._author_id
 
