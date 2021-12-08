@@ -49,7 +49,7 @@ class Message(BaseObject):
 
         if c := data.get('channel'):
             self._channel = Channel(self._connection, c)
-        
+
         self._channel_id: Snowflake = data.get('channel_id')
 
         self._author_id: Snowflake = data.get('author_id')
@@ -107,12 +107,11 @@ class Message(BaseObject):
     def channel(self, /) -> Optional[Channel]:
         """Channel: The channel that this message was sent in"""
         return self._cahnnel or self._connection.get_channel(self.channel_id)
-    
+
     @property
     def channel_id(self, /) -> Snowflake:
         """Snowflake: The ID of the channel this message was sent in."""
         return self._channel_id
-    
 
     @property
     def guild(self, /) -> Optional[Guild]:

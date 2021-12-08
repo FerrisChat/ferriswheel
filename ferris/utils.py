@@ -5,19 +5,29 @@ import functools
 import inspect
 import sys
 from datetime import datetime
-from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Iterable, Optional, TypeVar,
-                    Union, overload)
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Awaitable,
+    Callable,
+    Iterable,
+    Optional,
+    TypeVar,
+    Union,
+    overload,
+)
 
 if TYPE_CHECKING:
     from typing_extensions import ParamSpec
+
     P = ParamSpec('P')
 
     T = TypeVar('T')
     R = TypeVar('R')
     TR = Callable[[T], Awaitable[R]]
-    PT = Callable[[P], T] # type: ignore 
-    A = Callable[[P], Awaitable[R]] # type: ignore
-    F = Callable[[P], R] # type: ignore
+    PT = Callable[[P], T]  # type: ignore
+    A = Callable[[P], Awaitable[R]]  # type: ignore
+    F = Callable[[P], R]  # type: ignore
 
 from .types import Id, Snowflake
 
@@ -28,8 +38,6 @@ __all__ = (
     'find',
     'dt_to_snowflake',
 )
-
-
 
 
 # try:
@@ -52,7 +60,6 @@ FERRIS_EPOCH: int = 1_577_836_800
 PY_3_8 = sys.version_info < (3, 9)
 
 
-
 # if HAS_ORJSON:
 
 #     def to_json(obj: Any) -> str:
@@ -66,8 +73,10 @@ PY_3_8 = sys.version_info < (3, 9)
 
 # else:
 
+
 def to_json(obj: Any) -> str:
     return json.dumps(obj, ensure_ascii=True)
+
 
 def from_json(json_str: str) -> Any:
     if not json_str:
@@ -147,6 +156,7 @@ def find(predicate: Callable[[T], Any], iterable: Iterable[T]) -> Optional[T]:
             return element
     return None
 
+
 def pending(f: PT) -> PT:
     warning_text: str = """
 .. warning::
@@ -155,6 +165,7 @@ This method is a pending feature, is not currently usable as FerrisChat have not
     f.__doc__ += warning_text
 
     return f
+
 
 @overload
 def ensure_async(func: TR, /) -> TR:
@@ -171,6 +182,7 @@ def ensure_async(func: Union[A, F], /) -> A:
     In other terms, if the function is already async, it will stay the same.
     Else, it will be converted into an async function. (Note that it will still be ran synchronously.)
     """
+
     @functools.wraps(func)
     async def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
         maybe_coro = func(*args, **kwargs)
@@ -182,9 +194,11 @@ def ensure_async(func: Union[A, F], /) -> A:
 
     return wrapper
 
+
 async def _call_later(seconds: int, func: Union[A, F]) -> None:
     await asyncio.sleep(seconds)
     await ensure_async(func)()
+
 
 def call_later(seconds: int, func: Union[A, F]) -> asyncio.Task:
     return asyncio.create_task(_call_later(seconds, func))

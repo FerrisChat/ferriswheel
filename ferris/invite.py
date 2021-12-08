@@ -49,7 +49,9 @@ class Invite:
                 (data.get('created_at', 0) + FERRIS_EPOCH)
             )
         except OSError:
-            self._created_at: Optional[datetime] = None # FIXME: When ferrischat fixes it.
+            self._created_at: Optional[
+                datetime
+            ] = None  # FIXME: When ferrischat fixes it.
         self._uses: int = data.get('uses')
         self._max_uses: int = data.get('max_uses')
         self._max_age: int = data.get('max_age')

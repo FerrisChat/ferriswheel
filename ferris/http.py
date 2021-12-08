@@ -9,9 +9,16 @@ from urllib.parse import quote
 import aiohttp
 
 from . import __version__
-from .errors import (BadRequest, FerrisServerError, FerrisUnavailable,
-                     Forbidden, HTTPException, MissingImplementation, NotFound,
-                     Unauthorized)
+from .errors import (
+    BadRequest,
+    FerrisServerError,
+    FerrisUnavailable,
+    Forbidden,
+    HTTPException,
+    MissingImplementation,
+    NotFound,
+    Unauthorized,
+)
 from .utils import from_json
 
 if TYPE_CHECKING:
@@ -106,7 +113,7 @@ class HTTPClient:
                 'POST',
                 f'{cls.API_BASE_URL}/auth',
                 json={'email': email, 'password': password},
-                connector=aiohttp.TCPConnector(ssl=cls.USE_SSL)
+                connector=aiohttp.TCPConnector(ssl=cls.USE_SSL),
             ) as response:
                 content = await response.text()
 

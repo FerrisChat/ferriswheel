@@ -197,7 +197,7 @@ class EventHandler(_BaseEventHandler):
         else:
             role = Role(self.connection, r)
         self.dispatch('role_delete', role)
-    
+
     async def TypingStart(self, data):
         c = data.get('channel')
         u = data.get('user')
@@ -205,11 +205,11 @@ class EventHandler(_BaseEventHandler):
         channel: Optional[Channel] = self.connection.get_channel(c.get('id'))
         if channel:
             channel._process_data(c)
-        
+
         user: Optional[User] = self.connection.get_user(u.get('id'))
         if user:
             user._process_data(u)
-        
+
         self.dispatch('typing_start', channel, user)
 
     async def TypingEnd(self, data):
@@ -219,13 +219,12 @@ class EventHandler(_BaseEventHandler):
         channel: Optional[Channel] = self.connection.get_channel(c.get('id'))
         if channel:
             channel._process_data(c)
-        
+
         user: Optional[User] = self.connection.get_user(u.get('id'))
         if user:
             user._process_data(u)
-        
-        self.dispatch('typing_end', channel, user)
 
+        self.dispatch('typing_end', channel, user)
 
     async def MemberRoleAdd(self, data):
         m = data.get('member')

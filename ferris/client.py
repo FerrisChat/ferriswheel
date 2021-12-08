@@ -250,7 +250,7 @@ class Client(Dispatcher, EventTemplateMixin):
             The invite code to use.
         """
         await self._connection.api.invites(code).post()
-    
+
     async def create_bot(self, name: str) -> User:
         """|coro|
 
@@ -260,7 +260,7 @@ class Client(Dispatcher, EventTemplateMixin):
         ----------
         name: str
             The name of the bot.
-        
+
         Returns
         -------
         :class:`User`
@@ -298,7 +298,7 @@ class Client(Dispatcher, EventTemplateMixin):
         """
         g = await self._connection.api.guilds.post(json={'name': name})
         return Guild(self._connection, g)
-    
+
     async def fetch_self(self, cache: bool = True) -> ClientUser:
         """|coro|
 
@@ -403,7 +403,7 @@ class Client(Dispatcher, EventTemplateMixin):
             self._connection.store_message(m)
 
         return m
-    
+
     async def ping(self) -> None:
         """|coro|
 

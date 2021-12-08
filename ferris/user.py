@@ -89,7 +89,7 @@ class User(BaseObject):
 class ClientUser(User):
     def __init__(self, connection: Connection, data: UserPayload, /) -> None:
         super().__init__(connection, data)
-        
+
         self._guilds: Dict[Snowflake, Guild] = {}
 
         for g in data.get('guilds') or []:
@@ -102,7 +102,7 @@ class ClientUser(User):
             if guild_id not in self._guilds:
                 guild = Guild(self._connection, g)
                 self._connection.store_guild(guild)
-    
+
     async def edit(
         self,
         username: Optional[str] = None,
@@ -135,13 +135,10 @@ class ClientUser(User):
         user = await self._connection.api.users.me.patch(json=payload)
         self._process_data(user)
         return self
-    
+
     async def delete(self) -> None:
         """|coro|
 
         Deletes the :class:`~ClientUser`.
         """
         await self._connection.api.users.me.delete()
-
-
-

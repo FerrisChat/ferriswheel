@@ -21,18 +21,18 @@ __all__ = ('Channel',)
 class Typing:
     def __init__(self, channel: Channel) -> None:
         self._channel = channel
-    
+
     def __enter__(self: Self) -> Self:
         asyncio.create_task(self._channel._start_typing())
 
         return self
-    
+
     def __exit__(self, *_: Any) -> None:
         asyncio.create_task(self._channel._stop_typing())
-    
+
     async def __aenter__(self: Self) -> Self:
         return self.__enter__()
-    
+
     async def __aexit__(self, *_: Any) -> None:
         return self.__exit__()
 
@@ -78,7 +78,7 @@ class Channel(BaseObject):
         message_id = sanitize_id(message_id)
         m = await self._connection.api.messages(message_id).get()
         return Message(self._connection, m)
-    
+
     @pending
     async def _start_typing(self) -> None:
         """|coro|
@@ -89,7 +89,7 @@ class Channel(BaseObject):
             This method is intended for internal use only.
         """
         await self._connection.api.channels(self.id).typing.post()
-    
+
     @pending
     async def _stop_typing(self) -> None:
         """|coro|
@@ -100,7 +100,7 @@ class Channel(BaseObject):
             This method is intended for internal use only.
         """
         await self._connection.api.channels(self.id).typing.delete()
-    
+
     @pending
     async def type_for(self, seconds: int) -> asyncio.Task:
         """|coro|
@@ -116,9 +116,9 @@ class Channel(BaseObject):
         asyncio.Task
         """
         await self._start_typing()
-        
+
         return call_later(seconds, self._stop_typing)
-    
+
     @pending
     def typing(self) -> Typing:
         """
