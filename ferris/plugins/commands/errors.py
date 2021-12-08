@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Optional, Tuple, TYPE_CHECKING
 from ...utils import to_error_string
+from ferris.errors import FerrisException
 
 if TYPE_CHECKING:
     from .models import Context
@@ -23,7 +24,7 @@ __all__ = (
 )
 
 
-class CommandBasedError(Exception):  # Should inherit from your lib's base exception
+class CommandBasedError(FerrisException):
     """The base exception raised for errors related to the commands plugin."""
 
 

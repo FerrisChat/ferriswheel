@@ -237,10 +237,7 @@ class Context:
         self.kwargs: Optional[Dict[str, Any]] = None
         self.reader: Optional[StringReader] = None
 
-        self.channel: Optional[Channel] = message.channel
         self.send: Optional[Callable[[str], Message]] = getattr(self.channel, 'send', None)
-        self.author: Optional[User] = message.author
-        self.guild: Optional[Guild] = message.guild
 
     def __repr__(self) -> str:
         return f'<Context command={self.command!r}>'
@@ -275,3 +272,19 @@ class Context:
         .. note:: No checks will be called here.
         """
         await self.invoke(self.command, *self.args, **self.kwargs)
+    
+    @property
+    def channel(self) -> Optional[Channel]:
+        """Optional[:class:`~.Channel`]: The channel that this context was invoked in."""
+        return self.message.channel
+    
+    @property
+    def author(self) -> Optional[User]:
+        """Optional[:class:`~.User`]: The user that this context was invoked by."""
+        return self.message.author
+    
+    @property
+    def guild(self) -> Optional[Guild]:
+        """Optional[:class:`~.Guild`]: The guild that this context was invoked in."""
+        return self.message.guild
+    

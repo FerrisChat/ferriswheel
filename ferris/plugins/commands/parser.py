@@ -10,9 +10,11 @@ from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Dict, Generic,
                     Iterable, List, Literal, Optional, Tuple, Type, TypeVar,
                     Union, overload)
 
-from ...utils import ensure_async
-
+from ...utils import P, ensure_async
+from .converters import ChannelConverter, GuildConverter, UserConverter
 from .errors import *
+
+from ferris import Channel, Guild, User
 
 ConverterOutputT = TypeVar('ConverterOutputT')
 GreedyT = TypeVar('GreedyT')
@@ -20,8 +22,9 @@ LiteralT = TypeVar('LiteralT')
 NotT = TypeVar('NotT')
 
 if TYPE_CHECKING:
-    from .models import Context
     from ferris.types.plugins.commands import ParserCallbackProto
+
+    from .models import Context
 
     ArgumentPrepareT = Callable[[str], str]
     ConverterT = Union['Converter', Type['Converter'], Callable[[str], ConverterOutputT]]
@@ -30,6 +33,12 @@ if TYPE_CHECKING:
     ArgumentT = TypeVar('ArgumentT', bound='Argument')
     BlacklistT = TypeVar('BlacklistT', bound=ConverterT) # type: ignore
     ParserT = TypeVar('ParserT', bound=Union['_Subparser', 'Parser'])
+
+CONVERTERS_MAPPING = {
+    Channel: ChannelConverter,
+    Guild: GuildConverter,
+    User: UserConverter,
+}
 
 _NoneType: Type[None] = type(None)
 
@@ -328,8 +337,20 @@ def _convert_bool(argument: str) -> bool:
 async def _convert_one(ctx: Context, argument: str, converter: ConverterT) -> ConverterOutputT:
     if converter is bool:
         return _convert_bool(converter)
+    
+    try:
+        module = converter.__module__
+    except AttributeError:
+        pass
+    else:
+        if module is not None and module.startswith('ferris') and not module.endswith('Converter'):
+            converter = CONVERTERS_MAPPING.get(converter, converter)
 
     try:
+        if inspect.isclass(converter) and issubclass(converter, Converter):
+            if not inspect.ismethod(converter.convert):
+                converter = converter()
+
         if getattr(converter, '__is_converter__', False):
             return await converter.convert(ctx, argument)
 
