@@ -4,16 +4,15 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
 from .base import BaseObject
-from .channel import Channel
 
 if TYPE_CHECKING:
     from typing_extensions import Self
-
+    from .channel import Channel
     from .connection import Connection
     from .guild import Guild
+    from .user import User
     from .types import Data, Snowflake
     from .types.message import MessagePayload
-    from .user import User
 
 __all__ = ('Message',)
 
@@ -42,6 +41,7 @@ class Message(BaseObject):
             data: dict = {}
 
         from .user import User
+        from .channel import Channel
 
         self._store_snowflake(data.get('id'))
 
