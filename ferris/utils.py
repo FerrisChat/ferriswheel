@@ -11,6 +11,7 @@ from typing import (
     Awaitable,
     Callable,
     Iterable,
+    List,
     Optional,
     TypeVar,
     Union,
@@ -37,6 +38,9 @@ __all__ = (
     'get_snowflake_creation_date',
     'find',
     'dt_to_snowflake',
+    'ensure_async',
+    'call_later',
+    'from_weird_format',
 )
 
 
@@ -202,3 +206,29 @@ async def _call_later(seconds: int, func: Union[A, F]) -> None:
 
 def call_later(seconds: int, func: Union[A, F]) -> asyncio.Task:
     return asyncio.create_task(_call_later(seconds, func))
+
+def datetime_from_weird_format(weird_format: List[int, int, int, int]) -> datetime:
+    """Converts the weird format timestamp to a datetime object.
+
+    Parameters
+    ----------
+    weird_format: List[int, int, int]
+        The weird format to convert.
+
+    Returns
+    -------
+    datetime.datetime
+        The datetime object.
+    """
+    # Thanks whoever made this format
+
+    d = datetime.fromordinal(weird_format[1])
+
+    seconds = weird_format[2]
+
+    hours, seconds = divmod(seconds, 3600)
+    minutes, seconds = divmod(seconds, 60)
+
+    d.replace(year=weird_format[0], hour=hours, minute=minutes, second=seconds, microsecond=weird_format[3] // 1000)
+
+    return d

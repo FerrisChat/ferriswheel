@@ -3,6 +3,8 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional, Union
 
+from ferris.utils import datetime_from_weird_format
+
 
 __all__ = ('Invite',)
 
@@ -43,24 +45,7 @@ class Invite:
         self._owner_id: Snowflake = data.get('owner_id')
         self._guild_id: Snowflake = data.get('guild_id')
         
-        # Thanks whoever made this format
-        created_at = data.get('created_at')
-
-        d = datetime.fromordinal(created_at[1])
-
-        seconds = created_at[2]
-
-        hours, seconds = divmod(seconds, 3600)
-        minutes, seconds = divmod(seconds, 60)
-
-        d._year = created_at[0]
-        d._hour = hours
-        d._minute = minutes
-        d._second = seconds
-
-        d._microsecond = created_at[3] // 1000
-
-        self._edited_at = d
+        self._created_at = datetime_from_weird_format(data.get('created_at'))
 
         self._uses: int = data.get('uses')
         self._max_uses: int = data.get('max_uses')
