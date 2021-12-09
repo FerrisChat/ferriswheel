@@ -66,7 +66,7 @@ class GuildFlags(BitFlags):
 
     @Flag
     def verified_guild(self):
-        """:class:`bool`: Returns ``True`` if this guild has been verified (i.e. for content creators, etc.)"""
+        """:class:`bool`: Returns ``True`` if this guild's purpose has been verified (i.e. for content creators, companies, etc.)"""
         return 1 << 0
 
     @Flag
@@ -88,7 +88,7 @@ class UserFlags(BitFlags):
 
     @Flag
     def verified_scam(self):
-        """:class:`bool`: Returns ``True`` if tShis account is a verified scam. Verified is both verified by staff, and reported by a large amount of people."""
+        """:class:`bool`: Returns ``True`` if this account is a verified scam. Verified is both verified by staff, and reported by a large amount of people."""
         return 1 << 1
 
     @Flag
@@ -108,7 +108,7 @@ class UserFlags(BitFlags):
 
     @Flag
     def early_bot(self):
-        """:class:`bool`: Returns ``True`` This bot was one of the first 100 bots created on the platform. (aka bobo bot)"""
+        """:class:`bool`: Returns ``True`` if this bot was one of the first 100 bots created on the platform. (aka bobo bot)"""
         return 1 << 5
 
     @Flag
