@@ -60,7 +60,23 @@ class Message(BaseObject):
         self._edited_at: Optional[datetime] = None
 
         if edited_at := data.get('edited_at'):
-            self._edited_at = datetime.fromisoformat(edited_at)
+            # Thanks whoever made this format
+
+            d = datetime.fromordinal(edited_at[1])
+
+            seconds = edited_at[2]
+
+            hours, seconds = divmod(seconds, 3600)
+            minutes, seconds = divmod(seconds, 60)
+
+            d._year = edited_at[0]
+            d._hour = hours
+            d._minute = minutes
+            d._second = seconds
+
+            d._microsecond = edited_at[3] // 1000
+
+            self._edited_at = d
 
     async def edit(self, content: str) -> Self:
         """|coro|
