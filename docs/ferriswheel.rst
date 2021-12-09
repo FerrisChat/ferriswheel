@@ -32,6 +32,15 @@ Base
     :members:
     :inherited-members:
 
+BitFlags
+--------
+
+.. autoclass:: GuildFlags
+    :members:
+
+.. autoclass:: UserFlags
+    :members:
+
 Channel
 --------
 
@@ -185,6 +194,20 @@ All listeners must be a |coroutine_link|.
 
     :param role: The :class:`~Role` that was deleted.
 
+.. function:: on_typing_start(channel, user)
+
+    Called when a user starts typing in a channel.
+
+    :param channel: The :class:`~Channel` that the user is typing in.
+    :param user: The :class:`~User` that is typing.
+
+.. function:: on_typing_end(channel, user)
+
+    Called when a user stops typing in a channel.
+
+    :param channel: The :class:`~Channel` that the user is typing in.
+    :param user: The :class:`~User` that is typing.
+
 .. function on_member_role_add(member, role)
 
     Called when a member is added to a role.
@@ -284,6 +307,70 @@ Enumerations
 
     .. attribute:: Member
         A member model
+    
+    .. attribute:: Role
+        A role model
+
+.. class:: Pronouns
+    Specifics a user's pronouns.
+
+    .. attribute:: HeHim
+        he/him
+    
+    .. attribute:: HeIt
+        he/it
+    
+    .. attribute:: HeShe
+        he/she
+    
+    .. attribute:: HeThey
+        he/they
+    
+    .. attribute:: ItHim
+        it/him
+    
+    .. attribute:: ItIts
+        it/its
+    
+    .. attribute:: ItShe
+        it/she
+    
+    .. attribute:: ItThey
+        it/they
+    
+    .. attribute:: SheHe
+        she/he
+    
+    .. attribute:: SheHer
+        she/her
+    
+    .. attribute:: SheIt
+        she/it
+    
+    .. attribute:: SheThey
+        she/they
+    
+    .. attribute:: TheyHe
+        they/he
+    
+    .. attribute:: TheyIt
+        they/it
+    
+    .. attribute:: TheyShe
+        they/she
+    
+    .. attribute:: TheyThem
+        they/them
+    
+    .. attribute:: Any
+        Any pronouns
+    
+    .. attribute:: OtherAsk
+        Other pronouns/ask
+    
+    .. attribute:: Avoid
+        Avoid pronouns/use name
+
 
 
 Exceptions

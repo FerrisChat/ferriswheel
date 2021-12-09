@@ -24,6 +24,7 @@ class Message(BaseObject):
         '_connection',
         '_content',
         '_channel_id',
+        '_channel',
         '_author_id',
         '_author',
         '_edited_at',

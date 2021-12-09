@@ -19,6 +19,7 @@ from .message import *
 from .role import *
 from .user import *
 from .utils import *
+from .bitflags import *
 
 
 def create_user(username: str, password: str, email: str) -> PartialUser:
