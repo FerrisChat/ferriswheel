@@ -45,7 +45,7 @@ class Invite:
         self._owner_id: Snowflake = data.get('owner_id')
         self._guild_id: Snowflake = data.get('guild_id')
         
-        self._created_at = datetime_from_weird_format(data.get('created_at'))
+        self._created_at = datetime.fromtimestamp(data.get('created_at'))
 
         self._uses: int = data.get('uses')
         self._max_uses: int = data.get('max_uses')
