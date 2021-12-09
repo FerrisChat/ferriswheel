@@ -314,13 +314,13 @@ class Client(Dispatcher, EventTemplateMixin):
         :class:`ClientUser`
             The client's user.
         """
-        u = await self._connection.api.users.me.get()
+        _u = await self._connection.api.users.me.get()
 
         if cache:
             u = self._connection.user
-            u._process_data(u)
+            u._process_data(_u)
         else:
-            u = ClientUser(self._connection, u)
+            u = ClientUser(self._connection, _u)
 
         return u
 
