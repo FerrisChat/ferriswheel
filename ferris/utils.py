@@ -40,7 +40,7 @@ __all__ = (
     'dt_to_snowflake',
     'ensure_async',
     'call_later',
-    'from_weird_format',
+    'datetime_from_weird_format',
 )
 
 
