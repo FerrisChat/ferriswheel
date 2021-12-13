@@ -193,6 +193,32 @@ class CommandSink:
         """List[:class:`.Command`]: A list of the commands this sink holds."""
         return list(self.walk_commands())
 
+    def remove_command(self, name: str) -> Optional[Command]:
+        """
+        Remove a command or alias from this command sink.
+
+        Parameters
+        -----------
+        name: :class:`str`
+            The name of the command or alias to remove.
+
+        Returns
+        --------
+        Optional[:class:`~.Command`]
+            The command that was removed.
+            If the name is invalid, ``None`` is returned instead.
+        """
+        command = self.command_mapping.pop(name)
+
+        if command:
+            if name in command.aliases:  # This is an alias, so don't remove the command, only this alias.
+                return command
+
+            for alias in command.aliases:
+                self.command_mapping.pop(alias)
+
+        return command
+
 
 class Bot(Client, CommandSink):
     """Represents a bot with extra command handling support.
@@ -293,7 +319,7 @@ class Bot(Client, CommandSink):
             except StopIteration:
                 return None
 
-        if isinstance(prefix, callable):
+        if callable(prefix):
             prefix = await prefix(self, message)
             return self.get_prefix(message, prefix=prefix)
 
