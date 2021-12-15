@@ -1,14 +1,17 @@
+from __future__ import annotations
+
+import re
+from typing import TYPE_CHECKING
+
+from .errors import BadArgument
 from ...errors import NotFound
 from ...utils import find
-from .errors import BadArgument
-from typing import TYPE_CHECKING
+
 
 if TYPE_CHECKING:
     from ... import Channel, Guild, User, Member, Message, Role, Invite
-    from .parser import Converter
     from .models import Context
-
-import re
+    from .parser import Converter
 
 class ChannelConverter(Converter[Channel]):
     async def convert(self, ctx: Context, argument: str):
