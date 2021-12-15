@@ -1,9 +1,12 @@
 from ...errors import NotFound
 from ...utils import find
-from ... import Channel, Guild, User, Member, Message, Role, Invite
-from .parser import Converter
-from .models import Context
 from .errors import BadArgument
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ... import Channel, Guild, User, Member, Message, Role, Invite
+    from .parser import Converter
+    from .models import Context
 
 import re
 
