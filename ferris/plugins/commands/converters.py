@@ -84,7 +84,7 @@ class MemberConverter(Converter):
                 except NotFound:
                     raise BadArgument(f'Member {id_!r} not found')
         else:
-            raise BadArgument('Argument must be an id')
+            raise BadArgument('Argument must be an id.')
         
         return m
 
@@ -104,7 +104,7 @@ class MessageConverter(Converter):
                 except NotFound:
                     raise BadArgument(f'Message {id_!r} not found')
         else:  # TODO: Convert from message url after webclient rewrite
-            raise BadArgument('Argument must be an id')
+            raise BadArgument('Argument must be an id.')
         
         return m
 
@@ -127,7 +127,7 @@ class RoleConverter(Converter):
             r = find(lambda r: r.name == argument, ctx.guild.roles)
             
             if not r:
-                raise BadArgument('Argument must be role id or name')
+                raise BadArgument('Argument must be role id or name.')
         
         return r
 
@@ -144,4 +144,4 @@ class InviteConverter(Converter):
             i =  await ctx.bot.fetch_invite(argument)
             return i
         except NotFound:
-            raise BadArgument('Argument passed must be a valid invite url or code')
+            raise BadArgument('Argument passed must be a valid invite url or code.')
