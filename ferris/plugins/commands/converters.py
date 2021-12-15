@@ -1,13 +1,14 @@
-from ferris.errors import NotFound
-from .parser import Converter, ConverterOutputT
+from ...errors import NotFound
+from ...utils import find
+from ... import Channel, Guild, User, Member, Message, Role, Invite
+from .parser import Converter
 from .models import Context
 from .errors import BadArgument
-from ferris.utils import find
 
 import re
 
-class ChannelConverter(Converter):
-    async def convert(self, ctx: Context, argument: str) -> ConverterOutputT:
+class ChannelConverter(Converter[Channel]):
+    async def convert(self, ctx: Context, argument: str):
         c = None
 
         if argument.isdigit():
@@ -27,8 +28,8 @@ class ChannelConverter(Converter):
         return c
 
 
-class GuildConverter(Converter):
-    async def convert(self, ctx: Context, argument: str) -> ConverterOutputT:
+class GuildConverter(Converter[Guild]):
+    async def convert(self, ctx: Context, argument: str):
         g = None
 
         if argument.isdigit():
@@ -48,8 +49,8 @@ class GuildConverter(Converter):
         return g
 
 
-class UserConverter(Converter):
-    async def convert(self, ctx: Context, argument: str) -> ConverterOutputT:
+class UserConverter(Converter[User]):
+    async def convert(self, ctx: Context, argument: str):
         u = None
 
         if argument.isdigit():
@@ -69,8 +70,8 @@ class UserConverter(Converter):
         return u
 
 
-class MemberConverter(Converter):
-    async def convert(self, ctx: Context, argument: str) -> ConverterOutputT:
+class MemberConverter(Converter[Member]):
+    async def convert(self, ctx: Context, argument: str):
         m = None
         
         if argument.isdigit():
@@ -89,8 +90,8 @@ class MemberConverter(Converter):
         return m
 
 
-class MessageConverter(Converter):
-    async def convert(self, ctx: Context, argument: str) -> ConverterOutputT:
+class MessageConverter(Converter[Message]):
+    async def convert(self, ctx: Context, argument: str):
         m = None
 
         if argument.isdigit():
@@ -109,8 +110,8 @@ class MessageConverter(Converter):
         return m
 
 
-class RoleConverter(Converter):
-    async def convert(self, ctx: Context, argument: str) -> ConverterOutputT:
+class RoleConverter(Converter[Role]):
+    async def convert(self, ctx: Context, argument: str):
         r = None
 
         if argument.isdigit():
@@ -132,8 +133,8 @@ class RoleConverter(Converter):
         return r
 
 
-class InviteConverter(Converter):
-    async def convert(self, ctx: Context, argument: str) -> ConverterOutputT:
+class InviteConverter(Converter[Invite]):
+    async def convert(self, ctx: Context, argument: str):
         invite_regex = re.compile(r'(https?:\/\/)?(www\.)?(ferris\.sh|ferris\.chat\/invite)\/([A-Za-z0-9]+)')
         match = invite_regex.match(argument)
 
