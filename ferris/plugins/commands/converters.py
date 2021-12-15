@@ -70,7 +70,7 @@ class UserConverter(Converter):
 
 
 class MemberConverter(Converter):
-    async def convert(self, ctx: Context, argument: str):
+    async def convert(self, ctx: Context, argument: str) -> ConverterOutputT:
         m = None
         
         if argument.isdigit():
@@ -90,7 +90,7 @@ class MemberConverter(Converter):
 
 
 class MessageConverter(Converter):
-    async def convert(self, ctx: Context, argument: str):
+    async def convert(self, ctx: Context, argument: str) -> ConverterOutputT:
         m = None
 
         if argument.isdigit():
@@ -110,7 +110,7 @@ class MessageConverter(Converter):
 
 
 class RoleConverter(Converter):
-    async def convert(self, ctx: Context, argument: str):
+    async def convert(self, ctx: Context, argument: str) -> ConverterOutputT:
         r = None
 
         if argument.isdigit():
@@ -133,7 +133,7 @@ class RoleConverter(Converter):
 
 
 class InviteConverter(Converter):
-    async def convert(self, ctx: Context, argument: str):
+    async def convert(self, ctx: Context, argument: str) -> ConverterOutputT:
         invite_regex = re.compile(r'(https?:\/\/)?(www\.)?(ferris\.sh|ferris\.chat\/invite)\/([A-Za-z0-9]+)')
         match = invite_regex.match(argument)
 
@@ -144,4 +144,4 @@ class InviteConverter(Converter):
             i =  await ctx.bot.fetch_invite(argument)
             return i
         except NotFound:
-            raise BadArgument('Argument passed must be a valid invite url or code.')
+            raise BadArgument('Argument must be a valid invite url or code.')
