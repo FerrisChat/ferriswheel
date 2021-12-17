@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-import re
 from typing import TYPE_CHECKING
 
 from .errors import BadArgument
 from ...errors import NotFound
-from ...utils import find
+from ...utils import find, INVITE_REGEX
 
 
 if TYPE_CHECKING:
@@ -141,8 +140,7 @@ class RoleConverter(Converter[Role]):
 
 class InviteConverter(Converter[Invite]):
     async def convert(self, ctx: Context, argument: str):
-        invite_regex = re.compile(r'(https?:\/\/)?(www\.)?(ferris\.sh|ferris\.chat\/invite)\/([A-Za-z0-9]+)')
-        match = invite_regex.match(argument)
+        match = INVITE_REGEX.match(argument)
 
         if match:
             argument = match.group(4)

@@ -3,6 +3,8 @@ from __future__ import annotations
 import functools
 import sys
 import inspect
+import json
+import re
 from datetime import datetime
 from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Iterable,
                     Optional, TypeVar, Union, overload)
@@ -45,15 +47,13 @@ else:
 #     import json
 
 
-import json
-
 HAS_ORJSON = False
 
 FERRIS_EPOCH_MS: int = 1_577_836_800_000
 
-
 FERRIS_EPOCH: int = 1_577_836_800
 
+INVITE_REGEX: re.Pattern = re.compile(r'(https?:\/\/)?(www\.)?(ferris\.sh|ferris\.chat\/invite)\/([A-Za-z0-9]+)')
 
 if HAS_ORJSON:
 
