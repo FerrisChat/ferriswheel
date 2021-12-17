@@ -3,7 +3,9 @@ from __future__ import annotations
 import asyncio
 from asyncio import AbstractEventLoop
 from collections import deque
-from typing import TYPE_CHECKING, Any, Coroutine, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Awaitable, Coroutine, Dict, Optional, Union
+
+import functools
 
 from ferris.types.base import Snowflake
 from ferris.user import ClientUser
@@ -65,6 +67,9 @@ class Connection:
             email, password
         )
         self._store_token(self._http.token)
+    
+    def to_thread(self, func, /, *args, **kwargs) -> Awaitable:
+        return self.loop.run_in_executor(None, functools.partial(func, *args, **kwargs))
 
     def clear_store(self, /) -> None:
         self._users: Dict[Snowflake, User] = {}

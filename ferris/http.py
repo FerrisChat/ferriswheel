@@ -104,6 +104,13 @@ class HTTPClient:
     @property
     def session(self) -> aiohttp.ClientSession:
         return self.__session
+    
+    async def get_asset(self, url: str) -> bytes:
+        async with self.__session.get() as resp:
+            if 400 > resp.status >= 200:
+                return await resp.read()
+            
+            raise HTTPException(resp, 'Failed to get asset')
 
     @classmethod
     async def from_email_and_password(cls, email: str, password: str) -> HTTPClient:
@@ -115,7 +122,7 @@ class HTTPClient:
                 json={'email': email, 'password': password},
                 connector=aiohttp.TCPConnector(ssl=cls.USE_SSL),
             ) as response:
-                content = await response.text()
+                content = await response.text('utf-8')
 
                 if 400 > response.status >= 200:
                     token = from_json(content)['token']
@@ -178,7 +185,7 @@ class HTTPClient:
             async with self.__session.request(
                 method, url, headers=headers, **kwargs
             ) as response:
-                content = await response.text()
+                content = await response.text('utf-8')
 
                 log.debug(f'{method} {url} Returned {response.status} with {content}')
 

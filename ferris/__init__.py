@@ -5,6 +5,7 @@ __version__ = '0.0.b1.post1'
 
 import urllib.request
 
+from .asset import *
 from .base import *
 from .channel import *
 from .client import *

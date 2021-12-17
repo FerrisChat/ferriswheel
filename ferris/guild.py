@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, List, Optional, cast
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 from ferris.role import Role
 
 from .base import BaseObject
+from .asset import Asset
+from .bitflags import GuildFlags
 from .channel import Channel
 from .invite import Invite
 from .role import Role
@@ -23,7 +25,7 @@ __all__ = ('Guild',)
 class Guild(BaseObject):
     """Represents a FerrisChat guild."""
 
-    __slots__ = ('_connection', '_owner_id', '_name', '_channels', '_members', '_roles')
+    __slots__ = ('_connection', '_owner_id', '_name', '_channels', '_members', '_roles', '_avatar', '_flags')
 
     def __init__(self, connection: Connection, data: Optional[GuildPayload], /) -> None:
         self._connection: Connection = connection
@@ -38,10 +40,18 @@ class Guild(BaseObject):
         self._store_snowflake(data.get('id'))
 
         self._owner_id: Optional[Snowflake] = data.get('owner_id')
+
+        if avatar := data.get('avatar'):
+            self._avatar: Optional[Asset] = Asset(self._connection, avatar)
+        else:
+            self._avatar: Optional[Asset] = None
+
         self._name: Optional[str] = data.get('name')
 
         self._channels: Dict[Snowflake, Channel] = {}
         self._roles: Dict[Snowflake, Role] = {}
+
+        self._flags: GuildFlags = GuildFlags(data.get('flags') or 0)
 
         for c in data.get('channels') or []:
             if channel := self._connection.get_channel(c.get('id')):
@@ -293,11 +303,21 @@ class Guild(BaseObject):
         """
         id = sanitize_id(id)
         return self._members.get(id)
+    
+    @property
+    def flags(self) -> GuildFlags:
+        """GuildFlags: The flags of this guild."""
+        return GuildFlags(self._flags)
 
     @property
     def owner(self) -> Optional[Member]:
         """Member: The owner of this guild."""
         return self.get_member(self._owner_id)
+    
+    @property
+    def avatar(self) -> Optional[Asset]:
+        """Asset: The avatar of this guild."""
+        return self._avatar
 
     @property
     def owner_id(self, /) -> Optional[Snowflake]:

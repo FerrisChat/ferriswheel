@@ -18,6 +18,12 @@ Client
     :members:
     :inherited-members:
 
+Asset
+-----
+
+.. autoclass:: Asset
+    :members:
+
 Base
 ----
 
@@ -280,6 +286,10 @@ User
 .. attributetable:: PartialUser
 
 .. autoclass:: PartialUser
+    :members:
+    :inherited-members:
+
+.. autoclass:: ClientUser
     :members:
     :inherited-members:
 

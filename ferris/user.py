@@ -1,9 +1,11 @@
 from __future__ import annotations
+from ferris.bitflags import UserFlags
 from ferris.types.base import Snowflake
 
 from typing import TYPE_CHECKING, Dict, List, Optional
 
 from .base import BaseObject
+from .asset import Asset
 from .guild import Guild
 
 if TYPE_CHECKING:
@@ -47,7 +49,7 @@ class User(BaseObject):
     Represents a FerrisChat user.
     """
 
-    __slots__ = ('_connection', '_name', '_avatar')
+    __slots__ = ('_connection', '_name', '_avatar', '_flags')
 
     def __init__(self, connection: Connection, data: UserPayload, /) -> None:
         self._connection: Connection = connection
@@ -61,10 +63,12 @@ class User(BaseObject):
 
         self._name: Optional[str] = data.get('name')
 
-        self._avatar: Optional[str] = data.get('avatar')
+        if avatar := data.get('avatar'):
+            self._avatar: Optional[Asset] = Asset(self._connection, avatar)
+        else:
+            self._avatar: Optional[Asset] = None
 
-        # self._flags = data.get('flags')
-        # UserFlag after ferrischat implemented it
+        self._flags: UserFlags = UserFlags(data.get('flags') or 0)
 
     @property
     def name(self, /) -> Optional[str]:
@@ -72,9 +76,14 @@ class User(BaseObject):
         return self._name
 
     @property
-    def avatar(self, /) -> Optional[str]:
-        """str: The avatar url of this user."""
+    def avatar(self, /) -> Optional[Asset]:
+        """Asset: The avatar url of this user."""
         return self._avatar
+    
+    @property
+    def flags(self) -> UserFlags:
+        """UserFlags: The flags of this user."""
+        return self._flags
 
     def __del__(self, /) -> None:
         if not hasattr(self, '_connection'):
