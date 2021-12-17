@@ -1,5 +1,6 @@
 from . import errors, parser
 from .core import CaseInsensitiveDict, CommandSink, Bot
+from .converters import *
 from .errors import *
 from .models import Command, Context
 from .parser import (
