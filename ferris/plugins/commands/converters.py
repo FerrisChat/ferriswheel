@@ -139,13 +139,10 @@ class RoleConverter(Converter[Role]):
 
 class InviteConverter(Converter[Invite]):
     async def convert(self, ctx: Context, argument: str):
-        match = INVITE_REGEX.match(argument)
-
-        if match:
+        if match := INVITE_REGEX.match(argument):
             argument = match.group(4)
-        
+
         try:
-            i =  await ctx.bot.fetch_invite(argument)
-            return i
+            return await ctx.bot.fetch_invite(argument)
         except NotFound:
             raise BadArgument('Argument must be a valid invite url or code.')
