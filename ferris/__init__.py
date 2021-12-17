@@ -1,9 +1,7 @@
 __author__ = 'Cryptex & jay3332'
-__version__ = '0.0.b1.post1'
+__version__ = '0.0.b1.post2'
 # 0.1.0 for the finished release
 
-
-import urllib.request
 
 from .asset import *
 from .base import *
@@ -41,6 +39,8 @@ def create_user(username: str, password: str, email: str) -> PartialUser:
     PartialUser
         The created user.
     """
+    import urllib.request
+
     resp = urllib.request.urlopen(
         urllib.request.Request(
             f'{HTTPClient.API_BASE_URL}/users',
