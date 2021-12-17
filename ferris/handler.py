@@ -112,7 +112,7 @@ class EventHandler(_BaseEventHandler):
         if member := guild._members.get(data.get('user_id')):
             member._process_data(data.get('member'))
         else:
-            member = Member(guild, data.get('member'))
+            member = Member(self.connection, data.get('member'))
             guild._members[member.id] = member
         self.dispatch('member_create', member)
 
@@ -121,7 +121,7 @@ class EventHandler(_BaseEventHandler):
         if member := guild._members.get(data.get('user_id')):
             member._process_data(data.get('member'))
         else:
-            member = Member(guild, data.get('user'))
+            member = Member(self.connection, data.get('user'))
             guild._members[member.id] = member
         self.dispatch('member_update', member)
 
@@ -130,7 +130,7 @@ class EventHandler(_BaseEventHandler):
         if member := guild._members.get(data.get('user_id')):
             guild._members.pop(member.id, None)
         else:
-            member = Member(guild, data.get('member'))
+            member = Member(self.connection, data.get('member'))
         self.dispatch('member_delete', member)
 
     async def GuildCreate(self, data):
