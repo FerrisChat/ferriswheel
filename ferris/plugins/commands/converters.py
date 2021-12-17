@@ -1,10 +1,28 @@
-from ferris.errors import NotFound
-from .parser import Converter, ConverterOutputT
-from .models import Context
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from ...errors import NotFound
+from ...utils import INVITE_REGEX, find
 from .errors import BadArgument
 
-class ChannelConverter(Converter):
-    async def convert(self, ctx: Context, argument: str) -> ConverterOutputT:
+
+__all__ = ('ChannelConverter', 
+           'GuildConverter',
+           'UserConverter', 
+           'MemberConverter', 
+           'MessageConverter', 
+           'RoleConverter', 
+           'InviteConverter')
+
+if TYPE_CHECKING:
+    from ... import Channel, Guild, Invite, Member, Message, Role, User
+    from .models import Context
+    from .parser import Converter
+
+
+class ChannelConverter(Converter[Channel]):
+    async def convert(self, ctx: Context, argument: str):
         c = None
 
         if argument.isdigit():
@@ -24,8 +42,8 @@ class ChannelConverter(Converter):
         return c
 
 
-class GuildConverter(Converter):
-    async def convert(self, ctx: Context, argument: str) -> ConverterOutputT:
+class GuildConverter(Converter[Guild]):
+    async def convert(self, ctx: Context, argument: str):
         g = None
 
         if argument.isdigit():
@@ -45,8 +63,8 @@ class GuildConverter(Converter):
         return g
 
 
-class UserConverter(Converter):
-    async def convert(self, ctx: Context, argument: str) -> ConverterOutputT:
+class UserConverter(Converter[User]):
+    async def convert(self, ctx: Context, argument: str):
         u = None
 
         if argument.isdigit():
@@ -64,3 +82,77 @@ class UserConverter(Converter):
             raise BadArgument(f'Argument must be an id.')
         
         return u
+
+
+class MemberConverter(Converter[Member]):
+    async def convert(self, ctx: Context, argument: str):
+        m = None
+        
+        if argument.isdigit():
+            id_ = int(argument)
+        
+            m = ctx.guild.get_member(id_)
+
+            if not m:
+                try:
+                    m = await ctx.guild.fetch_member(id_)
+                except NotFound:
+                    raise BadArgument(f'Member {id_!r} not found')
+        else:
+            raise BadArgument('Argument must be an id.')
+        
+        return m
+
+
+class MessageConverter(Converter[Message]):
+    async def convert(self, ctx: Context, argument: str):
+        m = None
+
+        if argument.isdigit():
+            id_ = int(argument)
+
+            m = ctx.bot.get_message(id_)
+
+            if not m:
+                try:
+                    m = await ctx.bot.fetch_message(id_)
+                except NotFound:
+                    raise BadArgument(f'Message {id_!r} not found')
+        else:  # TODO: Convert from message url after webclient rewrite
+            raise BadArgument('Argument must be an id.')
+        
+        return m
+
+
+class RoleConverter(Converter[Role]):
+    async def convert(self, ctx: Context, argument: str):
+        r = None
+
+        if argument.isdigit():
+            id_ = int(argument)
+
+            r = ctx.guild.get_role(id_)
+
+            if not r:
+                try:
+                    r = await ctx.guild.fetch_role(id_)
+                except NotFound:
+                    raise BadArgument(f'Role {id_!r} not found')
+        else:
+            r = find(lambda r: r.name == argument, ctx.guild.roles)
+            
+            if not r:
+                raise BadArgument('Argument must be role id or name.')
+        
+        return r
+
+
+class InviteConverter(Converter[Invite]):
+    async def convert(self, ctx: Context, argument: str):
+        if match := INVITE_REGEX.match(argument):
+            argument = match.group(4)
+
+        try:
+            return await ctx.bot.fetch_invite(argument)
+        except NotFound:
+            raise BadArgument('Argument must be a valid invite url or code.')
