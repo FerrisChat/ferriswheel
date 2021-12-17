@@ -2,13 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .errors import BadArgument
 from ...errors import NotFound
-from ...utils import find, INVITE_REGEX
-
+from ...utils import INVITE_REGEX, find
+from .errors import BadArgument
 
 if TYPE_CHECKING:
-    from ... import Channel, Guild, User, Member, Message, Role, Invite
+    from ... import Channel, Guild, Invite, Member, Message, Role, User
     from .models import Context
     from .parser import Converter
 

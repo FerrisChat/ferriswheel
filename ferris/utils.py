@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import functools
-import sys
 import inspect
 import json
 import re
+import sys
 from datetime import datetime
 from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Iterable,
                     Optional, TypeVar, Union, overload)
