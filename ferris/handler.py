@@ -29,7 +29,14 @@ class _BaseEventHandler:
         self._heartbeat_manager: KeepAliveManager = heartbeat_manager
 
     def handle(self, _data: dict):
-        event = _data.get('c') or ''
+        if not _data:
+            _data = {}
+
+        event = _data.get('c')
+        if not event:
+            log.warning("Received `None` event")
+            return
+
         data = _data.get('d') or {}
         log.debug(f"Handling event: {event} Data: {data}")
 
