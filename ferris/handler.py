@@ -29,8 +29,8 @@ class _BaseEventHandler:
         self._heartbeat_manager: KeepAliveManager = heartbeat_manager
 
     def handle(self, _data: dict):
-        event = _data.get('c')
-        data = _data.get('d')
+        event = _data.get('c') or ''
+        data = _data.get('d') or {}
         log.debug(f"Handling event: {event} Data: {data}")
 
         self.dispatch('socket_receive', event, data)
