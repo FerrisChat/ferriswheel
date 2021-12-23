@@ -25,7 +25,7 @@ __all__ = ('Guild',)
 class Guild(BaseObject):
     """Represents a FerrisChat guild."""
 
-    __slots__ = ('_connection', '_owner_id', '_name', '_channels', '_members', '_roles', '_avatar', '_flags')
+    __slots__ = ('_connection', '_owner_id', '_name', '_channels', '_members', '_roles', '_icon', '_flags')
 
     def __init__(self, connection: Connection, data: Optional[GuildPayload], /) -> None:
         self._connection: Connection = connection
@@ -41,10 +41,10 @@ class Guild(BaseObject):
 
         self._owner_id: Optional[Snowflake] = data.get('owner_id')
 
-        if avatar := data.get('avatar'):
-            self._avatar: Optional[Asset] = Asset(self._connection, avatar)
+        if icon := data.get('icon'):
+            self._icon: Optional[Asset] = Asset(self._connection, icon)
         else:
-            self._avatar: Optional[Asset] = None
+            self._icon: Optional[Asset] = None
 
         self._name: Optional[str] = data.get('name')
 
@@ -315,9 +315,9 @@ class Guild(BaseObject):
         return self.get_member(self._owner_id)
     
     @property
-    def avatar(self) -> Optional[Asset]:
-        """Asset: The avatar of this guild."""
-        return self._avatar
+    def icon(self) -> Optional[Asset]:
+        """Asset: The icon of this guild."""
+        return self._icon
 
     @property
     def owner_id(self, /) -> Optional[Snowflake]:
