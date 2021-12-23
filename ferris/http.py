@@ -113,7 +113,7 @@ class HTTPClient:
             raise HTTPException(resp, 'Failed to get asset')
 
     @classmethod
-    async def from_email_and_password(cls, email: str, password: str) -> HTTPClient:
+    async def from_email_and_password(cls, email: str, password, bot: bool) -> HTTPClient:
         log.info('Retriving token from email and password')
         for tries in range(cls.MAX_TRIES):
             async with aiohttp.request(

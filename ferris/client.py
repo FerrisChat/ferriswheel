@@ -250,6 +250,82 @@ class Client(Dispatcher, EventTemplateMixin):
             The invite code to use.
         """
         await self._connection.api.invites(code).post()
+    
+    async def get_bot_token(self, id: Id) -> str:
+        """|coro|
+
+        Gets the bot token for a bot that is owned by the current ClientUser.
+
+        Parameters
+        ----------
+        id: int
+            The bot's id.
+        
+        Returns
+        -------
+        str
+
+        Raises
+        ------
+        :exec:`~.Forbidden`
+        """
+        id = sanitize_id(id)
+
+        d = await self._connection.api.users.me.bots(id).auth.get()
+
+        return d['token']
+    
+    async def get_bots(self) -> List[User]:
+        """|coro|
+
+        Gets a list of the current ClientUser's bots.
+        """
+        d = await self._connection.api.users.me.bots.get()
+
+        return [User(self._connection, bot) for bot in d]
+    
+    async def edit_bot(self, id: Id, username: str) -> User:
+        """|coro|
+
+        Edits a bot account's username.
+
+        Parameters
+        ----------
+        username: str
+            The new username.
+        
+        Returns
+        -------
+        :class:`~.User`
+            The updated bot :class:`~.User` object.
+
+        Raises
+        ------
+        :exec:`~.Forbidden`
+        """
+        id = sanitize_id(id)
+
+        d = await self._connection.api.users.me.bots(id).patch({'username': username})
+
+        return User(self._connection, d)
+    
+    async def delete_bot(self, id: Id) -> None:
+        """|coro|
+
+        Deletes a bot account.
+
+        Parameters
+        ----------
+        id: int
+            The bot's id.
+        
+        Raises
+        ------
+        :exec:`~.Forbidden`
+        """
+        id = sanitize_id(id)
+
+        await self._connection.api.users.me.bots(id).delete()
 
     async def create_bot(self, name: str) -> User:
         """|coro|

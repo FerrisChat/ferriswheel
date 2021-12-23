@@ -1,15 +1,17 @@
 from __future__ import annotations
-from ferris.bitflags import UserFlags
-from ferris.types.base import Snowflake
 
-from typing import TYPE_CHECKING, Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, Optional
 
-from .base import BaseObject
 from .asset import Asset
+from .base import BaseObject
+from .bitflags import UserFlags
+from .enums import Pronouns
 from .guild import Guild
+from .types.base import Snowflake
 
 if TYPE_CHECKING:
     from typing_extensions import Self
+
     from .connection import Connection
     from .types import Data
     from .types.user import UserPayload
@@ -117,6 +119,8 @@ class ClientUser(User):
         username: Optional[str] = None,
         email: Optional[str] = None,
         password: Optional[str] = None,
+        avatar: Optional[str] = None,
+        pronouns: Optional[Pronouns] = None,
     ) -> Self:
         """|coro|
 
@@ -130,6 +134,10 @@ class ClientUser(User):
             The new email.
         password : Optional[str]
             The new password.
+        avatar : Optional[str]
+            The new avatar.
+        pronouns : Optional[str]
+            The new pronouns.
 
         Returns
         -------
@@ -140,6 +148,8 @@ class ClientUser(User):
             'username': username,
             'email': email,
             'password': password,
+            'avatar': avatar,
+            'pronouns': pronouns.value if pronouns else None,
         }
         user = await self._connection.api.users.me.patch(json=payload)
         self._process_data(user)
