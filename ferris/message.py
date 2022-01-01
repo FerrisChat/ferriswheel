@@ -110,7 +110,7 @@ class Message(BaseObject):
     @property
     def channel(self, /) -> Optional[Channel]:
         """Channel: The channel that this message was sent in"""
-        return self._cahnnel or self._connection.get_channel(self.channel_id)
+        return self._channel or self._connection.get_channel(self.channel_id)
 
     @property
     def channel_id(self, /) -> Snowflake:
