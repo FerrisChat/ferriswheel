@@ -56,10 +56,10 @@ import json
 
 HAS_ORJSON = False
 
-FERRIS_EPOCH_MS: int = 1_577_836_800_000
+FERRIS_EPOCH_MS: int = 1_640_995_200_000
 
 
-FERRIS_EPOCH: int = 1_577_836_800
+FERRIS_EPOCH: int = 1_640_995_200
 
 PY_3_8 = sys.version_info < (3, 9)
 
