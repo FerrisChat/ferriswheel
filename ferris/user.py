@@ -100,6 +100,9 @@ class User(BaseObject):
     def flags(self) -> UserFlags:
         """UserFlags: The flags of this user."""
         return self._flags
+    
+    def __str__(self) -> str:
+        return f'{self.name}#{self.discrimator}'
 
     def __del__(self, /) -> None:
         if not hasattr(self, '_connection'):
