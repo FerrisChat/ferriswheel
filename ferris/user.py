@@ -51,7 +51,7 @@ class User(BaseObject):
     Represents a FerrisChat user.
     """
 
-    __slots__ = ('_connection', '_name', '_avatar', '_flags')
+    __slots__ = ('_connection', '_name', '_avatar', '_flags', '_discrimator', '_is_bot')
 
     def __init__(self, connection: Connection, data: UserPayload, /) -> None:
         self._connection: Connection = connection
@@ -69,6 +69,10 @@ class User(BaseObject):
             self._avatar: Optional[Asset] = Asset(self._connection, avatar)
         else:
             self._avatar: Optional[Asset] = None
+        
+        self._discrimator: Optional[int] = data.get('discriminator')
+
+        self._is_bot: bool = data.get('is_bot')
 
         self._flags: UserFlags = UserFlags(data.get('flags') or 0)
 
@@ -81,6 +85,16 @@ class User(BaseObject):
     def avatar(self, /) -> Optional[Asset]:
         """Asset: The avatar url of this user."""
         return self._avatar
+    
+    @property
+    def discrimator(self) -> Optional[int]:
+        """int: The discriminator of this user."""
+        return self._discrimator
+    
+    @property
+    def is_bot(self) -> Optional[bool]:
+        """bool: Whether this user is a bot."""
+        return self._is_bot
 
     @property
     def flags(self) -> UserFlags:

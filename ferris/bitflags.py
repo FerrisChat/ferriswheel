@@ -143,3 +143,13 @@ class UserFlags(BitFlags):
     def maintainer(self):
         """ :class:`bool`: Returns ``True`` if this account is owned by a core developer/maintainer of FerrisChat itself."""
         return 1 << 11
+    
+    @Flag
+    def christmas_event_winner(self):
+        """:class:`bool`: Returns ``True`` if this account is owned by someone who has won an official FerrisChat event."""
+        return 1 << 12
+    
+    @Flag
+    def bug_hunter(self):
+        """:class:`bool`: Returns ``True`` if this account is owned by someone who has reported/discovered many important bugs in FerrisChat."""
+        return 1 << 13
