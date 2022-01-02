@@ -34,7 +34,7 @@ jobs:
         pip install --upgrade --upgrade-strategy eager -r requirements.txt -e .
 
     - name: Install FerrisWheel
-      run: python -m pip install -U .
+      run: python -m pip install -U .[performance]
 
     - name: Run tests
       run: python tests/test_ferriswheel.py
