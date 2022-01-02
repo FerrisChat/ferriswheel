@@ -178,17 +178,17 @@ class Websocket:
             self._heartbeat_manager.start()
 
         self.dispatch('connect')
+
+        VALID_WS_EVENTS = {aiohttp.WSMsgType.TEXT, aiohttp.WSMsgType.BINARY}
+        INVALID_WS_EVENTS = {aiohttp.WSMsgType.CLOSED, aiohttp.WSMsgType.CLOSING, aiohttp.WSMsgType.CLOSE}
+
         async for message in self.ws:
-            if message.type in {aiohttp.WSMsgType.TEXT, aiohttp.WSMsgType.BINARY}:
+            if message.type in VALID_WS_EVENTS:
                 self._parse_and_handle(message.data)
             elif message.type is aiohttp.WSMsgType.ERROR:
                 log.error(f'Websocket error: {message.data}')
                 raise WebsocketException(message.data)
-            elif message.type in (
-                aiohttp.WSMsgType.CLOSED,
-                aiohttp.WSMsgType.CLOSING,
-                aiohttp.WSMsgType.CLOSE,
-            ):
+            elif message.type in INVALID_WS_EVENTS:
                 log.info('Websocket closed, attempting to reconnect.')
                 self._heartbeat_manager.stop()
                 raise Reconnect
