@@ -21,7 +21,7 @@ from .utils import *
 from .bitflags import *
 
 
-def create_user(username: str, password: str, email: str, pronouns: Pronouns = None) -> PartialUser:
+def create_user(username: str, password: str, email: str) -> PartialUser:
     """
     Creates a new user.
 
@@ -45,7 +45,7 @@ def create_user(username: str, password: str, email: str, pronouns: Pronouns = N
         urllib.request.Request(
             f'{HTTPClient.API_BASE_URL}/users',
             data=to_json(
-                {'email': email, 'password': password, 'username': username, 'pronouns': pronouns.value if pronouns else None}
+                {'email': email, 'password': password, 'username': username}
             ).encode('utf-8'),
             headers={
                 'Content-Type': 'application/json',

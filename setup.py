@@ -46,7 +46,7 @@ setup(
             'sphinx-copybutton',
             'readthedocs-sphinx-search',
         ],
-        "performance": ["aiohttp[speedups]"],
+        "performance": ["aiohttp[speedups]", "orjson"],
     },
     python_requires=">=3.8.0",
     classifiers=[

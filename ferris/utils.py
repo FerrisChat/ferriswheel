@@ -44,12 +44,12 @@ __all__ = (
 )
 
 
-# try:
-#     import orjson
+try:
+    import orjson
 
-#     HAS_ORJSON = True
-# except ImportError:
-#     import json
+    HAS_ORJSON = True
+except ImportError:
+    import json
 
 
 import json
@@ -64,28 +64,30 @@ FERRIS_EPOCH: int = 1_577_836_800
 PY_3_8 = sys.version_info < (3, 9)
 
 
-# if HAS_ORJSON:
+if HAS_ORJSON:
 
-#     def to_json(obj: Any) -> str:
-#         return orjson.dumps(obj).decode('utf-8')
+    def to_json(obj: Any) -> str:
+        return orjson.dumps(obj).decode('utf-8')
 
-#     def from_json(json_str: str) -> Any:
-#         if not json_str:
-#             return None
-#         return orjson.loads(json_str)
+    def from_json(json_str: str) -> Any:
+        if not json_str:
+            return None
+
+        j = orjson.loads(json_str)
+
+        if id_ := j.pop('id_string', None):
+            j['id'] = int(id_)
+
+else:
+
+    def to_json(obj: Any) -> str:
+        return json.dumps(obj, ensure_ascii=True)
 
 
-# else:
-
-
-def to_json(obj: Any) -> str:
-    return json.dumps(obj, ensure_ascii=True)
-
-
-def from_json(json_str: str) -> Any:
-    if not json_str:
-        return None
-    return json.loads(json_str)
+    def from_json(json_str: str) -> Any:
+        if not json_str:
+            return None
+        return json.loads(json_str)
 
 
 def sanitize_id(id: Id = None) -> Snowflake:
