@@ -61,33 +61,29 @@ FERRIS_EPOCH_MS: int = 1_640_995_200_000
 
 FERRIS_EPOCH: int = 1_640_995_200
 
-PY_3_8 = sys.version_info < (3, 9)
+PY_3_8: bool = sys.version_info < (3, 9)
 
 
-if HAS_ORJSON:
+# if HAS_ORJSON:
 
-    def to_json(obj: Any) -> str:
-        return orjson.dumps(obj).decode('utf-8')
+#     def to_json(obj: Any) -> str:
+#         return orjson.dumps(obj).decode('utf-8')
 
-    def from_json(json_str: str) -> Any:
-        if not json_str:
-            return None
+#     def from_json(json_str: str) -> Any:
+#         if not json_str:
+#             return None
+        
+#         return orjson.loads(json_str)
 
-        j = orjson.loads(json_str)
+# else:
 
-        if id_ := j.pop('id_string', None):
-            j['id'] = int(id_)
+def to_json(obj: Any) -> str:
+    return json.dumps(obj, ensure_ascii=True)
 
-
-else:
-
-    def to_json(obj: Any) -> str:
-        return json.dumps(obj, ensure_ascii=True)
-
-    def from_json(json_str: str) -> Any:
-        if not json_str:
-            return None
-        return json.loads(json_str)
+def from_json(json_str: str) -> Any:
+    if not json_str:
+        return None
+    return json.loads(json_str)
 
 
 def sanitize_id(id: Id = None) -> Snowflake:
