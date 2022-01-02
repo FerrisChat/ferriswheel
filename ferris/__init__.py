@@ -49,7 +49,7 @@ def create_user(username: str, password: str, email: str) -> PartialUser:
             ).encode('utf-8'),
             headers={
                 'Content-Type': 'application/json',
-                'User-Agent': f'FerrisWheel (https://github.com/Cryptex-github/ferriswheel v{__version__})',
+                'User-Agent': f'FerrisWheel (https://github.com/FerrisChat/ferriswheel v{__version__})',
             },
             method='POST',
         )

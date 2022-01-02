@@ -79,7 +79,7 @@ class HTTPClient:
     MAX_TRIES: ClassVar[int] = 3
     USER_AGENT: ClassVar[
         str
-    ] = f'FerrisWheel (https://github.com/Cryptex-github/ferriswheel v{__version__})'
+    ] = f'FerrisWheel (https://github.com/FerrisChat/ferriswheel v{__version__})'
 
     __slots__ = ('__token', '__session', '_buckets_lock', '_api_router')
 
