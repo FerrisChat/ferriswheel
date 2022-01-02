@@ -81,7 +81,7 @@ class User(BaseObject):
     def avatar(self, /) -> Optional[Asset]:
         """Asset: The avatar url of this user."""
         return self._avatar
-    
+
     @property
     def flags(self) -> UserFlags:
         """UserFlags: The flags of this user."""

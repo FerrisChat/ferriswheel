@@ -25,7 +25,16 @@ __all__ = ('Guild',)
 class Guild(BaseObject):
     """Represents a FerrisChat guild."""
 
-    __slots__ = ('_connection', '_owner_id', '_name', '_channels', '_members', '_roles', '_icon', '_flags')
+    __slots__ = (
+        '_connection',
+        '_owner_id',
+        '_name',
+        '_channels',
+        '_members',
+        '_roles',
+        '_icon',
+        '_flags',
+    )
 
     def __init__(self, connection: Connection, data: Optional[GuildPayload], /) -> None:
         self._connection: Connection = connection
@@ -303,7 +312,7 @@ class Guild(BaseObject):
         """
         id = sanitize_id(id)
         return self._members.get(id)
-    
+
     @property
     def flags(self) -> GuildFlags:
         """GuildFlags: The flags of this guild."""
@@ -313,7 +322,7 @@ class Guild(BaseObject):
     def owner(self) -> Optional[Member]:
         """Member: The owner of this guild."""
         return self.get_member(self._owner_id)
-    
+
     @property
     def icon(self) -> Optional[Asset]:
         """Asset: The icon of this guild."""

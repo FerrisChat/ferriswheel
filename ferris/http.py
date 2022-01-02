@@ -104,16 +104,18 @@ class HTTPClient:
     @property
     def session(self) -> aiohttp.ClientSession:
         return self.__session
-    
+
     async def get_asset(self, url: str) -> bytes:
         async with self.__session.get() as resp:
             if 400 > resp.status >= 200:
                 return await resp.read()
-            
+
             raise HTTPException(resp, 'Failed to get asset')
 
     @classmethod
-    async def from_email_and_password(cls, email: str, password, bot: bool) -> HTTPClient:
+    async def from_email_and_password(
+        cls, email: str, password, bot: bool
+    ) -> HTTPClient:
         log.info('Retriving token from email and password')
         for tries in range(cls.MAX_TRIES):
             async with aiohttp.request(

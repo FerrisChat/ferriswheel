@@ -67,7 +67,7 @@ class Connection:
             email, password
         )
         self._store_token(self._http.token)
-    
+
     def to_thread(self, func, /, *args, **kwargs) -> Awaitable:
         return self.loop.run_in_executor(None, functools.partial(func, *args, **kwargs))
 

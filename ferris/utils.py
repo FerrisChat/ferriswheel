@@ -78,11 +78,11 @@ if HAS_ORJSON:
         if id_ := j.pop('id_string', None):
             j['id'] = int(id_)
 
+
 else:
 
     def to_json(obj: Any) -> str:
         return json.dumps(obj, ensure_ascii=True)
-
 
     def from_json(json_str: str) -> Any:
         if not json_str:
@@ -209,6 +209,7 @@ async def _call_later(seconds: int, func: Union[A, F]) -> None:
 def call_later(seconds: int, func: Union[A, F]) -> asyncio.Task:
     return asyncio.create_task(_call_later(seconds, func))
 
+
 def datetime_from_weird_format(weird_format: List[int, int, int, int]) -> datetime:
     """Converts the weird format timestamp to a datetime object.
 
@@ -231,6 +232,12 @@ def datetime_from_weird_format(weird_format: List[int, int, int, int]) -> dateti
     hours, seconds = divmod(seconds, 3600)
     minutes, seconds = divmod(seconds, 60)
 
-    d.replace(year=weird_format[0], hour=hours, minute=minutes, second=seconds, microsecond=weird_format[3] // 1000)
+    d.replace(
+        year=weird_format[0],
+        hour=hours,
+        minute=minutes,
+        second=seconds,
+        microsecond=weird_format[3] // 1000,
+    )
 
     return d

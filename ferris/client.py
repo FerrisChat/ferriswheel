@@ -251,7 +251,7 @@ class Client(Dispatcher, EventTemplateMixin):
             The invite code to use.
         """
         await self._connection.api.invites(code).post()
-    
+
     async def get_bot_token(self, id: Id) -> str:
         """|coro|
 
@@ -261,7 +261,7 @@ class Client(Dispatcher, EventTemplateMixin):
         ----------
         id: int
             The bot's id.
-        
+
         Returns
         -------
         str
@@ -275,7 +275,7 @@ class Client(Dispatcher, EventTemplateMixin):
         d = await self._connection.api.users.me.bots(id).auth.get()
 
         return d['token']
-    
+
     async def get_bots(self) -> List[User]:
         """|coro|
 
@@ -284,7 +284,7 @@ class Client(Dispatcher, EventTemplateMixin):
         d = await self._connection.api.users.me.bots.get()
 
         return [User(self._connection, bot) for bot in d]
-    
+
     async def edit_bot(self, id: Id, username: str) -> User:
         """|coro|
 
@@ -294,7 +294,7 @@ class Client(Dispatcher, EventTemplateMixin):
         ----------
         username: str
             The new username.
-        
+
         Returns
         -------
         :class:`~.User`
@@ -309,7 +309,7 @@ class Client(Dispatcher, EventTemplateMixin):
         d = await self._connection.api.users.me.bots(id).patch({'username': username})
 
         return User(self._connection, d)
-    
+
     async def delete_bot(self, id: Id) -> None:
         """|coro|
 
@@ -319,7 +319,7 @@ class Client(Dispatcher, EventTemplateMixin):
         ----------
         id: int
             The bot's id.
-        
+
         Raises
         ------
         :exec:`~.Forbidden`

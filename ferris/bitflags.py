@@ -6,6 +6,7 @@ __all__ = ('GuildFlags', 'UserFlags')
 
 # Shamelessly robbed from discord.py
 
+
 class Flag:
     def __init__(self, func: Callable[[Any], int]):
         self.flag = func(None)
@@ -62,6 +63,7 @@ class GuildFlags(BitFlags):
     """
     Represents the flags of a :class:`~.Guild`.
     """
+
     __slots__ = ()
 
     @Flag
@@ -79,6 +81,7 @@ class UserFlags(BitFlags):
     """
     Represents the flags of a :class:`~.User`.
     """
+
     __slots__ = ()
 
     @Flag
