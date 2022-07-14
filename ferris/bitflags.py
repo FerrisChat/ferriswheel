@@ -131,12 +131,12 @@ class UserFlags(BitFlags):
 
     @Flag
     def library_dev(self):
-        """:class:`bool` Returns ``True`` if this account is owned by a maintainer of a API wrapper for the FerrisChat API in a language (aka me Cryptex who made all of those)."""
+        """:class:`bool` Returns ``True`` if this account is owned by a maintainer of a API wrapper for the FerrisChat API in a language (aka me Cryptex and jay3332 who made all of those)."""
         return 1 << 9
 
     @Flag
     def contributor(self):
-        """:class:`bool`: Returns ``True`` if this account is owned by someone who has contributed to FerrisChat's codebase in some way. (aka me Cryptex)"""
+        """:class:`bool`: Returns ``True`` if this account is owned by someone who has contributed to FerrisChat's codebase in some way. (aka me Cryptex and jay3332)"""
         return 1 << 10
 
     @Flag
